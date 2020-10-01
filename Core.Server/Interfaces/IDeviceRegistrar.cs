@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace SimUServer.Core.Server.Interfaces
 {
-    interface IDeviceRegistrar
+    /// <summary>
+    /// Facilitates registration of devices with the system
+    /// </summary>
+    public interface IDeviceRegistrar
     {
+        void RegisterDevice();
     }
 }
