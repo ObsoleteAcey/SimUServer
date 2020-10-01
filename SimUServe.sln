@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimUServer.Service", "SimUServer\SimUServer.Service.csproj", "{21F77240-CDAE-4154-A885-EEAD4B0AE151}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_solutionFiles", "_solutionFiles", "{6996F1CD-D5A7-4786-93AD-8AFF59A2E43A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{4EAFD0ED-B8C2-4427-B8DF-CC03F13463ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{B9A77F07-BCE6-408A-9697-B9F2527320CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Server", "Core.Server\Core.Server.csproj", "{28969416-70C7-4486-AE27-5D09AB09D383}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Utils", "Core.Utils\Core.Utils.csproj", "{1AE80AA9-8414-4304-949F-ADFC6CCA7591}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimHubPlugin", "SimHubPlugin", "{1D22692B-0DFB-420B-9CDA-3D4534A6E85E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimUServe.Plugin", "SimUServer.Plugin\SimUServe.Plugin.csproj", "{833040C9-FE5E-4CCF-B21D-71979E049B6B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21F77240-CDAE-4154-A885-EEAD4B0AE151}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21F77240-CDAE-4154-A885-EEAD4B0AE151}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21F77240-CDAE-4154-A885-EEAD4B0AE151}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21F77240-CDAE-4154-A885-EEAD4B0AE151}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28969416-70C7-4486-AE27-5D09AB09D383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28969416-70C7-4486-AE27-5D09AB09D383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28969416-70C7-4486-AE27-5D09AB09D383}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28969416-70C7-4486-AE27-5D09AB09D383}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AE80AA9-8414-4304-949F-ADFC6CCA7591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AE80AA9-8414-4304-949F-ADFC6CCA7591}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AE80AA9-8414-4304-949F-ADFC6CCA7591}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AE80AA9-8414-4304-949F-ADFC6CCA7591}.Release|Any CPU.Build.0 = Release|Any CPU
+		{833040C9-FE5E-4CCF-B21D-71979E049B6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{833040C9-FE5E-4CCF-B21D-71979E049B6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{833040C9-FE5E-4CCF-B21D-71979E049B6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{833040C9-FE5E-4CCF-B21D-71979E049B6B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{21F77240-CDAE-4154-A885-EEAD4B0AE151} = {4EAFD0ED-B8C2-4427-B8DF-CC03F13463ED}
+		{28969416-70C7-4486-AE27-5D09AB09D383} = {B9A77F07-BCE6-408A-9697-B9F2527320CA}
+		{1AE80AA9-8414-4304-949F-ADFC6CCA7591} = {B9A77F07-BCE6-408A-9697-B9F2527320CA}
+		{833040C9-FE5E-4CCF-B21D-71979E049B6B} = {1D22692B-0DFB-420B-9CDA-3D4534A6E85E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {59C7A143-7E4F-4EDE-99E7-6FE0F6A701F7}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,9 @@
+C:\Dev\SimUServer\SimUServer\bin\Debug\SimUServer.Service.exe.config
+C:\Dev\SimUServer\SimUServer\bin\Debug\SimUServer.Service.exe
+C:\Dev\SimUServer\SimUServer\bin\Debug\SimUServer.Service.pdb
+C:\Dev\SimUServer\SimUServer\obj\Debug\SimUServer.Service.csprojAssemblyReference.cache
+C:\Dev\SimUServer\SimUServer\obj\Debug\SimUServer.Service.resources
+C:\Dev\SimUServer\SimUServer\obj\Debug\SimUServer.Service.csproj.GenerateResource.cache
+C:\Dev\SimUServer\SimUServer\obj\Debug\SimUServer.Service.csproj.CoreCompileInputs.cache
+C:\Dev\SimUServer\SimUServer\obj\Debug\SimUServer.Service.exe
+C:\Dev\SimUServer\SimUServer\obj\Debug\SimUServer.Service.pdb

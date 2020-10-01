@@ -1,0 +1,14 @@
+C:\SimUServe.Plugin.dll
+C:\SimUServe.Plugin.pdb
+C:\Dev\User.PluginSdkDemo\bin\SimUServe.Plugin.dll
+C:\Dev\User.PluginSdkDemo\bin\SimUServe.Plugin.pdb
+C:\Dev\User.PluginSdkDemo\bin\InputManager.dll
+C:\Dev\User.PluginSdkDemo\obj\Debug\SettingsControlDemo.g.cs
+C:\Dev\User.PluginSdkDemo\obj\Debug\SimUServe.Plugin_MarkupCompile.cache
+C:\Dev\User.PluginSdkDemo\obj\Debug\SimUServe.Plugin_MarkupCompile.lref
+C:\Dev\User.PluginSdkDemo\obj\Debug\SettingsControlDemo.baml
+C:\Dev\User.PluginSdkDemo\obj\Debug\SimUServe.Plugin.g.resources
+C:\Dev\User.PluginSdkDemo\obj\Debug\SimUServe.Plugin.csproj.CoreCompileInputs.cache
+C:\Dev\User.PluginSdkDemo\obj\Debug\SimUServe.Plugin.csproj.CopyComplete
+C:\Dev\User.PluginSdkDemo\obj\Debug\SimUServe.Plugin.dll
+C:\Dev\User.PluginSdkDemo\obj\Debug\SimUServe.Plugin.pdb
