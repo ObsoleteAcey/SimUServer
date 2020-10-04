@@ -67,6 +67,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Utils\ConfigUtils.cs" />
     <Compile Include="Interfaces\ILoggingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

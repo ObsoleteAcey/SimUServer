@@ -47,7 +47,7 @@
     <Compile Include="UdpListener.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core.Utils\Core.Common.csproj">
+    <ProjectReference Include="..\Core.Common\Core.Common.csproj">
       <Project>{1ae80aa9-8414-4304-949f-adfc6cca7591}</Project>
       <Name>Core.Common</Name>
     </ProjectReference>

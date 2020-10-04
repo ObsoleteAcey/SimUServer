@@ -61,5 +61,15 @@
       <DependentUpon>SimUServer.Service.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Common\Core.Common.csproj">
+      <Project>{1ae80aa9-8414-4304-949f-adfc6cca7591}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Server\Core.Server.csproj">
+      <Project>{28969416-70c7-4486-ae27-5d09ab09d383}</Project>
+      <Name>Core.Server</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
