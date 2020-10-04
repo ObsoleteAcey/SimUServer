@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace Core.Utils
+namespace SimUServer.Core.Utils
 {
     public class ConfigUtils
     {

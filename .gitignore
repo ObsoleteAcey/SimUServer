@@ -8,3 +8,5 @@ Core.Utils/bin/
 SimUServer.Plugin/bin/
 SimUServer/bin/
 Core.Server/obj/
+Core.DataTransferObjects/obj/
+Core.Feeder/obj/
