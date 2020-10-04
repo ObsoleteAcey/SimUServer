@@ -1,12 +1,4 @@
 .vs/
 packages/
-Core.Utils/obj/
-SimUServer.Plugin/obj/
-SimUServer/obj/
-Core.Server/bin/
-Core.Utils/bin/
-SimUServer.Plugin/bin/
-SimUServer/bin/
-Core.Server/obj/
-Core.DataTransferObjects/obj/
-Core.Feeder/obj/
+bin
+obj

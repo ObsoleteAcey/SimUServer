@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SimUServer.Core.Server.Interfaces
+﻿namespace SimUServer.Core.Server.Interfaces
 {
     public interface IServerListener
     {
+        /// <summary>
+        /// Start service using default port and buffer sizes as defined in config file
+        /// </summary>
+        void Start();
+
         /// <summary>
         /// Starts listening for incoming connections
         /// </summary>

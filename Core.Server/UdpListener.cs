@@ -1,16 +1,15 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using SimUServer.Core.Utils;
+using SimUServer.Core.Common.Utils;
 using SimUServer.Core.Server.Interfaces;
 
 namespace SimUServer.Core.Server 
 {
     public class UdpListener : IServerListener
     {
-        private Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        private Socket _socket;
         private int _bufferSize;
         private int _portNumber;
         private SocketState _state = new SocketState();
@@ -19,6 +18,15 @@ namespace SimUServer.Core.Server
 
         private int? _defaultBufferSize = ConfigUtils.GetIntegerConfigSettingOrNull("DefaultBufferSize");
         private int? _defaultPort = ConfigUtils.GetIntegerConfigSettingOrNull("DefaultPort");
+        
+
+
+        public void Start()
+        {
+            _bufferSize = _defaultBufferSize.Value;
+            _portNumber = _defaultPort.Value;
+            InitServer();
+        }
 
         public void Start(int portNumber)
         {
@@ -42,17 +50,17 @@ namespace SimUServer.Core.Server
 
         public void Stop()
         {
-            throw new NotImplementedException();
+            _socket.Close();
         }
 
         private void Receive()
         {
-            _socket.BeginReceiveFrom(_state.buffer, 0, _bufferSize, SocketFlags.None, ref _epFrom, _recv = (ar) =>
+            _socket.BeginReceiveFrom(_state.Buffer, 0, _bufferSize, SocketFlags.None, ref _epFrom, _recv = (ar) =>
             {
                 var socketState = (SocketState)ar.AsyncState;
                 int bytes = _socket.EndReceiveFrom(ar, ref _epFrom);
-                _socket.BeginReceiveFrom(socketState.buffer, 0, _bufferSize, SocketFlags.None, ref _epFrom, _recv, socketState);
-                Console.WriteLine("RECV: {0}: {1}, {2}", _epFrom.ToString(), bytes, Encoding.ASCII.GetString(socketState.buffer, 0, bytes));
+                _socket.BeginReceiveFrom(socketState.Buffer, 0, _bufferSize, SocketFlags.None, ref _epFrom, _recv, socketState);
+                Console.WriteLine("RECV: {0}: {1}, {2}", _epFrom.ToString(), bytes, Encoding.ASCII.GetString(socketState.Buffer, 0, bytes));
             }, _state);
         }
 
@@ -71,6 +79,8 @@ namespace SimUServer.Core.Server
 
         private void InitServer()
         {
+            _state.CreateBuffer(_bufferSize);
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), _portNumber));
         }
@@ -78,7 +88,13 @@ namespace SimUServer.Core.Server
 
     public class SocketState
     {
-        public Socket workSocket = null;
-        public byte[] buffer;    
+        public Socket WorkSocket { get; set; }
+
+        public byte[] Buffer { get; set; }
+
+        public void CreateBuffer(int size)
+        {
+            Buffer = new byte[size];
+        }
     }
 }

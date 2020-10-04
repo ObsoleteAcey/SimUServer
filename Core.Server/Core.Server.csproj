@@ -47,9 +47,9 @@
     <Compile Include="UdpListener.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core.Utils\Core.Utils.csproj">
+    <ProjectReference Include="..\Core.Utils\Core.Common.csproj">
       <Project>{1ae80aa9-8414-4304-949f-adfc6cca7591}</Project>
-      <Name>Core.Utils</Name>
+      <Name>Core.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
