@@ -5,8 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestHarness"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="729.761" Width="1001.19" Closing="Window_Closing">
     <Grid>
-        
+        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="600" Margin="22,10,0,0" VerticalAlignment="Top" Width="950">
+            <TabItem Header="Send" Height="22" VerticalAlignment="Bottom">
+                <Grid Background="#FFE5E5E5">
+                    <TextBox x:Name="txtMessage" HorizontalAlignment="Left" Height="513" Margin="10,10,0,0" TextWrapping="Wrap" Text="Enter message here" VerticalAlignment="Top" Width="924" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnSend" Content="Send" HorizontalAlignment="Left" Height="32" Margin="828,528,0,0" VerticalAlignment="Top" Width="106" Click="btnSend_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Controller">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="Settings">
+                <Grid Background="#FFE5E5E5">
+                    <Label x:Name="lblPort" Content="Port:" HorizontalAlignment="Left" Height="28" Margin="25,20,0,0" VerticalAlignment="Top" Width="71"/>
+                    <TextBox x:Name="txtPort" HorizontalAlignment="Left" Height="24" Margin="101,24,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="228"/>
+                    <Button x:Name="btnApply" Content="Apply" HorizontalAlignment="Left" Height="33" Margin="829,529,0,0" VerticalAlignment="Top" Width="105" Click="btnApply_Click"/>
+                    <Label x:Name="lblIpAddress" Content="IP Address:" HorizontalAlignment="Left" Height="28" Margin="25,52,0,0" VerticalAlignment="Top" Width="71"/>
+                    <TextBox x:Name="txtIpAddress" HorizontalAlignment="Left" Height="24" Margin="101,56,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="228"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
     </Grid>
 </Window>

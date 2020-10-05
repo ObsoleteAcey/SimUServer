@@ -20,7 +20,13 @@ namespace SimUServer.Core.Server
         private int? _defaultBufferSize = ConfigUtils.GetIntegerConfigSettingOrNull("DefaultBufferSize");
         private int? _defaultPort = ConfigUtils.GetIntegerConfigSettingOrNull("DefaultPort");
 
-        private ILoggingService loggingService;
+        private ILoggingService _loggingService;
+
+        public UdpListener(ILoggingService loggingService)
+        {
+            _loggingService = loggingService;
+        }
+
 
         public void Start()
         {
@@ -59,31 +65,29 @@ namespace SimUServer.Core.Server
             _socket.BeginReceiveFrom(_state.Buffer, 0, _bufferSize, SocketFlags.None, ref _epFrom, _recv = (ar) =>
             {
                 var socketState = (SocketState)ar.AsyncState;
-                int bytes = _socket.EndReceiveFrom(ar, ref _epFrom);
+                var bytes = _socket.EndReceiveFrom(ar, ref _epFrom);
                 _socket.BeginReceiveFrom(socketState.Buffer, 0, _bufferSize, SocketFlags.None, ref _epFrom, _recv, socketState);
-                Console.WriteLine("RECV: {0}: {1}, {2}", _epFrom.ToString(), bytes, Encoding.ASCII.GetString(socketState.Buffer, 0, bytes));
+                _loggingService.LogDebug($"RECV: {_epFrom}: {bytes}, {Encoding.ASCII.GetString(socketState.Buffer, 0, bytes)}");
             }, _state);
         }
 
-        private static string GetLocalIPAddress()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
-        }
+        
 
         private void InitServer()
         {
-            _state.CreateBuffer(_bufferSize);
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
-            _socket.Bind(new IPEndPoint(IPAddress.Parse(GetLocalIPAddress()), _portNumber));
+            try
+            {
+                _loggingService.LogDebug($"Initilising sevice on {_portNumber} with buffer size {_bufferSize}");
+                _state.CreateBuffer(_bufferSize);
+                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
+                _socket.Bind(new IPEndPoint(IPAddress.Parse(NetworkUtils.GetLocalIPAddress()), _portNumber));
+            }
+            catch(Exception ex)
+            {
+                _loggingService.LogError("Couldn't Initilise service", ex);
+                throw;
+            }
         }
     }
 
