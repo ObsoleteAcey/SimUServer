@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{20941289
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHarness", "Tests\TestHarness\TestHarness.csproj", "{FF07B583-84B0-459A-92F0-7E49CEEC1C1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Injector", "Core.Injector\Core.Injector.csproj", "{9F09A24D-8ED2-4361-8629-7BE7668089F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{FF07B583-84B0-459A-92F0-7E49CEEC1C1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF07B583-84B0-459A-92F0-7E49CEEC1C1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF07B583-84B0-459A-92F0-7E49CEEC1C1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F09A24D-8ED2-4361-8629-7BE7668089F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F09A24D-8ED2-4361-8629-7BE7668089F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F09A24D-8ED2-4361-8629-7BE7668089F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F09A24D-8ED2-4361-8629-7BE7668089F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{7EEAE05A-85E0-4FD8-9E0E-400667DE779A} = {B9A77F07-BCE6-408A-9697-B9F2527320CA}
 		{BBF67E0C-EB67-44F4-94C7-34CEF982F9C9} = {20941289-866F-4586-8D79-E5A579ADE6EB}
 		{FF07B583-84B0-459A-92F0-7E49CEEC1C1A} = {BBF67E0C-EB67-44F4-94C7-34CEF982F9C9}
+		{9F09A24D-8ED2-4361-8629-7BE7668089F3} = {B9A77F07-BCE6-408A-9697-B9F2527320CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {59C7A143-7E4F-4EDE-99E7-6FE0F6A701F7}

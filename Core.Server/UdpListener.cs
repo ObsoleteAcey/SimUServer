@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using SimUServer.Core.Common.Interfaces;
 using SimUServer.Core.Common.Utils;
 using SimUServer.Core.Server.Interfaces;
 
@@ -18,8 +19,8 @@ namespace SimUServer.Core.Server
 
         private int? _defaultBufferSize = ConfigUtils.GetIntegerConfigSettingOrNull("DefaultBufferSize");
         private int? _defaultPort = ConfigUtils.GetIntegerConfigSettingOrNull("DefaultPort");
-        
 
+        private ILoggingService loggingService;
 
         public void Start()
         {

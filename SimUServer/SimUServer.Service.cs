@@ -1,4 +1,6 @@
-﻿using SimUServer.Core.Server;
+﻿using Core.Injector;
+using SimUServer.Core.Server;
+using SimUServer.Core.Server.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +15,8 @@ namespace SimUServer
 {
     public partial class Service : ServiceBase
     {
-        private UdpListener _udpListener;
+        private IServerListener _serverListener;
+
         public Service()
         {
             InitializeComponent();
@@ -21,13 +24,16 @@ namespace SimUServer
 
         protected override void OnStart(string[] args)
         {
-            _udpListener = new UdpListener();
-            _udpListener.Start();
+            var injectionResolver = new SimpleInjectorResolver();
+
+            var container = injectionResolver.RegisterDependencies(new SimpleInjectorConfig());
+            _serverListener = container.GetInstance<IServerListener>();
+            _serverListener.Start();
         }
 
         protected override void OnStop()
         {
-            _udpListener.Stop();
+            _serverListener.Stop();
         }
     }
 }
