@@ -24,7 +24,7 @@ namespace SimUServer
 
         protected override void OnStart(string[] args)
         {
-            Debugger.Launch();
+            //Debugger.Launch();
             var injectionResolver = new SimpleInjectorResolver();
 
             var container = injectionResolver.RegisterDependencies(new SimpleInjectorConfig());
