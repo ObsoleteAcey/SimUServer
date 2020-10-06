@@ -21,7 +21,7 @@ namespace TestHarness
     public partial class MainWindow : Window
     {
         private int _port { get; set; } = 1010;
-        private string _ipAddress { get; set; } = "127.0.0.1";
+        private string _ipAddress { get; set; } = "192.168.1.127";
 
         private UdpClient _client;
 

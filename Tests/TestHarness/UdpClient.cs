@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -62,6 +60,7 @@ namespace TestHarness
         public void Send(string json)
         {
             var data = Encoding.ASCII.GetBytes(json);
+
             _socket.BeginSend(data, 0, data.Length, SocketFlags.None, (ar) =>
             {
                 int bytes = _socket.EndSend(ar);
