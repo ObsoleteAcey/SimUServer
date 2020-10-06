@@ -30,9 +30,7 @@ namespace SimUServer.Core.Server
 
         public void Start()
         {
-            _bufferSize = _defaultBufferSize.Value;
-            _portNumber = _defaultPort.Value;
-            InitServer();
+            Start(_defaultPort.Value, _defaultBufferSize.Value);
         }
 
         public void Start(int portNumber)
@@ -42,9 +40,7 @@ namespace SimUServer.Core.Server
                 throw new Exception("No default buffer size set for UDP server");
             }
 
-            _bufferSize = _defaultBufferSize.Value;
-            _portNumber = portNumber;
-            InitServer();
+            Start(portNumber, _defaultBufferSize.Value);
         }
 
         public void Start(int portNumber, int bufferSize)
@@ -70,8 +66,6 @@ namespace SimUServer.Core.Server
                 _loggingService.LogDebug($"RECV: {_epFrom}: {bytes}, {Encoding.ASCII.GetString(socketState.Buffer, 0, bytes)}");
             }, _state);
         }
-
-        
 
         private void InitServer()
         {
