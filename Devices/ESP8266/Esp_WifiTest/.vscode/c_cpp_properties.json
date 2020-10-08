@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Arduino",
+            "includePath": [
+                "C:/Program Files/Arduino/hardware/arduino/avr/cores/arduino/",
+                "C:/Program Files/Arduino/libraries/**",
+                "C:/Program Files/Arduino/tools/sdk/include/",
+                "C:/Program Files/Arduino/hardware/arduino/avr/libraries/EEPROM/",
+                "C:/Program Files/Arduino/hardware/arduino/avr/libraries/EEPROM/",
+                "C:/Program Files/Arduino/hardware/arduino/avr/libraries/SPI/",
+                "C:/Program Files/Arduino/hardware/arduino/avr/libraries/SoftwareSerial/",
+                "C:/Program Files/Arduino/hardware/arduino/avr/libraries/Wire/",
+                "C:/Program Files/Arduino/hardware/tools/avr/avr/include/",
+                "C:/Program Files/Arduino/hardware/tools/avr/avr/include/avr/",
+                "C:/Program Files/Arduino/hardware/tools/avr/avr/include/compat/",
+                "C:/Program Files/Arduino/hardware/tools/avr/avr/include/util/",
+                "C:/Program Files/Arduino/hardware/tools/avr/lib/gcc/avr/7.3.0/include/",
+                "C:/Program Files/Arduino/hardware/tools/avr/lib/gcc/avr/7.3.0/include-fixed/"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
+        }
+    ],
+    "version": 4
+}
