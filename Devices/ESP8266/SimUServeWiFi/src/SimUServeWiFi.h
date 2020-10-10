@@ -6,17 +6,25 @@
 
 #define MAX_SSID_LENGTH 32;
 #define MAX_PASSWORD_LENGTH 63;
+#define DEFAULT_SERVER_PORT 80;
+#define DEFAULT_SERVER_IP "10.0.1.1";
+#define DEFAULT_SERVER_SSID "SimUServeWiFiHost";
+#define DEFAULT_SERVER_PASSWORD "SimUServeWiFIPassword";
+
+typedef struct WiFiSettings {
+  int serverPort;
+  String serverIpAddress;
+  String serverSsid;
+  String serverPassword;
+  String connectedSsid;
+  String connectedPassword;
+};
 
 class SimUServeWiFi {
   protected:
-    // Port the Config server will listen on
-    int _serverPort = 80;
-    // Default IP the server will be at
-    String _serverIpAddress = String("10.0.1.1");
-    // The SSID for the WiFi network we want to connect to
-    String _wifiSsid;
-    // The Wifi password for the Wifo network we want to connect to
-    String _wifiPassword;
+    // contains the settings for both the server and the WiFiSettings
+    // we want to connect to
+    WiFiSettings _settings;
   
   private:
     const int _ssidStorageOffset = 0;
@@ -33,6 +41,7 @@ class SimUServeWiFi {
   protected:
     bool checkEepromForValue(int, int, String&);
     void writeValueToEeprom(int, int, String);
+    void initDefaults();
       
 };
 
