@@ -37,6 +37,14 @@ void SimUServeWiFiSettings::update(SimUServeWiFiSettings fromSettings)
 SimUServeWiFi::SimUServeWiFi() 
 {
     initDefaults();
+    // now check and load any settings that have been saved
+    SimUServeWiFiSettings loadedSettings;
+    if(checkEepromForValue(0, loadedSettings))
+    {
+        _settings.update(loadedSettings);
+    }
+
+    _server = WiFiServer(IPAddress(), _settings.serverPort);
 }
 
 SimUServeWiFi::SimUServeWiFi(int serverPort, String serverIpAddress)
@@ -48,24 +56,12 @@ SimUServeWiFi::SimUServeWiFi(int serverPort, String serverIpAddress)
 
 String SimUServeWiFi::getWiFiSsid()
 {
-    if(this->_settings.connectedSsid == NULL || this->_settings.connectedSsid.length() == 0) {
-        
-    }
-    
-    return String();
+    return _settings.connectedSsid;
 }
 
 String SimUServeWiFi::getWiFiPassword()
 {
-    if(this->_settings.connectedPassword == NULL || this->_settings.connectedPassword.length() == 0) {
-        SimUServeWiFiSettings retrievedSettings;
-        if(checkEepromForValue(0, retrievedSettings))
-        {
-            
-        }
-    }
-    
-    return String();
+    return _settings.connectedPassword;
 }
 
 template <typename T>
@@ -88,4 +84,21 @@ void SimUServeWiFi::initDefaults()
    _settings.serverIpAddress = DEFAULT_SERVER_IP;
    _settings.serverSsid = DEFAULT_SERVER_SSID;
    _settings.serverPassword = DEFAULT_SERVER_PASSWORD;
+}
+
+bool SimUServeWiFi::testWifiConnection() 
+{
+    int waitRetryCounter = 0;
+    while ( waitRetryCounter < 20 ) 
+    {
+        if (WiFi.status() == WL_CONNECTED)
+        { 
+            return(true);
+        } 
+        delay(500);
+        Serial.print(WiFi.status());    
+        waitRetryCounter++;
+    }
+    Serial.println("Connect timed out, opening AP");
+    return(false);
 }

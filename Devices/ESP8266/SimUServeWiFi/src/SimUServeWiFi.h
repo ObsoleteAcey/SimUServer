@@ -3,6 +3,7 @@
 
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
+#include <WiFiClient.h>
 
 #define MAX_SSID_LENGTH 32;
 #define MAX_PASSWORD_LENGTH 63;
@@ -25,6 +26,7 @@ class SimUServeWiFiSettings {
     
   public:
     void update(SimUServeWiFiSettings);
+    char getServerIpAddress();
 };
 
 class SimUServeWiFi {
@@ -32,6 +34,8 @@ class SimUServeWiFi {
     // contains the settings for both the server and the WiFiSettings
     // we want to connect to
     SimUServeWiFiSettings _settings;
+
+    WiFiServer _server;
   
   private:
     const int _ssidStorageOffset = 0;
@@ -50,8 +54,11 @@ class SimUServeWiFi {
     bool checkEepromForValue(int, T&);
     template <typename T>
     void writeValueToEeprom(int, T);
+    // Inits some defaults
     void initDefaults();
-      
+    // Tests the WiFi connection to see if Wifi is working.  If not, returns false.
+    bool testWifiConnection();
+
 };
 
 #endif
