@@ -34,6 +34,11 @@ void SimUServeWiFiSettings::update(SimUServeWiFiSettings fromSettings)
     }
 }
 
+IPAddress SimUServeWiFiSettings::getServerIpAddress()
+{
+    return (IPAddress().fromString(serverIpAddress));
+}
+
 SimUServeWiFi::SimUServeWiFi() 
 {
     initDefaults();
@@ -44,14 +49,15 @@ SimUServeWiFi::SimUServeWiFi()
         _settings.update(loadedSettings);
     }
 
-    _server = WiFiServer(IPAddress(), _settings.serverPort);
+    _server = WiFiServer(_settings.getServerIpAddress(), _settings.serverPort);
 }
 
 SimUServeWiFi::SimUServeWiFi(int serverPort, String serverIpAddress)
 {
     initDefaults();
     _settings.serverPort = serverPort;
-    _settings.serverSsid = String(serverIpAddress);
+    _settings.serverSsid = serverIpAddress;
+    _server = WiFiServer(_settings.getServerIpAddress(), _settings.serverPort);
 }
 
 String SimUServeWiFi::getWiFiSsid()

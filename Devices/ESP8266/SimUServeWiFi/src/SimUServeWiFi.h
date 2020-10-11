@@ -26,7 +26,7 @@ class SimUServeWiFiSettings {
     
   public:
     void update(SimUServeWiFiSettings);
-    char getServerIpAddress();
+    IPAddress getServerIpAddress();
 };
 
 class SimUServeWiFi {
