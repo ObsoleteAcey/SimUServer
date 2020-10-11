@@ -1,5 +1,39 @@
 #include "SimUServeWiFi.h"
 
+void SimUServeWiFiSettings::update(SimUServeWiFiSettings fromSettings)
+{
+    // TODO - some kind fo detection for default vs loaded vs dirty
+    if(connectedPassword != fromSettings.connectedPassword) 
+    {
+        connectedPassword = fromSettings.connectedPassword;
+    }
+
+    if(connectedSsid != fromSettings.connectedSsid) 
+    {
+        connectedSsid = fromSettings.connectedSsid;
+    }
+
+    if(serverIpAddress != fromSettings.serverIpAddress) 
+    {
+        serverIpAddress = fromSettings.serverIpAddress;
+    }
+
+    if(serverPort != fromSettings.serverPort) 
+    {
+        serverPort = fromSettings.serverPort;
+    }
+
+    if(serverPassword != fromSettings.serverPassword) 
+    {
+        serverPassword = fromSettings.serverPassword;
+    }
+
+    if(serverSsid != fromSettings.serverSsid) 
+    {
+        serverSsid = fromSettings.serverSsid;
+    }
+}
+
 SimUServeWiFi::SimUServeWiFi() 
 {
     initDefaults();
@@ -24,27 +58,28 @@ String SimUServeWiFi::getWiFiSsid()
 String SimUServeWiFi::getWiFiPassword()
 {
     if(this->_settings.connectedPassword == NULL || this->_settings.connectedPassword.length() == 0) {
-        
+        SimUServeWiFiSettings retrievedSettings;
+        if(checkEepromForValue(0, retrievedSettings))
+        {
+            
+        }
     }
     
     return String();
 }
 
-bool SimUServeWiFi::checkEepromForValue(int startOffset, int length, String& retrievedValue)
+template <typename T>
+bool SimUServeWiFi::checkEepromForValue(int startOffset, T &retrievedValue)
 {
-    for (int i = startOffset; i < length; ++i)
-    {
-        char storedValue = char(EEPROM.read(i));
-
-        retrievedValue += storedValue;
-    }
-
-    return retrievedValue.length() > 0 ? true : false;
+    EEPROM.get<T>(startOffset, retrievedValue);
+    
+    return retrievedValue == NULL ? true : false;
 }
 
-void SimUServeWiFi::writeValueToEeprom(int startOffset, int length, String valueToSave)
+template <typename T>
+void SimUServeWiFi::writeValueToEeprom(int startOffset, T valueToSave)
 {
-    
+    EEPROM.put<T>(startOffset, valueToSave);
 }
 
 void SimUServeWiFi::initDefaults()

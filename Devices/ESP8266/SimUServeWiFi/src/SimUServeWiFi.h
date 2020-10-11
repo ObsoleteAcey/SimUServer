@@ -11,20 +11,27 @@
 #define DEFAULT_SERVER_SSID "SimUServeWiFiHost";
 #define DEFAULT_SERVER_PASSWORD "SimUServeWiFIPassword";
 
-typedef struct WiFiSettings {
-  int serverPort;
-  String serverIpAddress;
-  String serverSsid;
-  String serverPassword;
-  String connectedSsid;
-  String connectedPassword;
+class SimUServeWiFiSettings {
+  public:
+    int serverPort;
+    String serverIpAddress;
+    String serverSsid;
+    String serverPassword;
+    String connectedSsid;
+    String connectedPassword;
+
+  private:
+    bool _isDirty = false;
+    
+  public:
+    void update(SimUServeWiFiSettings);
 };
 
 class SimUServeWiFi {
   protected:
     // contains the settings for both the server and the WiFiSettings
     // we want to connect to
-    WiFiSettings _settings;
+    SimUServeWiFiSettings _settings;
   
   private:
     const int _ssidStorageOffset = 0;
@@ -39,8 +46,10 @@ class SimUServeWiFi {
     void setWifiPassword(String);
     
   protected:
-    bool checkEepromForValue(int, int, String&);
-    void writeValueToEeprom(int, int, String);
+    template <typename T>
+    bool checkEepromForValue(int, T&);
+    template <typename T>
+    void writeValueToEeprom(int, T);
     void initDefaults();
       
 };
