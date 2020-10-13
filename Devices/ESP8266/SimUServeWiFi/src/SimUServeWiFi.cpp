@@ -1,16 +1,16 @@
 #include "SimUServeWiFi.h"
 
-void SimUServeWiFiSettings::update(SimUServeWiFiSettings fromSettings)
+void SimUServeWiFiSettings::update(const SimUServeWiFiSettings* fromSettings)
 {
     // TODO - some kind fo detection for default vs loaded vs dirty
-    if(connectedPassword != fromSettings.connectedPassword) 
+    if(getConnectedPassword() != fromSettings.getConnectedPassword())
     {
-        connectedPassword = fromSettings.connectedPassword;
+        setConnectedPassword(fromSettings.getConnectedPassword());
     }
 
-    if(connectedSsid != fromSettings.connectedSsid) 
+    if(getConnectedSsid() != fromSettings.getConnectedSsid())
     {
-        connectedSsid = fromSettings.connectedSsid;
+        setConnectedSsid(fromSettings.getConnectedSsid());
     }
 
     if(serverIpAddress != fromSettings.serverIpAddress) 
@@ -36,7 +36,11 @@ void SimUServeWiFiSettings::update(SimUServeWiFiSettings fromSettings)
 
 IPAddress SimUServeWiFiSettings::getServerIpAddress()
 {
-    return (IPAddress().fromString(serverIpAddress));
+    IPAddress* ipAddress = new IPAddress();
+    if(ipAddress->fromString(serverIpAddress))
+    {
+        return ipAddress;
+    }
 }
 
 SimUServeWiFi::SimUServeWiFi() 
@@ -46,17 +50,17 @@ SimUServeWiFi::SimUServeWiFi()
     SimUServeWiFiSettings loadedSettings;
     if(checkEepromForValue(0, loadedSettings))
     {
-        _settings.update(loadedSettings);
+        _settings->update(loadedSettings);
     }
 
-    _server = WiFiServer(_settings.getServerIpAddress(), _settings.serverPort);
+    _server = new WiFiServer(_settings->getServerIpAddress(), _settings->serverPort);
 }
 
 SimUServeWiFi::SimUServeWiFi(int serverPort, String serverIpAddress)
 {
     initDefaults();
-    _settings.serverPort = serverPort;
-    _settings.serverSsid = serverIpAddress;
+    _settings->setServerPort(serverPort);
+    _settings->setServerSsid(serverIpAddress);
     _server = WiFiServer(_settings.getServerIpAddress(), _settings.serverPort);
 }
 
@@ -75,7 +79,7 @@ bool SimUServeWiFi::checkEepromForValue(int startOffset, T &retrievedValue)
 {
     EEPROM.get<T>(startOffset, retrievedValue);
     
-    return retrievedValue == NULL ? true : false;
+    return retrievedValue == nullptr ? true : false;
 }
 
 template <typename T>
