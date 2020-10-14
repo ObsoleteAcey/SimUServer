@@ -24,13 +24,14 @@ class SimUServeWiFiSettings {
 
   private:
     bool _isDirty = false;
+    IPAddress* _ipAddress;
     
   public:
     ~SimUServeWiFiSettings();
     void setServerPort(int);
     int getServerPort();
     void setServerIpAddress(const String&);
-    IPAddress getServerIpAddress();
+    IPAddress const& getServerIpAddress();
     void setServerSsid(const String&);
     String const& getServerSsid();
     void setServerPassword(const String&);
@@ -48,7 +49,7 @@ class SimUServeWiFi {
     // we want to connect to
     SimUServeWiFiSettings* _settings;
 
-    MDNSResponder* mdns;
+    MDNSResponder* _mdns ;
     WiFiServer* _server;
   
   private:

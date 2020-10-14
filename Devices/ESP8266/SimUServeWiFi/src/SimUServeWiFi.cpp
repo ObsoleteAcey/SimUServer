@@ -34,13 +34,9 @@ void SimUServeWiFiSettings::update(const SimUServeWiFiSettings* fromSettings)
     }
 }
 
-IPAddress SimUServeWiFiSettings::getServerIpAddress()
+IPAddress const& SimUServeWiFiSettings::getServerIpAddress()
 {
-    IPAddress* ipAddress = new IPAddress();
-    if(ipAddress->fromString(serverIpAddress))
-    {
-        return ipAddress;
-    }
+    return *_ipAddress;
 }
 
 SimUServeWiFi::SimUServeWiFi() 
@@ -53,7 +49,7 @@ SimUServeWiFi::SimUServeWiFi()
         _settings->update(loadedSettings);
     }
 
-    _server = new WiFiServer(_settings->getServerIpAddress(), _settings->serverPort);
+    _server = new WiFiServer(_settings->getServerIpAddress(), _settings->getServerPort());
 }
 
 SimUServeWiFi::SimUServeWiFi(int serverPort, String serverIpAddress)
@@ -61,7 +57,14 @@ SimUServeWiFi::SimUServeWiFi(int serverPort, String serverIpAddress)
     initDefaults();
     _settings->setServerPort(serverPort);
     _settings->setServerSsid(serverIpAddress);
-    _server = WiFiServer(_settings.getServerIpAddress(), _settings.serverPort);
+    _server = new WiFiServer(_settings->getServerIpAddress(), _settings->getServerPort());
+}
+
+SimUServeWiFi::~SimUServeWiFi()
+{
+    delete _settings;
+    delete _mdns;
+    delete _server;
 }
 
 String SimUServeWiFi::getWiFiSsid()
