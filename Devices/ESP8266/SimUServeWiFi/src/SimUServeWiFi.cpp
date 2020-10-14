@@ -1,44 +1,5 @@
 #include "SimUServeWiFi.h"
 
-void SimUServeWiFiSettings::update(const SimUServeWiFiSettings* fromSettings)
-{
-    // TODO - some kind fo detection for default vs loaded vs dirty
-    if(getConnectedPassword() != fromSettings.getConnectedPassword())
-    {
-        setConnectedPassword(fromSettings.getConnectedPassword());
-    }
-
-    if(getConnectedSsid() != fromSettings.getConnectedSsid())
-    {
-        setConnectedSsid(fromSettings.getConnectedSsid());
-    }
-
-    if(serverIpAddress != fromSettings.serverIpAddress) 
-    {
-        serverIpAddress = fromSettings.serverIpAddress;
-    }
-
-    if(serverPort != fromSettings.serverPort) 
-    {
-        serverPort = fromSettings.serverPort;
-    }
-
-    if(serverPassword != fromSettings.serverPassword) 
-    {
-        serverPassword = fromSettings.serverPassword;
-    }
-
-    if(serverSsid != fromSettings.serverSsid) 
-    {
-        serverSsid = fromSettings.serverSsid;
-    }
-}
-
-IPAddress const& SimUServeWiFiSettings::getServerIpAddress()
-{
-    return *_ipAddress;
-}
-
 SimUServeWiFi::SimUServeWiFi() 
 {
     initDefaults();
@@ -52,7 +13,7 @@ SimUServeWiFi::SimUServeWiFi()
     _server = new WiFiServer(_settings->getServerIpAddress(), _settings->getServerPort());
 }
 
-SimUServeWiFi::SimUServeWiFi(int serverPort, String serverIpAddress)
+SimUServeWiFi::SimUServeWiFi(int serverPort, String const& serverIpAddress)
 {
     initDefaults();
     _settings->setServerPort(serverPort);
@@ -67,14 +28,14 @@ SimUServeWiFi::~SimUServeWiFi()
     delete _server;
 }
 
-String SimUServeWiFi::getWiFiSsid()
+String const& SimUServeWiFi::getWiFiSsid(void) const
 {
-    return _settings.connectedSsid;
+    return _settings->getConnectedSsid();
 }
 
-String SimUServeWiFi::getWiFiPassword()
+String const& SimUServeWiFi::getWiFiPassword(void) const
 {
-    return _settings.connectedPassword;
+    return _settings->getConnectedPassword();
 }
 
 template <typename T>
@@ -86,17 +47,17 @@ bool SimUServeWiFi::checkEepromForValue(int startOffset, T &retrievedValue)
 }
 
 template <typename T>
-void SimUServeWiFi::writeValueToEeprom(int startOffset, T valueToSave)
+void SimUServeWiFi::writeValueToEeprom(int startOffset, T const& valueToSave)
 {
     EEPROM.put<T>(startOffset, valueToSave);
 }
 
 void SimUServeWiFi::initDefaults()
 {
-   _settings.serverPort = DEFAULT_SERVER_PORT;
-   _settings.serverIpAddress = DEFAULT_SERVER_IP;
-   _settings.serverSsid = DEFAULT_SERVER_SSID;
-   _settings.serverPassword = DEFAULT_SERVER_PASSWORD;
+   _settings->setServerPort(DEFAULT_SERVER_PORT);
+   _settings->setServerIpAddress(DEFAULT_SERVER_IP);
+   _settings->setServerSsid(DEFAULT_SERVER_SSID);
+   _settings->setServerPassword(DEFAULT_SERVER_PASSWORD);
 }
 
 bool SimUServeWiFi::testWifiConnection() 
@@ -114,4 +75,11 @@ bool SimUServeWiFi::testWifiConnection()
     }
     Serial.println("Connect timed out, opening AP");
     return(false);
+}
+
+void SimUServeWiFi::startMdns(void)
+{
+    _mdns->begin(_settings->getServerSsid(), _settings->getServerIpAddress());
+
+    
 }
