@@ -13,6 +13,24 @@
 #define DEFAULT_SERVER_IP "10.0.1.1"
 #define DEFAULT_SERVER_SSID "SimUServeWiFiHost"
 #define DEFAULT_SERVER_PASSWORD "SimUServeWiFIPassword"
+#define SERVER_LOCAL_ADDRESS "http://simuserve.device"
+
+typedef struct WifiNetwork {
+  int Index;
+  String SSID;
+  int32_t RSSI;
+  int EncryptionType;
+
+  WifiNetwork(){}
+
+  WifiNetwork(int const index, String const& ssid, int32_t const rssi, int encryptionType)
+  {
+    Index = index;
+    SSID = String(ssid);
+    RSSI = rssi;
+    EncryptionType = encryptionType;
+  }
+};
 
 class SimUServeWiFi {
   protected:
@@ -21,10 +39,14 @@ class SimUServeWiFi {
     SimUServeWiFiSettings* _settings;
     MDNSResponder* _mdns ;
     WiFiServer* _server;
+    WifiNetwork* _availableNetworks;
   
   private:
     const int _ssidStorageOffset = 0;
     const int _passwordStorageOffset = 33;
+    String _pageHtml;
+    String _formHtml;
+    String _ssidSelectionHtml;
 
   public:
     SimUServeWiFi();
@@ -42,10 +64,24 @@ class SimUServeWiFi {
     void writeValueToEeprom(int, T const&);
     // Inits some defaults
     void initDefaults(void);
-    // Tests the WiFi connection to see if Wifi is working.  If not, returns false.
+    /*
+     * Tests the WiFi connection to see if Wifi is working.  If not, returns false.
+    */
     bool testWifiConnection(void);
 
     void startMdns(void);
+
+    /*
+     * gets a list of available Wifi networks that can be connected to
+    */
+    WifiNetwork* const getAvailableWifiNetworks(void);
+
+    /*
+     * sets up the access point and populates available wireless networks
+    */
+    void setupAccessPoint(void);
+
+    void launchWebServer(void);
 };
 
 #endif

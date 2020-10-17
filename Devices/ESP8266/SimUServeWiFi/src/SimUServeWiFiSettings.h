@@ -6,12 +6,12 @@
 class SimUServeWiFiSettings {
   protected:
     int _serverPort;
-    String* _serverIpAddress;
-    String* _serverSsid;
-    String* _serverPassword;
-    String* _connectedSsid;
-    String* _connectedPassword;
-    String* _deviceHostName;
+    String _serverIpAddress;
+    String _serverSsid;
+    String _serverPassword;
+    String _connectedSsid;
+    String _connectedPassword;
+    String _deviceHostName;
 
   private:
     bool _isDirty = false;
@@ -33,6 +33,10 @@ class SimUServeWiFiSettings {
     String const& getConnectedPassword(void) const;
     void setDeviceHostName(String const&);
     String const& getDeviceHostName(void) const;
+    /*
+     * Resets the dirty flag
+    */
+    void setClean(void);
     void update(SimUServeWiFiSettings const&);
 };
 

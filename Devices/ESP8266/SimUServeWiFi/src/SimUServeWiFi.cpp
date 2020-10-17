@@ -79,7 +79,50 @@ bool SimUServeWiFi::testWifiConnection()
 
 void SimUServeWiFi::startMdns(void)
 {
-    _mdns->begin(_settings->getServerSsid(), _settings->getServerIpAddress());
+    if(!_mdns->begin(SERVER_LOCAL_ADDRESS, _settings->getServerIpAddress())) {
 
-    
+    };
+}
+
+void SimUServeWiFi::setupAccessPoint(void)
+{
+    WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
+    delay(100);
+    int numberOfNetworks = WiFi.scanNetworks();
+
+    if(numberOfNetworks > 0)
+    {
+        String htmlSnippet = "<ul>";
+        for (int i = 0; i < numberOfNetworks; ++i)
+        {
+            // Print SSID and RSSI for each network found
+            htmlSnippet += "<li>";
+            htmlSnippet += i + 1;
+            htmlSnippet += ": ";
+            htmlSnippet += WiFi.SSID(i);
+            htmlSnippet += " (";
+            htmlSnippet += WiFi.RSSI(i);
+            htmlSnippet += ")";
+            htmlSnippet += (WiFi.encryptionType(i) == ENC_TYPE_NONE)?" ":"*";
+            htmlSnippet += "</li>";
+        }
+        htmlSnippet += "</ul>";
+        delay(100);
+        
+        WiFi.softAP(_settings->getServerSsid(), _settings->getServerPassword());
+    }
+}
+
+WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
+{
+    int numberOfNetworks = WiFi.scanNetworks();
+    _availableNetworks = new WifiNetwork[numberOfNetworks];
+
+    for (int i = 0; i < numberOfNetworks; ++i)
+    {
+        _availableNetworks[i] = new WifiNetwork(i, WiFi.SSID(i), WiFi.RSSI(i), WiFi.encryptionType(i));
+    }
+
+    return _availableNetworks;
 }

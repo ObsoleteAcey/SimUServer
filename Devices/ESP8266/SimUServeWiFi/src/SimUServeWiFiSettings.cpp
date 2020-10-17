@@ -2,52 +2,27 @@
 
 SimUServeWiFiSettings::~SimUServeWiFiSettings()
 {
-    delete _serverIpAddress;
-    delete _serverSsid;
-    delete _serverPassword;
-    delete _connectedSsid;
-    delete _connectedPassword;
     delete _ipAddress;
-    delete _deviceHostName;
 }
 
 void SimUServeWiFiSettings::update(SimUServeWiFiSettings const& fromSettings)
 {
     // TODO - some kind fo detection for default vs loaded vs dirty
-    if(getConnectedPassword() != fromSettings.getConnectedPassword())
-    {
-        setConnectedPassword(fromSettings.getConnectedPassword());
-    }
-
-    if(getConnectedSsid() != fromSettings.getConnectedSsid())
-    {
-        setConnectedSsid(fromSettings.getConnectedSsid());
-    }
-
-    if(getServerIpAddress().toString() != fromSettings.getServerIpAddress().toString()) 
-    {
-        setServerIpAddress(fromSettings.getServerIpAddress().toString());
-    }
-
-    if(getServerPort() != fromSettings.getServerPort()) 
-    {
-        setServerPort(fromSettings.getServerPort());
-    }
-
-    if(getServerPassword() != fromSettings.getServerPassword()) 
-    {
-        setServerPassword(fromSettings.getServerPassword());
-    }
-
-    if(getServerSsid() != fromSettings.getServerSsid()) 
-    {
-        setServerSsid(fromSettings.getServerSsid());
-    }
+    setConnectedPassword(fromSettings.getConnectedPassword());
+    setConnectedSsid(fromSettings.getConnectedSsid());
+    setServerIpAddress(fromSettings.getServerIpAddress().toString());
+    setServerPort(fromSettings.getServerPort());
+    setServerPassword(fromSettings.getServerPassword());
+    setServerSsid(fromSettings.getServerSsid());
 }
 
-void SimUServeWiFiSettings::setServerPort(int port)
+void SimUServeWiFiSettings::setServerPort(int const port)
 {
-    _serverPort = port;
+    if(_serverPort != port)
+    {
+        _isDirty = true;
+        _serverPort = port;
+    }
 }
 
 int SimUServeWiFiSettings::getServerPort(void) const
@@ -57,11 +32,16 @@ int SimUServeWiFiSettings::getServerPort(void) const
 
 void SimUServeWiFiSettings::setServerIpAddress(String const& ipAddress)
 {
-    delete _serverIpAddress;
-    delete _ipAddress;
-    _serverIpAddress = new String(ipAddress);
-    _ipAddress = new IPAddress();
-    _ipAddress->fromString(ipAddress);
+    if(_serverIpAddress != ipAddress)
+    {
+        _isDirty = true;
+        _serverIpAddress = String(ipAddress);
+        if (_ipAddress == nullptr)
+        {
+            _ipAddress = new IPAddress();
+        }
+        _ipAddress->fromString(ipAddress);
+    }
 }
 
 IPAddress const& SimUServeWiFiSettings::getServerIpAddress(void) const
@@ -71,55 +51,75 @@ IPAddress const& SimUServeWiFiSettings::getServerIpAddress(void) const
 
 void SimUServeWiFiSettings::setServerSsid(String const& serverSsid)
 {
-    delete _serverSsid;
-    _serverSsid = new String(serverSsid);
+    if(_serverSsid != serverSsid)
+    {
+        _isDirty = true;
+        _serverSsid = String(serverSsid);
+    }
 }
 
 String const& SimUServeWiFiSettings::getServerSsid(void) const
 {
-    return *_serverSsid;
+    return _serverSsid;
 }
 
 void SimUServeWiFiSettings::setServerPassword(String const& serverPassword)
 {
-    delete _serverPassword;
-    _serverPassword = new String(serverPassword);
+    if(_serverPassword != serverPassword)
+    {
+        _isDirty = true;
+        _serverPassword = String(serverPassword);
+    }
 }
 
 String const& SimUServeWiFiSettings::getServerPassword(void) const
 {
-    return *_serverPassword;
+    return _serverPassword;
 }
 
 void SimUServeWiFiSettings::setConnectedSsid(String const& connectedSsid)
 {
-    delete _connectedSsid;
-    _connectedSsid = new String(connectedSsid);
+    if(_connectedSsid != connectedSsid)
+    {
+        _isDirty = true;
+        _connectedSsid = String(connectedSsid);
+    }
 }
 
 String const& SimUServeWiFiSettings::getConnectedSsid(void) const
 {
-    return *_connectedSsid;
+    return _connectedSsid;
 }
 
 void SimUServeWiFiSettings::setConnectedPassword(String const& connectedPassword) 
 {
-    delete _connectedPassword;
-    _connectedPassword = new String(connectedPassword);
+    if(_connectedPassword != connectedPassword)
+    {
+        _isDirty = true;
+        _connectedPassword = String(connectedPassword);
+    }
 }
 
 String const& SimUServeWiFiSettings::getConnectedPassword(void) const
 {
-    return *_connectedPassword;
+    return _connectedPassword;
 }
 
 void SimUServeWiFiSettings::setDeviceHostName(String const& deviceHostName) 
 {
-    delete _deviceHostName;
-    _deviceHostName = new String(deviceHostName);
+    if(_deviceHostName != deviceHostName)
+    {
+        _isDirty = true;
+        _deviceHostName = String(deviceHostName);
+    }
 }
 
 String const& SimUServeWiFiSettings::getDeviceHostName(void) const
 {
-    return *_deviceHostName;
+    return _deviceHostName;
+}
+
+void SimUServeWiFiSettings::setClean(void)
+{
+    _isDirty = false;
 }
