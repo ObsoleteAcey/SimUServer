@@ -5,6 +5,7 @@
 #include <EEPROM.h>
 #include <WiFiClient.h>
 #include <ESP8266mDNS.h>
+#include <ESP8266WebServer.h>
 #include "SimUServeWiFiSettings.h"
 
 #define MAX_SSID_LENGTH 32
@@ -32,13 +33,15 @@ typedef struct WifiNetwork {
   }
 };
 
+typedef WifiNetwork* WifiNetworkPtr;
+
 class SimUServeWiFi {
   protected:
     // contains the settings for both the server and the WiFiSettings
     // we want to connect to
     SimUServeWiFiSettings* _settings;
     MDNSResponder* _mdns ;
-    WiFiServer* _server;
+    ESP8266WebServer* _server;
     WifiNetwork* _availableNetworks;
   
   private:
@@ -56,6 +59,8 @@ class SimUServeWiFi {
     String const& getWiFiPassword(void) const;
     void setWifiSsid(String const&);
     void setWifiPassword(String const&);
+    void checkForWebRequests(void);
+    void handleRoot(void);
     
   protected:
     template <typename T>
@@ -81,7 +86,13 @@ class SimUServeWiFi {
     */
     void setupAccessPoint(void);
 
+    /*
+    * Launch the webserver
+    */
     void launchWebServer(void);
+  
+  
+    
 };
 
 #endif
