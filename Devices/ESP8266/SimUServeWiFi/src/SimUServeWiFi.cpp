@@ -59,6 +59,7 @@ void SimUServeWiFi::initDefaults()
    _settings->setServerIpAddress(DEFAULT_SERVER_IP);
    _settings->setServerSsid(DEFAULT_SERVER_SSID);
    _settings->setServerPassword(DEFAULT_SERVER_PASSWORD);
+   numberOfNetworks = 0;
 }
 
 bool SimUServeWiFi::testWifiConnection() 
@@ -90,14 +91,12 @@ void SimUServeWiFi::setupAccessPoint(void)
     WiFi.mode(WIFI_AP_STA);
     WiFi.disconnect();
     delay(100);
-    int numberOfNetworks = WiFi.scanNetworks();
-
     WiFi.softAP(_settings->getServerSsid(), _settings->getServerPassword());
 }
 
 WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 {
-    int numberOfNetworks = WiFi.scanNetworks();
+    numberOfNetworks = WiFi.scanNetworks();
     if(_availableNetworks != nullptr)
     {
         delete[] _availableNetworks;
@@ -105,7 +104,7 @@ WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 
     _availableNetworks = new WifiNetwork[numberOfNetworks];
 
-    for (int i = 0; i < numberOfNetworks; ++i)
+    for (int i = 0; i < numberOfNetworks; i++)
     {
         _availableNetworks[i] = WifiNetwork(i, WiFi.SSID(i), WiFi.RSSI(i), WiFi.encryptionType(i));
     }
@@ -116,53 +115,30 @@ WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 void SimUServeWiFi::launchWebServer(void)
 {
     // set up the routes
-    _server->on(Uri("/"), handleRoot);
+    _server->on("/", HTTP_GET, handleRootGet);
+    _server->on("/refreshnetworks", HTTP_GET, handleRefreshNetworksGet);
     _server->begin();
 }
 
 void SimUServeWiFi::checkForWebRequests(void)
 {
     _server->handleClient();
-    // Listen for incoming clients
-    // WiFiClient client = _server->available();
-
-    // if(!client)
-    // {
-    //     return;
-    // }
-
-    // if(client.connected() && !client.available())
-    // {
-    //     delay(10);
-    // }
-
-    // String request = client.readStringUntil('\r');
-
-    // // First line of HTTP request looks like "GET /path HTTP/1.1"
-    // // Retrieve the "/path" part by finding the spaces
-    // int addr_start = request.indexOf(' ');
-    // int addr_end = request.indexOf(' ', addr_start + 1);
-    // if (addr_start == -1 || addr_end == -1)
-    // {
-    //     return;
-    // }
-    // String urlRequest = request.substring(addr_start + 1, addr_end);
-    // Serial.print("Request: ");
-    // Serial.println(request);
-    // client.flush(); 
     
+}
 
+void SimUServeWiFi::handleRootGet(void)
+{
 
-    // // process the request route to decide what to do
-    // if (urlRequest == "/") // base route, return the setup page
-    // {
-    // }
-    // else if (urlRequest.startsWith("/networkConnection/update")) // update to ssid
-    // {
+}
 
-    // }
-    // else if (urlRequest.startsWith("/networkConnection/refresh"))
-    // {
-
-    // }
+void SimUServeWiFi::handleRefreshNetworksGet(void)
+{
+    auto* availableNetworks = getAvailableWifiNetworks();
+    String returnJson;
+    returnJson = "{[";
+    for (int i = 0; i < numberOfNetworks; i++)
+    {
+        WifiNetwork network = availableNetworks[i];
+        returnJson += "{''"
+    }
 }

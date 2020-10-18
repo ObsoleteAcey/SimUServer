@@ -43,6 +43,7 @@ class SimUServeWiFi {
     MDNSResponder* _mdns ;
     ESP8266WebServer* _server;
     WifiNetwork* _availableNetworks;
+    int numberOfNetworks;
   
   private:
     const int _ssidStorageOffset = 0;
@@ -60,7 +61,7 @@ class SimUServeWiFi {
     void setWifiSsid(String const&);
     void setWifiPassword(String const&);
     void checkForWebRequests(void);
-    void handleRoot(void);
+    
     
   protected:
     template <typename T>
@@ -91,8 +92,12 @@ class SimUServeWiFi {
     */
     void launchWebServer(void);
   
-  
+    /*
+    * handles requests to the root page
+    */
+    void handleRootGet(void);
     
+    void handleRefreshNetworksGet(void);
 };
 
 #endif
