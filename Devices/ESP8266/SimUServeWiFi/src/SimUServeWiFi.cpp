@@ -116,7 +116,7 @@ void SimUServeWiFi::launchWebServer(void)
 {
     // set up the routes
     _server->on("/", HTTP_GET, handleRootGet);
-    _server->on("/refreshnetworks", HTTP_GET, handleRefreshNetworksGet);
+    _server->on("/refreshnetworks", HTTP_GET, [](AsyncWebServerRequest *request){handleRefreshNetworksGet});
     _server->begin();
 }
 
@@ -138,7 +138,13 @@ void SimUServeWiFi::handleRefreshNetworksGet(void)
     returnJson = "{[";
     for (int i = 0; i < numberOfNetworks; i++)
     {
-        WifiNetwork network = availableNetworks[i];
-        returnJson += "{''"
+        returnJson.concat(availableNetworks[i].toJson());
+        if(i < numberOfNetworks - 1) 
+        {
+            returnJson.concat(",");
+        }
     }
+
+    returnJson.concat("]}");
+    _server->send(200, "application/json", returnJson);
 }
