@@ -116,7 +116,7 @@ void SimUServeWiFi::launchWebServer(void)
 {
     // set up the routes
     _server->on("/", HTTP_GET, handleRootGet);
-    _server->on("/refreshnetworks", HTTP_GET, [](AsyncWebServerRequest *request){handleRefreshNetworksGet});
+    _server->on("/refreshnetworks", HTTP_GET, handleRefreshNetworksGet);
     _server->begin();
 }
 
@@ -128,7 +128,7 @@ void SimUServeWiFi::checkForWebRequests(void)
 
 void SimUServeWiFi::handleRootGet(void)
 {
-
+    _server->send(200, "text/html", index_html);
 }
 
 void SimUServeWiFi::handleRefreshNetworksGet(void)
