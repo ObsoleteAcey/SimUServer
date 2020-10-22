@@ -42,9 +42,9 @@ String const& SimUServeWiFi::getWiFiPassword(void) const
 template <typename T>
 bool SimUServeWiFi::checkEepromForValue(int startOffset, T &retrievedValue)
 {
-    EEPROM.get<T>(startOffset, retrievedValue);
+    retrievedValue = EEPROM.get<T>(startOffset, retrievedValue);
     
-    return retrievedValue == nullptr ? true : false;
+    return true;
 }
 
 template <typename T>
@@ -115,8 +115,8 @@ WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 void SimUServeWiFi::launchWebServer(void)
 {
     // set up the routes
-    _server->on("/", HTTP_GET, handleRootGet);
-    _server->on("/refreshnetworks", HTTP_GET, handleRefreshNetworksGet);
+    _server->on("/", HTTP_GET, [this](){this->handleRootGet();});
+    _server->on("/refreshnetworks", HTTP_GET,  [this](){this->handleRefreshNetworksGet();});
     _server->begin();
 }
 
