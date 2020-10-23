@@ -131,7 +131,7 @@ void SimUServeWiFi::launchWebServer(void)
 void SimUServeWiFi::checkForWebRequests(void)
 {
     _server->handleClient();
-    
+    _mdns->update();
 }
 
 void SimUServeWiFi::handleRootGet(void)

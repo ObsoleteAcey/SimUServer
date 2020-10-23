@@ -68,8 +68,6 @@ typedef struct WifiNetwork {
   }
 };
 
-typedef WifiNetwork* WifiNetworkPtr;
-
 class SimUServeWiFi {
   protected:
     // contains the settings for both the server and the WiFiSettings
@@ -96,7 +94,15 @@ class SimUServeWiFi {
     String const& getWiFiPassword(void) const;
     void setWifiSsid(String const&);
     void setWifiPassword(String const&);
+
+    /*
+      Call this every loop to check for any web requests and update MDNS
+    */
     void checkForWebRequests(void);
+
+    /*
+      Call this during setup, after params have been set, to start MDNS and the WebServer
+    */
     void initServices(void);
     
     
@@ -105,13 +111,19 @@ class SimUServeWiFi {
     bool checkEepromForValue(int, T&);
     template <typename T>
     void writeValueToEeprom(int, T const&);
-    // Inits some defaults
+    /*
+      Inits some default settings.  These will be over-ridden by any saved settings
+    */
     void initDefaults(void);
+
     /*
      * Tests the WiFi connection to see if Wifi is working.  If not, returns false.
     */
     bool testWifiConnection(void);
 
+    /*
+      Fires up the MDNS Responder
+    */
     void startMdns(void);
 
     /*
@@ -130,11 +142,16 @@ class SimUServeWiFi {
     void launchWebServer(void);
   
     /*
-    * handles requests to the root page
+     handles requests to the root page
     */
     void handleRootGet(void);
     
+    /*
+      handles a request to refresh the available networks
+    */
     void handleRefreshNetworksGet(void);
+
+    void handleSaveNetwork(void);
 };
 
 #endif
