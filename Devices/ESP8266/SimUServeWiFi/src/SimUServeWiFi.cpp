@@ -53,6 +53,12 @@ void SimUServeWiFi::writeValueToEeprom(int startOffset, T const& valueToSave)
     EEPROM.put<T>(startOffset, valueToSave);
 }
 
+void SimUServeWiFi::initServices(void) 
+{
+    setupAccessPoint();
+    startMdns();
+}
+
 void SimUServeWiFi::initDefaults()
 {
    _settings->setServerPort(DEFAULT_SERVER_PORT);
@@ -84,6 +90,8 @@ void SimUServeWiFi::startMdns(void)
     if(!_mdns->begin(SERVER_LOCAL_ADDRESS, _settings->getServerIpAddress())) {
 
     };
+    launchWebServer();
+    _mdns->addService("http", "tcp", 80);
 }
 
 void SimUServeWiFi::setupAccessPoint(void)

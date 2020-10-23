@@ -37,6 +37,9 @@
             border: 1px solid #ccc;
             border-top: none;
         }
+        .tabcontent.selected {
+            display: block;
+        }
         .error {
             border-color: red;
         }
@@ -45,10 +48,10 @@
     </head>
     <body>
         <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'networkSetup')">ConnectionSettings</button>
+            <button class="tablinks active" onclick="openTab(event, 'networkSetup')">ConnectionSettings</button>
             <button class="tablinks" onclick="openTab(event, 'deviceSetup')">Device Settings</button>
         </div>
-        <div id="networkSetup" class="tabcontent">
+        <div id="networkSetup" class="tabcontent selected">
             <h1>Welcome to the SimUServe network setup</h1>
             <form action="javascript:void(0);">
                 <div class="ssid-container">
@@ -66,7 +69,7 @@
                 </div>
                 <div class="button-container">
                     <button class="save" onclick="saveNetworkSettings()">Save</button>
-                    <button class="refesh-networks" onclick="refeshNetworks()">Refresh Networks</button>
+                    <button class="refesh-networks" onclick="refreshNetworks()">Refresh Networks</button>
                 </div>
             </form>
         </div>
@@ -74,6 +77,30 @@
             <h1>Welcome to the SimUServe device setup</h1>
         </div>
         <script>
+            function sendRequest(url, method, successCallback, failureCallback) {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4){
+                        switch(this.status){
+                            case 200:
+                                successCallback();
+                                break;
+                            default:
+                                if(failureCallback) {
+                                    failureCallback();
+                                };
+                        }
+                    }
+                };
+                xhr.open(method, url);
+                xhr.send();
+            }
+            function get(url, callback) {
+                sendRequest(url, 'GET', callback);
+            }
+            function post(url, data) {
+
+            }
             function removeClass(element, className) {
                 element.className = element.className.replace(className, "");
             }
@@ -100,13 +127,13 @@
               var i, tabcontent, tablinks;
               tabcontent = document.getElementsByClassName("tabcontent");
               for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
+                removeClass(tabcontent[i], " selected");
               }
               tablinks = document.getElementsByClassName("tablinks");
               for (i = 0; i < tablinks.length; i++) {
                 removeClass(tablinks[i], " active");
               }
-              document.getElementById(tabToOpen).style.display = "block";
+              addClass(document.getElementById(tabToOpen), " selected");
               addClass(evt.currentTarget, " active");
             }
             function ssidSelected(event) {
@@ -125,7 +152,9 @@
                 }
             }
             function refreshNetworks() {
-                
+                get('refresh', function() {
+                    console.log(test);
+                });
             }
         </script>
     </body>

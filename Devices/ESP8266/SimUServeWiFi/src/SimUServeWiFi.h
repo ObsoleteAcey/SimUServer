@@ -97,6 +97,7 @@ class SimUServeWiFi {
     void setWifiSsid(String const&);
     void setWifiPassword(String const&);
     void checkForWebRequests(void);
+    void initServices(void);
     
     
   protected:
