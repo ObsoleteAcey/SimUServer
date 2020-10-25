@@ -3,10 +3,7 @@
 
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
-#include <WiFiClient.h>
 #include <ESP8266mDNS.h>
-// #include <ESPAsyncTCP.h>
-// #include <ESPAsyncWebServer.h>
 #include <ESP8266WebServer.h>
 #include "SimUServeWiFiSettings.h"
 
@@ -34,11 +31,24 @@ typedef struct WifiNetwork {
     EncryptionType = encryptionType;
   }
 
+  int WifiNetwork::getSignalStrength() {
+    int quality = 0;
+    switch(RSSI)
+    {
+      case <= -100:
+        return 0;
+      case >= -50:
+        return 100;
+      default:
+        return 2 * (RSSI + 100);
+    }
+  }
+
   String const& toJson(void) {
     String jsonString = "{\"ssid\":\"";
     jsonString.concat(SSID);
-    jsonString.concat("\",\"rssi\":\"");
-    jsonString.concat(RSSI);
+    jsonString.concat("\",\"signalStrength\":\"");
+    jsonString.concat(WifiNetwork::getSignalStrength());
     jsonString.concat("\",\"index\":\"");
     jsonString.concat(Index);
     jsonString.concat("\",\"encryptionType\":\"");
@@ -142,15 +152,18 @@ class SimUServeWiFi {
     void launchWebServer(void);
   
     /*
-     handles requests to the root page
+    * handles requests to the root page
     */
     void handleRootGet(void);
     
     /*
-      handles a request to refresh the available networks
+    *  handles a request to refresh the available networks
     */
     void handleRefreshNetworksGet(void);
 
+    /*
+    * Processes the network save for the SSID
+    */
     void handleSaveNetwork(void);
 };
 

@@ -51,13 +51,15 @@ void SimUServeWiFi::writeValueToEeprom(int startOffset, T const& valueToSave)
 }
 
 void SimUServeWiFi::initServices(void) 
-{
+{ 
+    Serial.println("SimUServeWiFi::initServices");
     setupAccessPoint();
     startMdns();
 }
 
 void SimUServeWiFi::initDefaults()
 {
+    Serial.println("SimUServeWiFi::initDefaults");
    _settings->setServerPort(DEFAULT_SERVER_PORT);
    _settings->setServerIpAddress(DEFAULT_SERVER_IP);
    _settings->setServerSsid(DEFAULT_SERVER_SSID);
@@ -67,32 +69,37 @@ void SimUServeWiFi::initDefaults()
 
 bool SimUServeWiFi::testWifiConnection() 
 {
+    Serial.println("SimUServeWiFi::testWifiConnection");
     int waitRetryCounter = 0;
     while ( waitRetryCounter < 20 ) 
     {
         if (WiFi.status() == WL_CONNECTED)
         { 
+            Serial.println("Wifi connection established");
             return(true);
         } 
         delay(500);
         Serial.print(WiFi.status());    
         waitRetryCounter++;
     }
-    Serial.println("Connect timed out, opening AP");
+    Serial.println("Connect timed out");
     return(false);
 }
 
 void SimUServeWiFi::startMdns(void)
 {
+    Serial.println("SimUServeWiFi::startMdns");
     if(!_mdns->begin(SERVER_LOCAL_ADDRESS, _settings->getServerIpAddress())) {
 
     };
     launchWebServer();
-    _mdns->addService("http", "tcp", 80);
+    Serial.println("Adding http service to MDNS on port " + String(_settings->getServerPort()));
+    _mdns->addService("http", "tcp", _settings->getServerPort());
 }
 
 void SimUServeWiFi::setupAccessPoint(void)
 {
+    setupAccessPoint
     WiFi.mode(WIFI_AP_STA);
     WiFi.disconnect();
     delay(100);
@@ -101,8 +108,9 @@ void SimUServeWiFi::setupAccessPoint(void)
 
 WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 {
+    Serial.println("SimUServeWiFi::getAvailableWifiNetworks");
     numberOfNetworks = WiFi.scanNetworks();
-    if(_availableNetworks != nullptr)
+    if(_availableNetworks)
     {
         delete[] _availableNetworks;
     }
@@ -119,13 +127,16 @@ WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 
 void SimUServeWiFi::launchWebServer(void)
 {
+    Serial.println("SimUServeWiFi::launchWebServer");
     if(!_server)
     {
+        Serial.println("SimUServeWiFi::launchWebServer");
         _server = new ESP8266WebServer(_settings->getServerIpAddress(), _settings->getServerPort());
     }
     // set up the routes
-    _server->on("/", HTTP_GET, [this](){this->handleRootGet();});
-    _server->on("/refreshnetworks", HTTP_GET,  [this](){this->handleRefreshNetworksGet();});
+    _server->on("/", HTTP_GET, std::bind(&SimUServeWiFi::handleRootGet, this));
+    _server->on("/network/all", HTTP_GET,  std::bind(&SimUServeWiFi::handleRefreshNetworksGet, this));
+    _server->on("/network", HTTP_POST, std::bind(&SimUServeWiFi::handleSaveNetwork, this));
     _server->begin();
 }
 
@@ -156,4 +167,28 @@ void SimUServeWiFi::handleRefreshNetworksGet(void)
 
     returnJson.concat("]}");
     _server->send(200, "application/json", returnJson);
+}
+
+void SimUServeWiFi::handleSaveNetwork(void)
+{
+    if(!_server->hasArg("ssid") || !_server->hasArg("password") ||
+        _server->arg("ssid") == NULL || _server->arg("password") == NULL)
+    {
+        // The request is invalid, so send HTTP status 400
+        _server->send(400, "text/plain", "400: Invalid Request");         
+        return;
+    }
+
+    String ssid =  _server->arg("ssid");
+    String password = _server->arg("password");
+
+    WiFi.begin(ssid, password);
+    if(testWifiConnection()) {
+        // save settings here and respond with all good
+
+        _server->send(200, "Connection successful and settings saved");
+        return;
+    }
+
+    _server->send(400, "text/plain", "Password was incorrect or network connection failed.  Please try again");    
 }
