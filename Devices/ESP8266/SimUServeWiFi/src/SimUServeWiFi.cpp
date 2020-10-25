@@ -9,8 +9,6 @@ SimUServeWiFi::SimUServeWiFi()
     {
         _settings->update(loadedSettings);
     }
-
-    _server = new ESP8266WebServer(_settings->getServerIpAddress(), _settings->getServerPort());
 }
 
 SimUServeWiFi::SimUServeWiFi(int serverPort, String const& serverIpAddress)
@@ -18,7 +16,6 @@ SimUServeWiFi::SimUServeWiFi(int serverPort, String const& serverIpAddress)
     initDefaults();
     _settings->setServerPort(serverPort);
     _settings->setServerSsid(serverIpAddress);
-    _server = new ESP8266WebServer(_settings->getServerIpAddress(), _settings->getServerPort());
 }
 
 SimUServeWiFi::~SimUServeWiFi()
@@ -122,6 +119,10 @@ WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 
 void SimUServeWiFi::launchWebServer(void)
 {
+    if(!_server)
+    {
+        _server = new ESP8266WebServer(_settings->getServerIpAddress(), _settings->getServerPort());
+    }
     // set up the routes
     _server->on("/", HTTP_GET, [this](){this->handleRootGet();});
     _server->on("/refreshnetworks", HTTP_GET,  [this](){this->handleRefreshNetworksGet();});
