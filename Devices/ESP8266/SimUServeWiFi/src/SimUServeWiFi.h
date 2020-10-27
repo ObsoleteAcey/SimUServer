@@ -4,14 +4,17 @@
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
 #include <ESP8266mDNS.h>
-#include <ESP8266WebServer.h>
+//#include <ESP8266WebServer.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include <FS.h>
 #include "SimUServeWiFiSettings.h"
 
 #define MAX_SSID_LENGTH 32
 #define MAX_PASSWORD_LENGTH 63
 #define DEFAULT_SERVER_PORT 80
 #define DEFAULT_SERVER_IP "10.0.1.1"
-#define DEFAULT_SERVER_SSID "SimUServeWiFiHost"
+#define DEFAULT_SERVER_SSID "SimUServeWiFiHost_"
 #define DEFAULT_SERVER_PASSWORD "SimUServeWiFIPassword"
 #define SERVER_LOCAL_ADDRESS "http://simuserve.device"
 
@@ -32,16 +35,16 @@ typedef struct WifiNetwork {
   }
 
   int WifiNetwork::getSignalStrength() {
-    int quality = 0;
-    switch(RSSI)
-    {
-      case <= -100:
-        return 0;
-      case >= -50:
-        return 100;
-      default:
-        return 2 * (RSSI + 100);
-    }
+      int quality = 0;
+      if(RSSI <= -100)
+      {
+          return 0;
+      }
+      if(RSSI >= -50)
+      {
+          return 100;
+      }
+      return 2 * (RSSI + 100);
   }
 
   String const& toJson(void) {
@@ -84,7 +87,7 @@ class SimUServeWiFi {
     // we want to connect to
     SimUServeWiFiSettings* _settings;
     MDNSResponder* _mdns ;
-    ESP8266WebServer* _server;
+    AsyncWebServer* _server;
     WifiNetwork* _availableNetworks;
     int numberOfNetworks;
   
@@ -154,17 +157,19 @@ class SimUServeWiFi {
     /*
     * handles requests to the root page
     */
-    void handleRootGet(void);
+    void handleRootGet(AsyncWebServerRequest*);
     
     /*
     *  handles a request to refresh the available networks
     */
-    void handleRefreshNetworksGet(void);
+    void handleRefreshNetworksGet(AsyncWebServerRequest*);
 
     /*
     * Processes the network save for the SSID
     */
-    void handleSaveNetwork(void);
+    void handleSaveNetwork(AsyncWebServerRequest*);
+
+    void handleNotFound(void);
 };
 
 #endif

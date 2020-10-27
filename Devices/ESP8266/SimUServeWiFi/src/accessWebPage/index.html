@@ -50,6 +50,7 @@
         <div class="tab">
             <button class="tablinks active" onclick="openTab(event, 'networkSetup')">ConnectionSettings</button>
             <button class="tablinks" onclick="openTab(event, 'deviceSetup')">Device Settings</button>
+            <button class="tablinks" onclick="openTab(event, 'deviceInfo')">Device Info</button>
         </div>
         <div id="networkSetup" class="tabcontent selected">
             <h1>Welcome to the SimUServe network setup</h1>
@@ -75,6 +76,9 @@
         </div>
         <div id="deviceSetup" class="tabcontent">
             <h1>Welcome to the SimUServe device setup</h1>
+        </div>
+        <div id="deviceInfo" class="tabcontent">
+            <h1>SimUServe Device Info</h1>
         </div>
         <script>
             function sendRequest(url, method, successCallback, failureCallback) {
@@ -155,6 +159,9 @@
                 get('refresh', function() {
                     console.log(test);
                 });
+            }
+            function getDeviceInfo() {
+                
             }
         </script>
     </body>

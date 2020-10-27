@@ -53,6 +53,10 @@ void SimUServeWiFi::writeValueToEeprom(int startOffset, T const& valueToSave)
 void SimUServeWiFi::initServices(void) 
 { 
     Serial.println("SimUServeWiFi::initServices");
+    if(!SPIFFS.begin())
+    {
+        Serial.println("An Error has occurred while mounting SPIFFS");
+    }
     setupAccessPoint();
     startMdns();
 }
@@ -62,8 +66,8 @@ void SimUServeWiFi::initDefaults()
     Serial.println("SimUServeWiFi::initDefaults");
    _settings->setServerPort(DEFAULT_SERVER_PORT);
    _settings->setServerIpAddress(DEFAULT_SERVER_IP);
-   _settings->setServerSsid(DEFAULT_SERVER_SSID);
-   _settings->setServerPassword(DEFAULT_SERVER_PASSWORD);
+   _settings->setServerSsid(DEFAULT_SERVER_SSID + String(ESP.getChipId()));
+   _settings->setServerPassword(DEFAULT_SERVER_PASSWORD + String(ESP.getChipId());
    numberOfNetworks = 0;
 }
 
@@ -99,7 +103,6 @@ void SimUServeWiFi::startMdns(void)
 
 void SimUServeWiFi::setupAccessPoint(void)
 {
-    setupAccessPoint
     WiFi.mode(WIFI_AP_STA);
     WiFi.disconnect();
     delay(100);
@@ -131,12 +134,13 @@ void SimUServeWiFi::launchWebServer(void)
     if(!_server)
     {
         Serial.println("SimUServeWiFi::launchWebServer");
-        _server = new ESP8266WebServer(_settings->getServerIpAddress(), _settings->getServerPort());
+        _server = new AsyncWebServer(_settings->getServerPort());
     }
     // set up the routes
-    _server->on("/", HTTP_GET, std::bind(&SimUServeWiFi::handleRootGet, this));
-    _server->on("/network/all", HTTP_GET,  std::bind(&SimUServeWiFi::handleRefreshNetworksGet, this));
-    _server->on("/network", HTTP_POST, std::bind(&SimUServeWiFi::handleSaveNetwork, this));
+    _server->on("/", HTTP_GET, SimUServeWiFi::handleRootGet);
+    _server->on("/network/all", HTTP_GET,  SimUServeWiFi::handleRefreshNetworksGet);
+    _server->on("/network", HTTP_POST, SimUServeWiFi::handleSaveNetwork);
+    _server->onNotFound(SimUServeWiFi::handleNotFound);
     _server->begin();
 }
 
@@ -146,12 +150,12 @@ void SimUServeWiFi::checkForWebRequests(void)
     _mdns->update();
 }
 
-void SimUServeWiFi::handleRootGet(void)
+void SimUServeWiFi::handleRootGet(AsyncWebServerRequest *request)
 {
-    _server->send(200, "text/html", index_html);
+    request->send(SPIFFS, "index.html", "text/html");
 }
 
-void SimUServeWiFi::handleRefreshNetworksGet(void)
+void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
 {
     auto* availableNetworks = getAvailableWifiNetworks();
     String returnJson;
@@ -169,26 +173,47 @@ void SimUServeWiFi::handleRefreshNetworksGet(void)
     _server->send(200, "application/json", returnJson);
 }
 
-void SimUServeWiFi::handleSaveNetwork(void)
+void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
 {
-    if(!_server->hasArg("ssid") || !_server->hasArg("password") ||
-        _server->arg("ssid") == NULL || _server->arg("password") == NULL)
+    if(!request->hasArg("ssid") || !request->hasArg("password") ||
+        request->arg("ssid") == NULL || request->arg("password") == NULL)
     {
         // The request is invalid, so send HTTP status 400
-        _server->send(400, "text/plain", "400: Invalid Request");         
+        request->send(400, "text/plain", "400: Invalid Request");         
         return;
     }
 
-    String ssid =  _server->arg("ssid");
-    String password = _server->arg("password");
+    String ssid =  request->arg("ssid");
+    String password = request->arg("password");
 
     WiFi.begin(ssid, password);
     if(testWifiConnection()) {
         // save settings here and respond with all good
 
-        _server->send(200, "Connection successful and settings saved");
+        request->send(200, "Connection successful and settings saved");
         return;
     }
 
-    _server->send(400, "text/plain", "Password was incorrect or network connection failed.  Please try again");    
+    request->send(400, "text/plain", "Password was incorrect or network connection failed.  Please try again");    
+}
+
+void SimUServeWiFi::handleNotFound(AsyncWebServerRequest *request)
+{
+    String message = "File Not Found\n\n";
+    message += "URI: ";
+    message += request->uri();
+    message += "\nMethod: ";
+    message += ( request->method() == HTTP_GET ) ? "GET" : "POST";
+    message += "\nArguments: ";
+    message += request->args();
+    message += "\n";
+
+    for ( uint8_t i = 0; i < request->args(); i++ ) {
+        message += " " + request->argName ( i ) + ": " + request->arg ( i ) + "\n";
+    }
+    request->sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    request->sendHeader("Pragma", "no-cache");
+    request->sendHeader("Expires", "-1");
+    request->sendHeader("Content-Length", String(message.length()));
+    request->send ( 404, "text/plain", message );
 }
