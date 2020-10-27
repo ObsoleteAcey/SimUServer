@@ -67,7 +67,7 @@ void SimUServeWiFi::initDefaults()
    _settings->setServerPort(DEFAULT_SERVER_PORT);
    _settings->setServerIpAddress(DEFAULT_SERVER_IP);
    _settings->setServerSsid(DEFAULT_SERVER_SSID + String(ESP.getChipId()));
-   _settings->setServerPassword(DEFAULT_SERVER_PASSWORD + String(ESP.getChipId());
+   _settings->setServerPassword(DEFAULT_SERVER_PASSWORD + String(ESP.getChipId()));
    numberOfNetworks = 0;
 }
 
@@ -103,7 +103,7 @@ void SimUServeWiFi::startMdns(void)
 
 void SimUServeWiFi::setupAccessPoint(void)
 {
-    WiFi.mode(WIFI_AP_STA);
+    WiFi.mode(WIFI_AP);
     WiFi.disconnect();
     delay(100);
     WiFi.softAP(_settings->getServerSsid(), _settings->getServerPassword());
@@ -137,16 +137,15 @@ void SimUServeWiFi::launchWebServer(void)
         _server = new AsyncWebServer(_settings->getServerPort());
     }
     // set up the routes
-    _server->on("/", HTTP_GET, SimUServeWiFi::handleRootGet);
-    _server->on("/network/all", HTTP_GET,  SimUServeWiFi::handleRefreshNetworksGet);
-    _server->on("/network", HTTP_POST, SimUServeWiFi::handleSaveNetwork);
-    _server->onNotFound(SimUServeWiFi::handleNotFound);
+    _server->on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleRootGet(request);});
+    _server->on("/network/all", HTTP_GET,  [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleRefreshNetworksGet(request);});
+    _server->on("/network", HTTP_POST, [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleSaveNetwork(request);});
+    _server->onNotFound([this](AsyncWebServerRequest *request) {SimUServeWiFi::handleNotFound(request);});
     _server->begin();
 }
 
 void SimUServeWiFi::checkForWebRequests(void)
 {
-    _server->handleClient();
     _mdns->update();
 }
 
@@ -170,7 +169,7 @@ void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
     }
 
     returnJson.concat("]}");
-    _server->send(200, "application/json", returnJson);
+    request->send(200, "application/json", returnJson);
 }
 
 void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
@@ -201,7 +200,7 @@ void SimUServeWiFi::handleNotFound(AsyncWebServerRequest *request)
 {
     String message = "File Not Found\n\n";
     message += "URI: ";
-    message += request->uri();
+    message += request->url();
     message += "\nMethod: ";
     message += ( request->method() == HTTP_GET ) ? "GET" : "POST";
     message += "\nArguments: ";
@@ -211,9 +210,11 @@ void SimUServeWiFi::handleNotFound(AsyncWebServerRequest *request)
     for ( uint8_t i = 0; i < request->args(); i++ ) {
         message += " " + request->argName ( i ) + ": " + request->arg ( i ) + "\n";
     }
-    request->sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    request->sendHeader("Pragma", "no-cache");
-    request->sendHeader("Expires", "-1");
-    request->sendHeader("Content-Length", String(message.length()));
-    request->send ( 404, "text/plain", message );
+
+    auto* response = request->beginResponse(404, "text/plain", message);
+    response->addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response->addHeader("Pragma", "no-cache");
+    response->addHeader("Expires", "-1");
+    response->addHeader("Content-Length", String(message.length()));
+    request->send(response);
 }

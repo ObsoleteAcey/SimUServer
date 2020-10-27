@@ -34,7 +34,7 @@ typedef struct WifiNetwork {
     EncryptionType = encryptionType;
   }
 
-  int WifiNetwork::getSignalStrength() {
+  int getSignalStrength() {
       int quality = 0;
       if(RSSI <= -100)
       {
@@ -117,6 +117,11 @@ class SimUServeWiFi {
       Call this during setup, after params have been set, to start MDNS and the WebServer
     */
     void initServices(void);
+
+    /*
+     * Tests the WiFi connection to see if Wifi is working.  If not, returns false.
+    */
+    bool testWifiConnection(void);
     
     
   protected:
@@ -129,10 +134,7 @@ class SimUServeWiFi {
     */
     void initDefaults(void);
 
-    /*
-     * Tests the WiFi connection to see if Wifi is working.  If not, returns false.
-    */
-    bool testWifiConnection(void);
+    
 
     /*
       Fires up the MDNS Responder
@@ -169,7 +171,7 @@ class SimUServeWiFi {
     */
     void handleSaveNetwork(AsyncWebServerRequest*);
 
-    void handleNotFound(void);
+    void handleNotFound(AsyncWebServerRequest*);
 };
 
 #endif
