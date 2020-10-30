@@ -85,8 +85,8 @@ class SimUServeWiFi {
   protected:
     // contains the settings for both the server and the WiFiSettings
     // we want to connect to
+    MDNSResponder* _mdns;
     SimUServeWiFiSettings* _settings;
-    MDNSResponder* _mdns ;
     AsyncWebServer* _server;
     WifiNetwork* _availableNetworks;
     int numberOfNetworks;

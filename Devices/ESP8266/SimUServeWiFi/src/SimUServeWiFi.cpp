@@ -2,27 +2,25 @@
 
 SimUServeWiFi::SimUServeWiFi() 
 {
+    Serial.println("SimUServeWiFi::SimUServeWiFi");
+    _mdns = new MDNS();
     initDefaults();
     // now check and load any settings that have been saved
-    SimUServeWiFiSettings loadedSettings;
-    if(checkEepromForValue(0, loadedSettings))
-    {
-        _settings->update(loadedSettings);
-    }
 }
 
-SimUServeWiFi::SimUServeWiFi(int serverPort, String const& serverIpAddress)
+SimUServeWiFi::SimUServeWiFi(int serverPort, String const& serverSsid)
 {
+    Serial.println("SimUServeWiFi::SimUServeWiFi(" + String(serverPort) +", " + serverSsid + ")");
     initDefaults();
     _settings->setServerPort(serverPort);
-    _settings->setServerSsid(serverIpAddress);
+    _settings->setServerSsid(serverSsid);
 }
 
 SimUServeWiFi::~SimUServeWiFi()
 {
     delete _settings;
-    delete _mdns;
     delete _server;
+    delete _mdns;
     delete[] _availableNetworks;
 }
 
@@ -64,6 +62,10 @@ void SimUServeWiFi::initServices(void)
 void SimUServeWiFi::initDefaults()
 {
     Serial.println("SimUServeWiFi::initDefaults");
+    if(!_settings) 
+    {
+        _settings = new SimUServeWiFiSettings();
+    }
    _settings->setServerPort(DEFAULT_SERVER_PORT);
    _settings->setServerIpAddress(DEFAULT_SERVER_IP);
    _settings->setServerSsid(DEFAULT_SERVER_SSID + String(ESP.getChipId()));
@@ -75,6 +77,7 @@ bool SimUServeWiFi::testWifiConnection()
 {
     Serial.println("SimUServeWiFi::testWifiConnection");
     int waitRetryCounter = 0;
+    
     while ( waitRetryCounter < 20 ) 
     {
         if (WiFi.status() == WL_CONNECTED)
@@ -83,7 +86,7 @@ bool SimUServeWiFi::testWifiConnection()
             return(true);
         } 
         delay(500);
-        Serial.print(WiFi.status());    
+        Serial.print("WiFi Status: " + WiFi.status());    
         waitRetryCounter++;
     }
     Serial.println("Connect timed out");
@@ -93,6 +96,7 @@ bool SimUServeWiFi::testWifiConnection()
 void SimUServeWiFi::startMdns(void)
 {
     Serial.println("SimUServeWiFi::startMdns");
+    
     if(!_mdns->begin(SERVER_LOCAL_ADDRESS, _settings->getServerIpAddress())) {
 
     };
@@ -106,6 +110,7 @@ void SimUServeWiFi::setupAccessPoint(void)
     WiFi.mode(WIFI_AP);
     WiFi.disconnect();
     delay(100);
+    Serial.println("Starting access point on" + _settings->getServerSsid() + " using password " + _settings->getServerPassword());
     WiFi.softAP(_settings->getServerSsid(), _settings->getServerPassword());
 }
 
@@ -151,7 +156,7 @@ void SimUServeWiFi::checkForWebRequests(void)
 
 void SimUServeWiFi::handleRootGet(AsyncWebServerRequest *request)
 {
-    request->send(SPIFFS, "index.html", "text/html");
+    request->send(SPIFFS, "index.min.html", "text/html");
 }
 
 void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
