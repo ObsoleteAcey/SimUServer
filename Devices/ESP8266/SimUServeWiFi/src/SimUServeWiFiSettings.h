@@ -7,6 +7,8 @@ class SimUServeWiFiSettings {
   protected:
     int _serverPort;
     String _serverIpAddress;
+    String _serverGatewayIpAddress;
+    String _serverNetmask;
     String _serverSsid;
     String _serverPassword;
     String _connectedSsid;
@@ -16,6 +18,8 @@ class SimUServeWiFiSettings {
   private:
     bool _isDirty = false;
     IPAddress* _ipAddress;
+    IPAddress* _gatewayIpAddress;
+    IPAddress* _netmask;
     
   public:
     ~SimUServeWiFiSettings();
@@ -23,6 +27,10 @@ class SimUServeWiFiSettings {
     int getServerPort(void) const;
     void setServerIpAddress(String const&);
     IPAddress const& getServerIpAddress(void) const;
+    void setServerGatewayIpAddress(String const&);
+    IPAddress const& getServerGatewayIpAddress(void) const;
+    void setServerNetmask(String const&);
+    IPAddress const& getServerNetmask(void) const;
     void setServerSsid(String const&);
     String const& getServerSsid(void) const;
     void setServerPassword(String const&);

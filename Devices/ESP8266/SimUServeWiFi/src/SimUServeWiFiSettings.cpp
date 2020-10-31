@@ -36,7 +36,7 @@ void SimUServeWiFiSettings::setServerIpAddress(String const& ipAddress)
     {
         _isDirty = true;
         _serverIpAddress = String(ipAddress);
-        if (_ipAddress == nullptr)
+        if (!_ipAddress)
         {
             _ipAddress = new IPAddress();
         }
@@ -47,6 +47,44 @@ void SimUServeWiFiSettings::setServerIpAddress(String const& ipAddress)
 IPAddress const& SimUServeWiFiSettings::getServerIpAddress(void) const
 {
     return *_ipAddress;
+}
+
+void SimUServeWiFiSettings::setServerGatewayIpAddress(String const& ipAddress)
+{
+    if(_serverGatewayIpAddress != ipAddress)
+    {
+        _isDirty = true;
+        _serverGatewayIpAddress = String(ipAddress);
+        if (!_gatewayIpAddress)
+        {
+            _gatewayIpAddress = new IPAddress();
+        }
+        _gatewayIpAddress->fromString(ipAddress);
+    }
+}
+
+IPAddress const& SimUServeWiFiSettings::getServerGatewayIpAddress(void) const
+{
+    return *_gatewayIpAddress;
+}
+
+void SimUServeWiFiSettings::setServerNetmask(String const& ipAddress)
+{
+    if(_serverNetmask != ipAddress)
+    {
+        _isDirty = true;
+        _serverNetmask = String(ipAddress);
+        if (!_netmask)
+        {
+            _netmask = new IPAddress();
+        }
+        _netmask->fromString(ipAddress);
+    }
+}
+
+IPAddress const& SimUServeWiFiSettings::getServerNetmask(void) const
+{
+    return *_netmask;
 }
 
 void SimUServeWiFiSettings::setServerSsid(String const& serverSsid)
