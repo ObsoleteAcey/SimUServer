@@ -4,7 +4,6 @@
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
 #include <ESP8266mDNS.h>
-//#include <ESP8266WebServer.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
@@ -14,6 +13,8 @@
 #define MAX_PASSWORD_LENGTH 63
 #define DEFAULT_SERVER_PORT 80
 #define DEFAULT_SERVER_IP "10.0.1.1"
+#define DEFAULT_SERVER_GATEWAY "10.0.1.1"
+#define DEFAULT_SERVER_NETMASK "255.255.255.0"
 #define DEFAULT_SERVER_SSID "SimUServeWiFiHost_"
 #define DEFAULT_SERVER_PASSWORD "SimUServeWiFIPassword"
 #define SERVER_LOCAL_ADDRESS "http://simuserve.device"
@@ -86,7 +87,6 @@ class SimUServeWiFi {
     // contains the settings for both the server and the WiFiSettings
     // we want to connect to
     SimUServeWiFiSettings* _settings;
-    MDNSResponder* _mdns ;
     AsyncWebServer* _server;
     WifiNetwork* _availableNetworks;
     int numberOfNetworks;
