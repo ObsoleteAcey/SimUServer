@@ -4,7 +4,6 @@
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
 #include <ESP8266mDNS.h>
-//#include <ESP8266WebServer.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
@@ -87,7 +86,6 @@ class SimUServeWiFi {
   protected:
     // contains the settings for both the server and the WiFiSettings
     // we want to connect to
-    MDNSResponder* _mdns;
     SimUServeWiFiSettings* _settings;
     AsyncWebServer* _server;
     WifiNetwork* _availableNetworks;

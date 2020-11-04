@@ -19,7 +19,6 @@ SimUServeWiFi::~SimUServeWiFi()
 {
     delete _settings;
     delete _server;
-    delete _mdns;
     delete[] _availableNetworks;
 }
 
@@ -97,16 +96,13 @@ bool SimUServeWiFi::testWifiConnection()
 void SimUServeWiFi::startMdns(void)
 {
     Serial.println("SimUServeWiFi::startMdns");
-    if(!_mdns) {
-        _mdns = new MDNSResponder();
-    }   
 
-    if(!_mdns->begin(SERVER_LOCAL_ADDRESS, _settings->getServerIpAddress())) {
+    if(!MDNS.begin(SERVER_LOCAL_ADDRESS, _settings->getServerIpAddress())) {
 
     };
     launchWebServer();
     Serial.println("Adding http service to MDNS on port " + String(_settings->getServerPort()));
-    //_mdns->addService("http", "tcp", _settings->getServerPort());
+    MDNS.addService("http", "tcp", _settings->getServerPort());
 }
 
 void SimUServeWiFi::setupAccessPoint(void)
@@ -124,7 +120,7 @@ WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 {
     Serial.println("SimUServeWiFi::getAvailableWifiNetworks");
     numberOfNetworks = WiFi.scanNetworks();
-    Serial.println("Found " + String(_availableNetworks) + " networks.");
+    Serial.println("Found " + String(numberOfNetworks) + " networks.");
     if(_availableNetworks)
     {
         delete[] _availableNetworks;
@@ -159,7 +155,7 @@ void SimUServeWiFi::launchWebServer(void)
 
 void SimUServeWiFi::checkForWebRequests(void)
 {
-    _mdns->update();
+    MDNS.update();
 }
 
 void SimUServeWiFi::handleRootGet(AsyncWebServerRequest *request)
@@ -232,3 +228,5 @@ void SimUServeWiFi::handleNotFound(AsyncWebServerRequest *request)
     response->addHeader("Content-Length", String(message.length()));
     request->send(response);
 }
+
+SimUServeWiFi simUServeWiFi;
