@@ -7,14 +7,14 @@ namespace SimUServe.Plugin
     /// </summary>
     public partial class SettingsControl : UserControl
     {
-        public DataPluginDemo Plugin { get; }
+        public SimUServeDataPlugin Plugin { get; }
 
         public SettingsControl()
         {
             InitializeComponent();
         }
 
-        public SettingsControl(DataPluginDemo plugin) : this()
+        public SettingsControl(SimUServeDataPlugin plugin) : this()
         {
             this.Plugin = plugin;
         }
