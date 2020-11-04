@@ -8,10 +8,10 @@ namespace SimUServe.Plugin
     [PluginDescription("SimUServe Simulator Plugin")]
     [PluginAuthor("SimUServe")]
     [PluginName("SimUServe Plugin")]
-    public class DataPluginDemo : IPlugin, IDataPlugin, IWPFSettings
+    public class SimUServeDataPlugin : IPlugin, IDataPlugin, IWPFSettings
     {
 
-        public DataPluginDemoSettings Settings;
+        public SimUServeDataPluginSettings Settings;
 
         /// <summary>
         /// Instance of the current plugin manager
@@ -86,7 +86,7 @@ namespace SimUServe.Plugin
 
 
             // Load settings
-            Settings = this.ReadCommonSettings<DataPluginDemoSettings>("GeneralSettings", () => new DataPluginDemoSettings());
+            Settings = this.ReadCommonSettings<SimUServeDataPluginSettings>("GeneralSettings", () => new SimUServeDataPluginSettings());
 
 
             // Declare a property available in the property list

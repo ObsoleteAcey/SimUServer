@@ -72,8 +72,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataPluginDemo.cs" />
-    <Compile Include="DataPluginDemoSettings.cs" />
+    <Compile Include="SimUServeDataPlugin.cs" />
+    <Compile Include="SimUServeDataPluginSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimUServe.Plugin.Settings.xaml.cs">
       <DependentUpon>SimUServe.Plugin.Settings.xaml</DependentUpon>
