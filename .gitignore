@@ -4,3 +4,4 @@ bin
 obj
 Devices/ESP8266/SimUServeWiFi/.vscode/c_cpp_properties.json
 Devices/ESP8266/SimUServeHud/.vscode/c_cpp_properties.json
+Devices/ESP8266/SimUServeDevice/.vscode/c_cpp_properties.json

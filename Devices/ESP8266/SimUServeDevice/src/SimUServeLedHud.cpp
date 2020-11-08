@@ -1,7 +1,9 @@
 #include "SimUServeLedHud.h"
+#include "SimUServeCommon.h"
 
 SimUServeLedHud::SimUServeLedHud() 
 {
+    
     initDefaults();
 }
 
@@ -9,7 +11,6 @@ SimUServeLedHud::~SimUServeLedHud()
 {
 
 }
-
 
 CRGB SimUServeLedHud::indexToColour(int index) {
   if(index >= 3 && index < 9)

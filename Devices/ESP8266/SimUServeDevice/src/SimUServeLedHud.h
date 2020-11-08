@@ -16,11 +16,11 @@
 
 
 
+
 // these come from SimHub.  The first 2 are between 0 and 1 and represent the 2 zones
 // for 16 LEDs, we'll go [G,G,G,G,G,G,R,R,R,R,R,B,B,B,B,B]
-//                       |-- rpm1      --|--    rpm2  --|
+//                       |--    rpm1   --|--    rpm2   --|
 // this fies 0.125 per LED
-
 class SimUServeLedHud {
   protected:
 
