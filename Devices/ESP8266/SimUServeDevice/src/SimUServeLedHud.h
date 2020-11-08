@@ -1,6 +1,7 @@
 #ifndef SimUServeLedHud_h
 #define SimUServeLedHud_h
 
+#include "SimUServeCommon.h"
 #include <FastLED.h>
 
 #define NUM_LEDS 22
@@ -14,9 +15,6 @@
 #define REV_DISPLAY_START_INDEX 3
 #define REV_DISPLAY_END_INDEX 18
 
-
-
-
 // these come from SimHub.  The first 2 are between 0 and 1 and represent the 2 zones
 // for 16 LEDs, we'll go [G,G,G,G,G,G,R,R,R,R,R,B,B,B,B,B]
 //                       |--    rpm1   --|--    rpm2   --|
@@ -26,6 +24,7 @@ class SimUServeLedHud {
 
   
   private:
+    
     double rpmShiftLight1;
     double rpmShiftLight2;
     double redLineReached;
@@ -56,5 +55,6 @@ class SimUServeLedHud {
     int rpmShiftToIndexLimit(double, double);
     void clearLeds(int, int);
     void initDefaults(void);
+};
 
 #endif

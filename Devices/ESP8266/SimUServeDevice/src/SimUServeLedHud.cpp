@@ -1,9 +1,7 @@
 #include "SimUServeLedHud.h"
-#include "SimUServeCommon.h"
 
 SimUServeLedHud::SimUServeLedHud() 
 {
-    
     initDefaults();
 }
 

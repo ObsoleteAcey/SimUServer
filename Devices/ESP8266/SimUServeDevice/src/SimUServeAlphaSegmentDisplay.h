@@ -1,18 +1,25 @@
 #ifndef SimUServeAlphaSegmentDisplay_h
 #define SimUServeAlphaSegmentDisplay_h
 
+#include "SimUServeCommon.h"
 
 #define DEFAULT_I2C_ADDRESS 0x70
+// SETUP stuff
 #define SYSTEM_SETUP_REGISTER 0x20
 #define SYSTEM_OSCILLATOR_OFF 0x00 // STANDBY MODE
 #define SYSTEM_OSCILLATOR_ON 0x01
+// Displat stuff
 #define DISPLAY_SETUP_REGISTER 0x80
 #define DISPLAY_ON_COMMAND 0x01
 #define DISPLAY_OFF_COMMAND 0x00
-#define DISPLAY_BLINK_OFF_COMMAND 0x00 << 1
-#define DISPLAY_BLINK_TWOHZ_COMMAND 0x01 << 1
-#define DISPLAY_BLINK_ONEHZ_COMMAND 0x02 << 1
-#define DISPLAY_BLINK_HALFHZ_COMMAND 0x03 << 1
+#define DISPLAY_BLINK_OFF_COMMAND 0x00
+#define DISPLAY_BLINK_TWOHZ_COMMAND 0x01
+#define DISPLAY_BLINK_ONEHZ_COMMAND 0x02
+#define DISPLAY_BLINK_HALFHZ_COMMAND 0x03
+
+// Brightness settings
+#define DISPLAY_BRIGHTNESS_COMMAND 0xEF
+#define DISPLAY_BRIGHTNESS_MAX 0x0F
 
 class SimUServeAlphaSegmentDisplay {
     private:
@@ -99,6 +106,14 @@ class SimUServeAlphaSegmentDisplay {
          * @retval None
          */
         void clearDisplay(void);
-}
+
+        /**
+         * @brief  Sets the brightness of the display
+         * @note   
+         * @param brightness - number between 0 and 15, 0 being dimest and 15 being brightest
+         * @retval None
+         */
+        void setBrightness(uint8_t);
+};
 
 #endif

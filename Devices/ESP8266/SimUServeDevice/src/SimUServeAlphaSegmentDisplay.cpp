@@ -1,5 +1,4 @@
 #include "SimUServeAlphaSegmentDisplay.h"
-#include "SimUServeCommon.h"
 #include <Wire.h>
 
 
@@ -160,7 +159,8 @@ void SimUServeAlphaSegmentDisplay::writeCharacter(uint8_t displayNumber, uint8_t
         displayNumber = 3;
     }
 
-    _displaybuffer[displayNumber] = pgm_read_word(charToWrite - ASCII_START_CHAR); // subtract the offset as we don't use the first 30 odd ASCII chars
+    uint8_t address = (charToWrite - ASCII_START_CHAR);
+    _displaybuffer[displayNumber] = pgm_read_word(displayLookUp + address); // subtract the offset as we don't use the first 30 odd ASCII chars
 
     if(includeDecimal)
     {
@@ -191,17 +191,13 @@ void SimUServeAlphaSegmentDisplay::writeWord(uint8_t startDisplay, String string
 
 void SimUServeAlphaSegmentDisplay::blinkDisplay(uint8_t blinkRate)
 {
-    if(blinkRate < DISPLAY_BLINK_TWOHZ_COMMAND)
-    {
-        blinkRate = DISPLAY_BLINK_TWOHZ_COMMAND;
-    } 
-    else if (blinkRate > DISPLAY_BLINK_HALFHZ_COMMAND)
+    if (blinkRate > DISPLAY_BLINK_HALFHZ_COMMAND)
     {
         blinkRate = DISPLAY_BLINK_HALFHZ_COMMAND;
     }
     
     Wire.beginTransmission(_deviceAddress);
-    Wire.write(DISPLAY_SETUP_REGISTER | blinkRate);
+    Wire.write(DISPLAY_SETUP_REGISTER | (blinkRate << 1));
     Wire.endTransmission();
 }
 
@@ -214,4 +210,16 @@ void SimUServeAlphaSegmentDisplay::clearDisplay(void)
     }
 
     writeToDisplay();
+}
+
+void SimUServeAlphaSegmentDisplay::setBrightness(uint8_t brightness)
+{
+    if(brightness > DISPLAY_BRIGHTNESS_MAX)
+    {
+        brightness = DISPLAY_BRIGHTNESS_MAX;
+    }
+
+    Wire.beginTransmission(_deviceAddress);
+    Wire.write(DISPLAY_BRIGHTNESS_COMMAND & brightness);
+    Wire.endTransmission();
 }

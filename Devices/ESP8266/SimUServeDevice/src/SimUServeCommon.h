@@ -1,6 +1,8 @@
 #ifndef SimUServeCommon_h
 #define SimUServeCommon_h
 
+#include <Arduino.h>
+
 #define ASCII_START_CHAR 32
 
 // Define the IO ports

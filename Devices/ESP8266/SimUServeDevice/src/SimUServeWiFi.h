@@ -1,13 +1,15 @@
 #ifndef SimUServeWiFi_h
 #define SimUServeWiFi_h
 
+#include "SimUServeWiFiSettings.h"
+#include "SimUServeCommon.h"
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
 #include <ESP8266mDNS.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
-#include "SimUServeWiFiSettings.h"
+
 
 #define MAX_SSID_LENGTH 32
 #define MAX_PASSWORD_LENGTH 63
