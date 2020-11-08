@@ -37,6 +37,8 @@ class SimUServeAlphaSegmentDisplay {
          */
         SimUServeAlphaSegmentDisplay();
 
+        SimUServeAlphaSegmentDisplay(uint8_t);
+
         /**
          * @brief  Constructs using the supplied SDA and SCL port values
          * @note   Defaults to 4 displays and device address of 0x70
