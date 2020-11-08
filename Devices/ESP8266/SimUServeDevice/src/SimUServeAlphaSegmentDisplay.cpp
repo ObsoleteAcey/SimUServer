@@ -109,21 +109,20 @@ static const uint16_t displayLookUp[] PROGMEM = {
 
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay()
 {
-    _deviceAddress = DEFAULT_I2C_ADDRESS;
-    _sda = ESP_D2;
-    _scl = ESP_D1;
-    _displaybuffer = new uint16_t[4] { 0,0,0,0 };
+    init(ESP_D2, ESP_D1, DEFAULT_I2C_ADDRESS);
 }
 
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t deviceAddress)
 {
-    _deviceAddress = deviceAddress;
-    _sda = ESP_D2;
-    _scl = ESP_D1;
-    _displaybuffer = new uint16_t[4] { 0,0,0,0 };
+    init(ESP_D2, ESP_D1, deviceAddress);
 }
 
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t sda, uint8_t scl, uint8_t deviceAddress = DEFAULT_I2C_ADDRESS)
+{
+    init(sda, scl, deviceAddress);
+}
+
+void SimUServeAlphaSegmentDisplay::init(uint8_t sda, uint8_t scl, uint8_t deviceAddress)
 {
     _deviceAddress = deviceAddress;
     _sda = sda;
@@ -136,10 +135,9 @@ SimUServeAlphaSegmentDisplay::~SimUServeAlphaSegmentDisplay()
     delete[] _displaybuffer;
 }
 
-void SimUServeAlphaSegmentDisplay::init(void)
+void SimUServeAlphaSegmentDisplay::setUpDisplay(void)
 {
     // we need to init the chip and get ready for display
-    Serial.println("Starting I2C on SDA:" + String(_sda) + " SCL:" + String(_scl) + " Address:" + String(_deviceAddress));
     Wire.begin(_sda, _scl);
     Wire.beginTransmission(_deviceAddress);
     Wire.write(SYSTEM_SETUP_REGISTER | SYSTEM_OSCILLATOR_ON);
@@ -175,7 +173,6 @@ void SimUServeAlphaSegmentDisplay::writeCharacter(uint8_t displayNumber, uint8_t
 
     uint8_t address = (charToWrite - ASCII_START_CHAR);
     _displaybuffer[displayNumber] = pgm_read_word(displayLookUp + address); // subtract the offset as we don't use the first 30 odd ASCII chars
-    Serial.println("Writing: " + String(_displaybuffer[displayNumber]));
     if(includeDecimal)
     {
         _displaybuffer[displayNumber] = _displaybuffer[displayNumber] | displayLookUp[14];
@@ -201,7 +198,6 @@ void SimUServeAlphaSegmentDisplay::writeWord(uint8_t startDisplay, String string
     }
 
     writeToDisplay();
-
 }
 
 void SimUServeAlphaSegmentDisplay::blinkDisplay(uint8_t blinkRate)

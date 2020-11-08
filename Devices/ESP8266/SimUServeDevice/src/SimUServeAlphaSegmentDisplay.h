@@ -49,11 +49,11 @@ class SimUServeAlphaSegmentDisplay {
         ~SimUServeAlphaSegmentDisplay();
 
         /**
-         * @brief  Inits the display.  Make sure this is called during setup
+         * @brief  Sets the display up.  Make sure this is called during setup
          * @note   Ensures the display is cleared and ready to rock
          * @retval None
          */
-        void init(void);
+        void setUpDisplay(void);
         
         /**
          * @brief  Writes the current buffer content to the display
@@ -116,6 +116,9 @@ class SimUServeAlphaSegmentDisplay {
          * @retval None
          */
         void setBrightness(uint8_t);
+    
+    private:
+        void init(uint8_t, uint8_t, uint8_t);
 };
 
 #endif
