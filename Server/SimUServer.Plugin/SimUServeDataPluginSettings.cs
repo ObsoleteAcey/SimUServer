@@ -6,5 +6,9 @@
     public class SimUServeDataPluginSettings
     {
         public int SpeedWarningLevel = 100;
+
+        public int UdpServerPort;
+
+        public int UpdateFrequency;
     }
 }

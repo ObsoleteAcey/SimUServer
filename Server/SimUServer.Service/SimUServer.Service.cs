@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace SimUServer
 {
-    public partial class Service : ServiceBase
+    public partial class SimUServeService : ServiceBase
     {
         private IServerListener _serverListener;
 
-        public Service()
+        public SimUServeService()
         {
             InitializeComponent();
         }

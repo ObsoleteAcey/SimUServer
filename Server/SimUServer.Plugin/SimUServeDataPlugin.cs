@@ -92,20 +92,12 @@ namespace SimUServe.Plugin
             // Declare a property available in the property list
             pluginManager.AddProperty("CurrentDateTime", this.GetType(), DateTime.Now);
 
-            // Declare an event 
-            pluginManager.AddEvent("SpeedWarning", this.GetType());
 
             // Declare an action which can be called
-            pluginManager.AddAction("IncrementSpeedWarning", this.GetType(), (a, b) =>
+            pluginManager.AddAction("RestartUdpClient", this.GetType(), (a, b) =>
             {
-                Settings.SpeedWarningLevel++;
-                SimHub.Logging.Current.Info("Speed warning changed");
-            });
-
-            // Declare an action which can be called
-            pluginManager.AddAction("DecrementSpeedWarning", this.GetType(), (a, b) =>
-            {
-                Settings.SpeedWarningLevel--;
+                
+                
             });
         }
     }

@@ -17,7 +17,7 @@ namespace SimUServer
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new Service()
+                new SimUServeService()
             };
             ServiceBase.Run(ServicesToRun);
         }

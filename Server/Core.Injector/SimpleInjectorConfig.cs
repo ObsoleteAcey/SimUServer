@@ -18,7 +18,8 @@ namespace Core.Injector
         public void RegisterDefaults(Container container)
         {
             container.RegisterIfNotRegistered<ILoggingService, LoggingService>(Lifestyle.Singleton)
-                        .RegisterIfNotRegistered<IServerListener, UdpListener>(Lifestyle.Singleton);
+                        .RegisterIfNotRegistered<IServerListener, UdpListener>(Lifestyle.Singleton)
+                        .RegisterIfNotRegistered<IPluginListener, PluginUdpListener>(Lifestyle.Singleton);
         }
     }
 }

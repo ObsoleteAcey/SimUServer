@@ -1,23 +1,20 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
-
-using SimUServer.Core.Common.Interfaces;
+﻿using SimUServer.Core.Common.Interfaces;
 using SimUServer.Core.Common.Utils;
 using SimUServer.Core.Server.Interfaces;
+using System;
 
-namespace SimUServer.Core.Server 
+namespace SimUServer.Core.Server
 {
-    public class UdpListener : BaseUdpListener, IServerListener
+    public class PluginUdpListener : BaseUdpListener, IPluginListener
     {
+        
 
-        public UdpListener(ILoggingService loggingService)
+        public PluginUdpListener(ILoggingService loggingService)
         {
             _loggingService = loggingService;
             _defaultBufferSize = ConfigUtils.GetIntegerConfigSettingOrNull("DefaultDeviceBufferSize");
             _defaultPort = ConfigUtils.GetIntegerConfigSettingOrNull("DefaultDevicePort");
         }
-
 
         public void Start()
         {
@@ -26,7 +23,7 @@ namespace SimUServer.Core.Server
 
         public void Start(int portNumber)
         {
-            if(_defaultBufferSize == null)
+            if (_defaultBufferSize == null)
             {
                 throw new Exception("No default buffer size set for UDP server");
             }
@@ -36,17 +33,12 @@ namespace SimUServer.Core.Server
 
         public void Start(int portNumber, int bufferSize)
         {
-            _bufferSize = bufferSize;
-            _portNumber = portNumber;
-            InitServer();
-            Receive();
+            throw new NotImplementedException();
         }
 
         public void Stop()
         {
-            _socket.Close();
+            throw new NotImplementedException();
         }
-
-        
     }
 }

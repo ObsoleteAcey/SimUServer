@@ -24,7 +24,6 @@ class SimUServeLedHud {
 
   
   private:
-    
     double rpmShiftLight1;
     double rpmShiftLight2;
     double redLineReached;

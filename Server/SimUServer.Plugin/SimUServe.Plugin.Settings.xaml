@@ -6,15 +6,21 @@
              xmlns:local="clr-namespace:SimUServe.Plugin"
              xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins" mc:Ignorable="d" 
              xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="426.214" d:DesignWidth="433.981">
 
     <Grid>
-        <styles:SHSection Title="MY PLUGIN OPTIONS">
+        <styles:SHSection Title="SimUServe Plugin Options">
             <StackPanel>
-                <styles:SHButtonPrimary HorizontalAlignment="Left">Primary button</styles:SHButtonPrimary>
-                <styles:SHButtonSecondary HorizontalAlignment="Left">Secondary button</styles:SHButtonSecondary>
-                <styles:SHLinkButton HorizontalAlignment="Left">Link button</styles:SHLinkButton>
-                <styles:SHLinkButtonSmall HorizontalAlignment="Left">Link button small</styles:SHLinkButtonSmall>
+                <styles:SHSection>
+                    <StackPanel>
+                        <styles:SHSectionTitle>SimUServe Server Settings</styles:SHSectionTitle>
+                        <Label>Server Port:</Label>
+                        <TextBox x:Name="serverPort" PreviewTextInput="NumberOnlyValidation"></TextBox>
+                        <Label>Update Frequency (updates per second):</Label>
+                        <TextBox x:Name="updateFrequency" PreviewTextInput="NumberOnlyValidation"></TextBox>
+                    </StackPanel>
+                </styles:SHSection>
+                <styles:SHButtonPrimary HorizontalAlignment="Left" Click="SaveSettings_Clicked">Save</styles:SHButtonPrimary>
             </StackPanel>
         </styles:SHSection>
     </Grid>

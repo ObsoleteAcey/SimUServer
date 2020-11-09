@@ -1,6 +1,6 @@
 ﻿namespace SimUServer
 {
-    partial class Service
+    partial class SimUServeService
     {
         /// <summary> 
         /// Required designer variable.
