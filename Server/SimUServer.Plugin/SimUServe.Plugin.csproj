@@ -90,6 +90,16 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Server\Core.Server.csproj">
+      <Project>{28969416-70C7-4486-AE27-5D09AB09D383}</Project>
+      <Name>Core.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimUServer.Service\SimUServer.Service.csproj">
+      <Project>{21f77240-cdae-4154-a885-eead4b0ae151}</Project>
+      <Name>SimUServer.Service</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
