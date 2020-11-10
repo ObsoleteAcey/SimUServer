@@ -25,21 +25,15 @@ namespace SimUServe.Plugin
 
         private void SaveSettings_Clicked(object sender, System.Windows.RoutedEventArgs e)
         {
-            var clientRestartRequired = false;
             var port = int.Parse(serverPort.Text);
             var updateFreq = int.Parse(updateFrequency.Text);
 
-            if(port != Plugin.Settings.UdpServerPort)
-            {
-                Plugin.Settings.UdpServerPort = port;
-                clientRestartRequired = true;
-            }
+            Plugin.Settings.UdpServerPort = port;
 
-            Plugin.Settings.UpdateFrequency = updateFreq;
-
-            if(clientRestartRequired)
+            if (Plugin.Settings.UpdateFrequency != updateFreq)
             {
-                Plugin.PluginManager.TriggerAction("RestartUdpClient");
+                Plugin.Settings.UpdateFrequency = updateFreq;
+                Plugin.PluginManager.TriggerAction("ResetUpdateTimer");
             }
         }
 

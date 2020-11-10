@@ -2,6 +2,8 @@
 using SimHub.Plugins;
 using System;
 using log4net;
+using SimUServer.Core.Server.Interfaces;
+using SimUServer.Core.Server;
 
 namespace SimUServe.Plugin
 {
@@ -18,6 +20,13 @@ namespace SimUServe.Plugin
         /// </summary>
         public PluginManager PluginManager { get; set; }
 
+        private DateTime _lastRunTime;
+
+        private int _milliSecondsBetweenRuns;
+
+        private INetworkClient _client;
+
+
         /// <summary>
         /// Called one time per game data update, contains all normalized game data, 
         /// raw data are intentionnally "hidden" under a generic object type (A plugin SHOULD NOT USE IT)
@@ -29,18 +38,16 @@ namespace SimUServe.Plugin
         /// <param name="data"></param>
         public void DataUpdate(PluginManager pluginManager, ref GameData data)
         {
+            var now = DateTime.Now;
             // Define the value of our property (declared in init)
-            pluginManager.SetPropertyValue("CurrentDateTime", this.GetType(), DateTime.Now);
+            pluginManager.SetPropertyValue("CurrentDateTime", this.GetType(), now);
 
-            if (data.GameRunning)
+            var millisPassedSinceLastRun = (now - _lastRunTime).TotalMilliseconds;
+
+            if (data.GameRunning && millisPassedSinceLastRun >= _milliSecondsBetweenRuns)
             {
                 if (data.OldData != null && data.NewData != null)
                 {
-                    if (data.OldData.SpeedKmh < Settings.SpeedWarningLevel && data.OldData.SpeedKmh >= Settings.SpeedWarningLevel)
-                    {
-                        // Trigger an event
-                        pluginManager.TriggerEvent("SpeedWarning", this.GetType());
-                    }
                     SimHub.Logging.Current.Info("************** START Update ********************");
                     SimHub.Logging.Current.Info($"CarSettings_CurrentDisplayedRPMPercent = {data.NewData.CarSettings_CurrentDisplayedRPMPercent}");
                     SimHub.Logging.Current.Info($"CarSettings_RedLineDisplayedPercent = {data.NewData.CarSettings_RedLineDisplayedPercent}");
@@ -50,6 +57,8 @@ namespace SimUServe.Plugin
                     SimHub.Logging.Current.Info($"CarSettings_RPMShiftLight2 = {data.NewData.CarSettings_RPMShiftLight2}");
                     SimHub.Logging.Current.Info("************** END Update ********************");
                 }
+
+                _lastRunTime = now;
             }
         }
 
@@ -88,13 +97,19 @@ namespace SimUServe.Plugin
             // Load settings
             Settings = this.ReadCommonSettings<SimUServeDataPluginSettings>("GeneralSettings", () => new SimUServeDataPluginSettings());
 
+            _lastRunTime = DateTime.Now;
+
+            // 1000 milliseconds / updates per second = millseconds between updates
+            _milliSecondsBetweenRuns = 1000 / Settings.UpdateFrequency;
+
+            _client = new UdpNetworkClient();
 
             // Declare a property available in the property list
             pluginManager.AddProperty("CurrentDateTime", this.GetType(), DateTime.Now);
 
 
             // Declare an action which can be called
-            pluginManager.AddAction("RestartUdpClient", this.GetType(), (a, b) =>
+            pluginManager.AddAction("ResetUpdateTimer", this.GetType(), (a, b) =>
             {
                 
                 

@@ -81,6 +81,13 @@
             <p>Configure the SimUServe server connection here.  You can select Auto to try and find a server, or
                 enter the IP manually.
             </p>
+            <input type="checkbox" onclick="toggleManualEntry()">Manually Enter Server
+            <label for="server-address">Server Address</label>
+            <input id="server-address" name="server-address" class="text-input" disabled>
+            <div class="button-container">
+                <button id="find-server" class="refesh-networks" onclick="findServer()">Find SimUServer</button>
+                <button id="connect-to-server" class="primary-button" onclick="connectToServer()">Connect to Server</button>
+            </div>
         </div>
         <div id="deviceInfo" class="tabcontent">
             <h1>SimUServe Device Info</h1>
@@ -166,6 +173,9 @@
                 });
             }
             function getDeviceInfo() {
+                
+            }
+            function toggleManualEntry() {
                 
             }
         </script>
