@@ -81,12 +81,17 @@
             <p>Configure the SimUServe server connection here.  You can select Auto to try and find a server, or
                 enter the IP manually.
             </p>
-            <input type="checkbox" onclick="toggleManualEntry()">Manually Enter Server
-            <label for="server-address">Server Address</label>
-            <input id="server-address" name="server-address" class="text-input" disabled>
+            <div>
+                <input id="manualServer" type="checkbox" name="manualServer" onclick="toggleManualEntry()">
+                <label for="manualServer">Manually Enter Server</label>
+            </div>
+            <div>
+                <label for="serverSddress">Server Address</label>
+                <input id="serverAddress" name="serverAddress" class="text-input" disabled>
+            </div>
             <div class="button-container">
-                <button id="find-server" class="refesh-networks" onclick="findServer()">Find SimUServer</button>
-                <button id="connect-to-server" class="primary-button" onclick="connectToServer()">Connect to Server</button>
+                <button id="findServer" class="refesh-networks" onclick="findServer()">Find SimUServer</button>
+                <button id="connectToServer" class="primary-button" onclick="connectToServer()">Connect to Server</button>
             </div>
         </div>
         <div id="deviceInfo" class="tabcontent">
@@ -176,7 +181,14 @@
                 
             }
             function toggleManualEntry() {
-                
+                var checkBox = document.getElementById("manualServer");
+                if(checkBox.checked) {
+                    document.getElementById("serverAddress").removeAttribute("disabled");
+                    document.getElementById("findServer").setAttribute("disabled", "disabled");
+                } else {
+                    document.getElementById("findServer").removeAttribute("disabled");
+                    document.getElementById("serverAddress").setAttribute("disabled", "disabled");
+                }
             }
         </script>
     </body>

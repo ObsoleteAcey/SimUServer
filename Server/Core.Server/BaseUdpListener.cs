@@ -21,6 +21,8 @@ namespace SimUServer.Core.Server
         protected int? _defaultBufferSize;
         protected int? _defaultPort;
 
+        protected bool _disposed = false;
+
         protected virtual void Receive()
         {
             _socket.BeginReceiveFrom(_state.Buffer, 0, _bufferSize, SocketFlags.None, ref _epFrom, _recv = (ar) =>

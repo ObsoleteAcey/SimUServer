@@ -3,23 +3,45 @@ using SimUServer.Core.Server.Interfaces;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SimUServer.Core.Server
 {
     public class UdpNetworkClient : INetworkClient
     {
-        private Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        public string DestinationIp { get; set; }
+
+        public int DestinationPort { get; set; }
 
         public void SendData(object dataToSend)
         {
-            IPAddress broadcast = IPAddress.Parse("192.168.1.255");
+            IPAddress destination = IPAddress.Parse(DestinationIp);
 
             var jsonToSend = JsonConvert.SerializeObject(dataToSend);
 
             byte[] sendbuf = Encoding.ASCII.GetBytes(jsonToSend);
-            IPEndPoint ep = new IPEndPoint(broadcast, 11000);
+            IPEndPoint ep = new IPEndPoint(destination, DestinationPort);
 
-            _clientSocket.SendTo(sendbuf, ep);
+
+            using (var udpClient = new UdpClient(DestinationPort, AddressFamily.InterNetwork))
+            {
+                udpClient.Send(sendbuf, sendbuf.Length, ep);
+            }
+        }
+
+        public async Task SendDataAsync(object dataToSend)
+        {
+            IPAddress destination = IPAddress.Parse(DestinationIp);
+
+            var jsonToSend = JsonConvert.SerializeObject(dataToSend);
+
+            byte[] sendbuf = Encoding.ASCII.GetBytes(jsonToSend);
+            IPEndPoint ep = new IPEndPoint(destination, DestinationPort);
+
+            using (var udpClient = new UdpClient(DestinationPort, AddressFamily.InterNetwork))
+            {
+                await udpClient.SendAsync(sendbuf, sendbuf.Length, ep);
+            }
         }
     }
 }

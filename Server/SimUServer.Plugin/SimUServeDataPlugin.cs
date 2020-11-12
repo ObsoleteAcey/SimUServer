@@ -4,6 +4,9 @@ using System;
 using log4net;
 using SimUServer.Core.Server.Interfaces;
 using SimUServer.Core.Server;
+using System.Windows.Forms;
+using WoteverCommon.Extensions;
+using WoteverCommon;
 
 namespace SimUServe.Plugin
 {
@@ -48,14 +51,7 @@ namespace SimUServe.Plugin
             {
                 if (data.OldData != null && data.NewData != null)
                 {
-                    SimHub.Logging.Current.Info("************** START Update ********************");
-                    SimHub.Logging.Current.Info($"CarSettings_CurrentDisplayedRPMPercent = {data.NewData.CarSettings_CurrentDisplayedRPMPercent}");
-                    SimHub.Logging.Current.Info($"CarSettings_RedLineDisplayedPercent = {data.NewData.CarSettings_RedLineDisplayedPercent}");
-                    SimHub.Logging.Current.Info($"CarSettings_RPMRedLineReached = {data.NewData.CarSettings_RPMRedLineReached}");
-                    SimHub.Logging.Current.Info($"CarSettings_RPMRedLineSetting = {data.NewData.CarSettings_RPMRedLineSetting}");
-                    SimHub.Logging.Current.Info($"CarSettings_RPMShiftLight1 = {data.NewData.CarSettings_RPMShiftLight1}");
-                    SimHub.Logging.Current.Info($"CarSettings_RPMShiftLight2 = {data.NewData.CarSettings_RPMShiftLight2}");
-                    SimHub.Logging.Current.Info("************** END Update ********************");
+                    _client.SendData(data.NewData);
                 }
 
                 _lastRunTime = now;
@@ -111,8 +107,12 @@ namespace SimUServe.Plugin
             // Declare an action which can be called
             pluginManager.AddAction("ResetUpdateTimer", this.GetType(), (a, b) =>
             {
-                
-                
+                _lastRunTime = DateTime.Now;
+            });
+
+            pluginManager.AddAction("UpdateServerPort", this.GetType(), (a, b) =>
+            {
+                _client.DestinationPort = Settings.UdpServerPort;
             });
         }
     }

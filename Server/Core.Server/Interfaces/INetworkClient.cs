@@ -8,6 +8,12 @@ namespace SimUServer.Core.Server.Interfaces
 {
     public interface INetworkClient
     {
+        string DestinationIp { get; set; }
+
+        int DestinationPort { get; set; }
+
         void SendData(object dataToSend);
+        
+        Task SendDataAsync(object dataToSend);
     }
 }

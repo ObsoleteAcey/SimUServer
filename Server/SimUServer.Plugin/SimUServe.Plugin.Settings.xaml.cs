@@ -28,7 +28,11 @@ namespace SimUServe.Plugin
             var port = int.Parse(serverPort.Text);
             var updateFreq = int.Parse(updateFrequency.Text);
 
-            Plugin.Settings.UdpServerPort = port;
+            if (Plugin.Settings.UdpServerPort != port)
+            {
+                Plugin.Settings.UdpServerPort = port;
+                Plugin.PluginManager.TriggerAction("UpdateServerPort");
+            }
 
             if (Plugin.Settings.UpdateFrequency != updateFreq)
             {
@@ -37,7 +41,7 @@ namespace SimUServe.Plugin
             }
         }
 
-        private static void NumberOnlyValidation(object sender, TextCompositionEventArgs e)
+        private void NumberOnlyValidation(object sender, TextCompositionEventArgs e)
         {
             e.Handled = _regex.IsMatch(e.Text);
         }

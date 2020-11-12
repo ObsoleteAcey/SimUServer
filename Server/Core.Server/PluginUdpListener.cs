@@ -16,6 +16,25 @@ namespace SimUServer.Core.Server
             _defaultPort = ConfigUtils.GetIntegerConfigSettingOrNull("DefaultDevicePort");
         }
 
+        public void Dispose() => Dispose(true);
+
+        // Protected implementation of Dispose pattern.
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // Dispose managed state (managed objects).
+                _socket?.Dispose();
+            }
+
+            _disposed = true;
+        }
+
         public void Start()
         {
             Start(_defaultPort.Value, _defaultBufferSize.Value);
