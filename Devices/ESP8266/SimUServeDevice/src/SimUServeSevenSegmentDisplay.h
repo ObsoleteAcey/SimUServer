@@ -1,14 +1,22 @@
+/*
+* Copyright (C) 2020 Stefan Park - All rights reserved
+* This is not free software and is not open source.  This
+* is part of the SimUServe ecosystem and is designed to
+* run as part of such.  Please do not redistribute this source
+* code in any form.  If you wish to license this software, please
+* contact Stefan at stefan.john.park@gmail.com.
+*/
+
 #ifndef SimUServeSevenSegmentDisplay_h
 #define SimUServeSevenSegmentDisplay_h
 
 #include "SimUServeCommon.h"
 
-#define DEFAULT_I2C_ADDRESS 0x70
 // SETUP stuff
 #define SYSTEM_SETUP_REGISTER 0x20
 #define SYSTEM_OSCILLATOR_OFF 0x00 // STANDBY MODE
 #define SYSTEM_OSCILLATOR_ON 0x01
-// Displat stuff
+// Display stuff
 #define DISPLAY_SETUP_REGISTER 0x80
 #define DISPLAY_ON_COMMAND 0x01
 #define DISPLAY_OFF_COMMAND 0x00
@@ -47,9 +55,10 @@ class SimUServeSevenSegmentDisplay {
          * @note   Defaults to no address and just a single display
          * @param scl - the pin used for the serial clock
          * @param sda - the pin used for the serial data
+         * @param numberOfDisplays - the number of displays - 1 to 6
          * @retval 
          */
-        SimUServeSevenSegmentDisplay(uint8_t, uint8_t);
+        SimUServeSevenSegmentDisplay(uint8_t, uint8_t, uint8_t);
 
         ~SimUServeSevenSegmentDisplay();
 
