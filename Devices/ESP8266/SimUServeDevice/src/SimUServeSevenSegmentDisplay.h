@@ -12,22 +12,28 @@
 
 #include "SimUServeCommon.h"
 
-// SETUP stuff
-#define SYSTEM_SETUP_REGISTER 0x20
-#define SYSTEM_OSCILLATOR_OFF 0x00 // STANDBY MODE
-#define SYSTEM_OSCILLATOR_ON 0x01
-// Display stuff
-#define DISPLAY_SETUP_REGISTER 0x80
-#define DISPLAY_ON_COMMAND 0x01
-#define DISPLAY_OFF_COMMAND 0x00
-#define DISPLAY_BLINK_OFF_COMMAND 0x00
-#define DISPLAY_BLINK_TWOHZ_COMMAND 0x01
-#define DISPLAY_BLINK_ONEHZ_COMMAND 0x02
-#define DISPLAY_BLINK_HALFHZ_COMMAND 0x03
+/* 
+*   for the TM1637, the display write mode flow is:
+*   1. Send the Data command - in most cases this will be 0x40
+*   2. Send the display address command - 0xC0 for the first display through to 0xC5 for the sixth display
+*   3. Send the data packet(s) - note the default mode when using Data command 0x40 is to auto-increment the 
+*       display address for every data packet
+*   4, Set the display mode - on/off and brightness
+*/
 
-// Brightness settings
-#define DISPLAY_BRIGHTNESS_COMMAND 0xEF
-#define DISPLAY_BRIGHTNESS_MAX 0x0F
+// Define the commands
+#define DATA_COMMAND_WRITE_TO_REGISTER 0x40
+
+// Define display base address
+// Just add 1 for each additonal display.  For example, to
+// address display 2, just use 0xC1
+#define DISPLAY_BASE_ADDRESS 0xC0
+
+// Brightness settings - note only 7 levels of brightness
+#define DISPLAY_BRIGHTNESS_COMMAND 0x80
+#define DISPLAY_BRIGHTNESS_MAX 0x07
+#define DISPLAY_OFF_COMMAND 0x00
+#define DISPLAY_ON_COMMAND 0x08
 
 /**
  * @brief  Used for communication with a seven segment display via serial chip - either I2C or some clicked serial data in
@@ -86,7 +92,7 @@ class SimUServeSevenSegmentDisplay {
 
         /**
          * @brief  Blinks the segement displays
-         * @note   
+         * @note   this is simulated in software as the TM1637 does not natively support blinking the display
          * @param blinkRate - sets the blink rate for the display.
          *  - DISPLAY_BLINK_OFF_COMMAND - turn blinking off
          *  - DISPLAY_BLINK_TWOHZ_COMMAND - blink at a rate of 2Hz
