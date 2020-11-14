@@ -13,11 +13,12 @@
 #include "SimUServeCommon.h"
 
 #define DEFAULT_I2C_ADDRESS 0x70
+#define DEFAULT_NUMBER_OF_DISPLAYS 4
 // SETUP stuff
 #define SYSTEM_SETUP_REGISTER 0x20
 #define SYSTEM_OSCILLATOR_OFF 0x00 // STANDBY MODE
 #define SYSTEM_OSCILLATOR_ON 0x01
-// Displat stuff
+// Display stuff
 #define DISPLAY_SETUP_REGISTER 0x80
 #define DISPLAY_ON_COMMAND 0x01
 #define DISPLAY_OFF_COMMAND 0x00
@@ -38,10 +39,10 @@ class SimUServeAlphaSegmentDisplay {
 
 
     public:
-        // init with default ports of D2,D1, and 4 displays
+        
         /**
          * @brief  Default constructor
-         * @note   Sets the default I2C ports as D2,D1, 4 displays
+         * @note   Sets the default I2C ports as D2 (SDA),D1 (SCL), 4 displays
          * @retval 
          */
         SimUServeAlphaSegmentDisplay();
@@ -51,9 +52,12 @@ class SimUServeAlphaSegmentDisplay {
         /**
          * @brief  Constructs using the supplied SDA and SCL port values
          * @note   Defaults to 4 displays and device address of 0x70
+         * @param sda - The serial data pin
+         * @param scl - The serial clock pin
+         * @param address - the I2C address - defaults to 0x70
          * @retval 
          */
-        SimUServeAlphaSegmentDisplay(uint8_t, uint8_t, uint8_t);
+        SimUServeAlphaSegmentDisplay(uint8_t, uint8_t, uint8_t, uint8_t);
 
         ~SimUServeAlphaSegmentDisplay();
 
@@ -127,7 +131,7 @@ class SimUServeAlphaSegmentDisplay {
         void setBrightness(uint8_t);
     
     private:
-        void init(uint8_t, uint8_t, uint8_t);
+        void init(uint8_t, uint8_t, uint8_t, uint8_t);
 };
 
 #endif

@@ -38,5 +38,39 @@ static const uint8_t displayLookUp[] PROGMEM = {
     0x80, // Hyphen, unicode 0x002D
     0x08, // Underline, unicode 0x005F
     0x48, // Equals, unicode 0x003D
-    0x41, // Superscrpt equals, unicode 
+    0x41, // Superscrpt equals, unicode 0x207C
+    0x63, // Superscript zero, unicode 0x00B0
+    0x5C, // Subscript zero
+};
+
+SimUServeSevenSegmentDisplay::SimUServeSevenSegmentDisplay()
+{
+    init();
+}
+
+SimUServeSevenSegmentDisplay::SimUServeSevenSegmentDisplay(uint8_t sda, uint8_t scl, uint8_t numberOfDisplays)
+{
+    init(sda, scl, numberOfDisplays);
+}
+
+void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_D4, uint8_t numberOfDisplays = 1)
+{
+    if(numberOfDisplays > 6) 
+    {
+        numberOfDisplays = 6;
+    }
+    else if(numberOfDisplays == 0)
+    {
+        numberOfDisplays = 1;
+    }
+
+    _sda = sda;
+    _scl = scl;
+    
+    _displaybuffer = new uint8_t[numberOfDisplays];
+
+    for(uint8_t index = 0; index < numberOfDisplays; index++)
+    {
+        _displaybuffer[index] = 0;
+    }
 }

@@ -118,7 +118,7 @@ static const uint16_t displayLookUp[] PROGMEM = {
 
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay()
 {
-    init(ESP_D2, ESP_D1, DEFAULT_I2C_ADDRESS);
+    init();
 }
 
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t deviceAddress)
@@ -126,17 +126,33 @@ SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t deviceAddress
     init(ESP_D2, ESP_D1, deviceAddress);
 }
 
-SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t sda, uint8_t scl, uint8_t deviceAddress = DEFAULT_I2C_ADDRESS)
+SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t sda, uint8_t scl, uint8_t deviceAddress = DEFAULT_I2C_ADDRESS,
+    uint8_t numberOfDisplays = DEFAULT_NUMBER_OF_DISPLAYS)
 {
-    init(sda, scl, deviceAddress);
+    init(sda, scl, deviceAddress, numberOfDisplays);
 }
 
-void SimUServeAlphaSegmentDisplay::init(uint8_t sda, uint8_t scl, uint8_t deviceAddress)
+void SimUServeAlphaSegmentDisplay::init(uint8_t sda = ESP_D2, uint8_t scl = ESP_D1, uint8_t deviceAddress = DEFAULT_I2C_ADDRESS, 
+        uint8_t numberOfDisplays = DEFAULT_NUMBER_OF_DISPLAYS)
 {
+    if(numberOfDisplays > 4) 
+    {
+        numberOfDisplays = 4;
+    }
+    else if(numberOfDisplays == 0)
+    {
+        numberOfDisplays = 1;
+    }
+
     _deviceAddress = deviceAddress;
     _sda = sda;
     _scl = scl;
-    _displaybuffer = new uint16_t[4] { 0,0,0,0 };
+    _displaybuffer = new uint16_t[numberOfDisplays];
+
+    for(uint8_t index = 0; index < numberOfDisplays; index++)
+    {
+        _displaybuffer[index] = 0;
+    }
 }
 
 SimUServeAlphaSegmentDisplay::~SimUServeAlphaSegmentDisplay()

@@ -42,17 +42,16 @@ class SimUServeSevenSegmentDisplay {
 
 
     public:
-        // init with default ports of D2,D1, and 4 displays
         /**
          * @brief  Default constructor
-         * @note   Sets the default I2C ports as D2,D1, 4 displays
+         * @note   Sets the default serial ports as D3 (sda),D4 (scl), 1 display
          * @retval 
          */
         SimUServeSevenSegmentDisplay();
 
         /**
          * @brief  Constructs using the supplied SDA and SCL port values
-         * @note   Defaults to no address and just a single display
+         * @note   
          * @param scl - the pin used for the serial clock
          * @param sda - the pin used for the serial data
          * @param numberOfDisplays - the number of displays - 1 to 6
