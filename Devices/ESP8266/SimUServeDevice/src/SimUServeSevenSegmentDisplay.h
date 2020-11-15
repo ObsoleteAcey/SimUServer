@@ -24,6 +24,8 @@
 // Define the commands
 #define DATA_COMMAND_WRITE_TO_REGISTER 0x40
 
+#define MAX_CLOCK_FREQUENCY_KHZ 500 // 500KHz is the max frequency.
+
 // Define display base address
 // Just add 1 for each additonal display.  For example, to
 // address display 2, just use 0xC1
@@ -50,7 +52,7 @@ class SimUServeSevenSegmentDisplay {
     private:
         uint8_t* _displaybuffer; //allocate at run time.  Only want the number of elements we are actually writing to
         uint8_t _scl, _sda; // the pins to connect the I2C bus to, or the serial data and clock
-
+        uint8_t _clockDutyTime; // microseconds between clock transitions
 
     public:
         /**
@@ -131,7 +133,8 @@ class SimUServeSevenSegmentDisplay {
         void setBrightness(uint8_t);
     
     private:
-        void init(uint8_t, uint8_t, uint8_t);
+        void init(uint8_t, uint8_t, uint8_t, uint8_t);
+        bool writeCommandToDisplay(uint8_t);
         bool writeWordToDisplay(uint8_t);
         void clockHigh(void);
         void clockLow(void);
@@ -142,6 +145,7 @@ class SimUServeSevenSegmentDisplay {
         bool listenForAck(void);
         void beginTransmission(void);
         void endTransmission(void);
+        void waitCycle(void);
 };
 
 #endif

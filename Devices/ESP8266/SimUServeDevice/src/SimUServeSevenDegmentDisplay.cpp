@@ -53,7 +53,7 @@ SimUServeSevenSegmentDisplay::SimUServeSevenSegmentDisplay(uint8_t sda, uint8_t 
     init(sda, scl, numberOfDisplays);
 }
 
-void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_D4, uint8_t numberOfDisplays = 1)
+void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_D4, uint8_t numberOfDisplays = 1, uint8_t clockFrequencyKHz = MAX_CLOCK_FREQUENCY_KHZ)
 {
     if(numberOfDisplays > 6) 
     {
@@ -66,6 +66,7 @@ void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_
 
     _sda = sda;
     _scl = scl;
+    _clockDutyTime = 1000 / clockFrequencyKHz;
     
     _displaybuffer = new uint8_t[numberOfDisplays];
 
@@ -85,8 +86,23 @@ void SimUServeSevenSegmentDisplay::writeToDisplay(void)
 
 }
 
+bool SimUServeSevenSegmentDisplay::writeCommandToDisplay(uint8_t commandToWrite)
+{
+    // commands are written differently to a word.
+    // from page 4 of dat sheet, a command needs a start bit written
+    // during a long clock pulse.
+    clockHigh();
+    dataHigh();
+    waitCycle();
+    dataLow();
+    waitCycle();
+    writeWordToDisplay(commandToWrite);
+}
+
 bool SimUServeSevenSegmentDisplay::writeWordToDisplay(uint8_t wordToWrite)
 {
+    // from datasheet, each bit is clocked in on rising edge
+    // so write goes - set clock low, write bit, set clock high
     for(uint8_t bitCount = 0; bitCount < 8; bitCount++)
     {
         // set clock low
@@ -129,11 +145,13 @@ void SimUServeSevenSegmentDisplay::beginTransmission(void)
 void SimUServeSevenSegmentDisplay::clockHigh(void)
 {
     digitalWrite(_scl, HIGH);
+    waitCycle();
 }
 
 void SimUServeSevenSegmentDisplay::clockLow(void)
 {
     digitalWrite(_scl, LOW);
+    waitCycle();
 }
 
 void SimUServeSevenSegmentDisplay::dataHigh(void)
@@ -144,4 +162,9 @@ void SimUServeSevenSegmentDisplay::dataHigh(void)
 void SimUServeSevenSegmentDisplay::dataLow(void)
 {
     digitalWrite(_sda, LOW);
+}
+
+void SimUServeSevenSegmentDisplay::waitCycle(void)
+{
+    delayMicroseconds(_clockDutyTime / 2);
 }
