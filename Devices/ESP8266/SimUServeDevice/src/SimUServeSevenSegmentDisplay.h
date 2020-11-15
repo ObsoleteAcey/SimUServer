@@ -35,6 +35,11 @@
 #define DISPLAY_OFF_COMMAND 0x00
 #define DISPLAY_ON_COMMAND 0x08
 
+#define DISPLAY_BLINK_OFF_COMMAND 0x00
+#define DISPLAY_BLINK_TWOHZ_COMMAND 0x01
+#define DISPLAY_BLINK_ONEHZ_COMMAND 0x02
+#define DISPLAY_BLINK_HALFHZ_COMMAND 0x03
+
 /**
  * @brief  Used for communication with a seven segment display via serial chip - either I2C or some clicked serial data in
  * @note   If using the likes of a TM1637, there will be no slave address to talk to.  It's a pure serial interface and requires
@@ -127,6 +132,16 @@ class SimUServeSevenSegmentDisplay {
     
     private:
         void init(uint8_t, uint8_t, uint8_t);
+        bool writeWordToDisplay(uint8_t);
+        void clockHigh(void);
+        void clockLow(void);
+        void dataHigh(void);
+        void dataLow(void);
+        void sendHighBit(void);
+        void sendLowBit(void);
+        bool listenForAck(void);
+        void beginTransmission(void);
+        void endTransmission(void);
 };
 
 #endif

@@ -73,4 +73,75 @@ void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_
     {
         _displaybuffer[index] = 0;
     }
+
+    pinMode(_sda, OUTPUT);
+    pinMode(_scl, OUTPUT);
+    digitalWrite(_sda, LOW);
+    digitalWrite(_scl, LOW);
+}
+
+void SimUServeSevenSegmentDisplay::writeToDisplay(void)
+{
+
+}
+
+bool SimUServeSevenSegmentDisplay::writeWordToDisplay(uint8_t wordToWrite)
+{
+    for(uint8_t bitCount = 0; bitCount < 8; bitCount++)
+    {
+        // set clock low
+        clockLow();
+
+        // write current bit out
+        // check with a bitmask for a high or low data signal to send
+        wordToWrite & 0x01 ? dataHigh() : dataLow();
+
+        // clock the bit in
+        clockHigh();
+        // shift the bits over by one
+        wordToWrite = wordToWrite >> 1;
+    }
+
+    return listenForAck();
+}
+
+bool SimUServeSevenSegmentDisplay::listenForAck()
+{
+    clockLow();
+    pinMode(_sda, INPUT);
+    clockHigh();
+
+    uint8_t ack = digitalRead(_sda);
+
+    pinMode(_sda, OUTPUT); 
+    clockLow();
+
+    return ack;
+}
+
+void SimUServeSevenSegmentDisplay::beginTransmission(void)
+{
+    // clock high, data low
+    clockHigh();
+    dataLow();
+}
+
+void SimUServeSevenSegmentDisplay::clockHigh(void)
+{
+    digitalWrite(_scl, HIGH);
+}
+
+void SimUServeSevenSegmentDisplay::clockLow(void)
+{
+    digitalWrite(_scl, LOW);
+}
+
+void SimUServeSevenSegmentDisplay::dataHigh(void)
+{
+    digitalWrite(_sda, HIGH);
+}
+
+void SimUServeSevenSegmentDisplay::dataLow(void)
+{
+    digitalWrite(_sda, LOW);
 }
