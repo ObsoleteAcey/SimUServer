@@ -64,13 +64,15 @@ void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_
         numberOfDisplays = 1;
     }
 
+    _numberOfDisplays = numberOfDisplays;
+
     _sda = sda;
     _scl = scl;
     _clockDutyTime = 1000 / clockFrequencyKHz;
     
-    _displaybuffer = new uint8_t[numberOfDisplays];
+    _displaybuffer = new uint8_t[_numberOfDisplays];
 
-    for(uint8_t index = 0; index < numberOfDisplays; index++)
+    for(uint8_t index = 0; index < _numberOfDisplays; index++)
     {
         _displaybuffer[index] = 0;
     }
@@ -83,7 +85,13 @@ void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_
 
 void SimUServeSevenSegmentDisplay::writeToDisplay(void)
 {
-
+    writeCommandToDisplay(DATA_COMMAND_WRITE_TO_REGISTER);
+    writeCommandToDisplay(DISPLAY_BASE_ADDRESS);
+    for(uint8_t index = 0; index < _numberOfDisplays; index++)
+    {
+        writeWordToDisplay(_displaybuffer[index]);
+    }
+    writeCommandToDisplay(DISPLAY_ON_COMMAND);
 }
 
 bool SimUServeSevenSegmentDisplay::writeCommandToDisplay(uint8_t commandToWrite)
@@ -125,11 +133,12 @@ bool SimUServeSevenSegmentDisplay::listenForAck()
 {
     clockLow();
     pinMode(_sda, INPUT);
+    waitCycle(); // wait an additional on low clock cycle
     clockHigh();
 
     uint8_t ack = digitalRead(_sda);
 
-    pinMode(_sda, OUTPUT); 
+    pinMode(_sda, OUTPUT);
     clockLow();
 
     return ack;
