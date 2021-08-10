@@ -122,7 +122,7 @@ class SimUServeWiFi {
     /*
       Call this every loop to check for any web requests and update MDNS
     */
-    void checkForWebRequests(void);
+    void checkForRequests(void);
 
     /*
       Call this during setup, after params have been set, to start MDNS and the WebServer
@@ -140,12 +140,11 @@ class SimUServeWiFi {
     bool checkEepromForValue(int, T&);
     template <typename T>
     void writeValueToEeprom(int, T const&);
+    
     /*
       Inits some default settings.  These will be over-ridden by any saved settings
     */
     void initDefaults(void);
-
-    
 
     /*
       Fires up the MDNS Responder
@@ -156,6 +155,11 @@ class SimUServeWiFi {
      * gets a list of available Wifi networks that can be connected to
     */
     WifiNetwork* const getAvailableWifiNetworks(void);
+
+    /*
+     * refreshes the list of available Wifi networks that can be connected to
+    */
+    WifiNetwork* const refreshAvailableWifiNetworks(void);
 
     /*
      * sets up the access point and populates available wireless networks

@@ -118,12 +118,12 @@ static const uint16_t displayLookUp[] PROGMEM = {
 
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay()
 {
-    init();
+    init(ESP_D2, ESP_D1, DEFAULT_I2C_ADDRESS, DEFAULT_NUMBER_OF_DISPLAYS);
 }
 
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t deviceAddress)
 {
-    init(ESP_D2, ESP_D1, deviceAddress);
+    init(ESP_D2, ESP_D1, deviceAddress, DEFAULT_NUMBER_OF_DISPLAYS);
 }
 
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t sda, uint8_t scl, uint8_t deviceAddress = DEFAULT_I2C_ADDRESS,

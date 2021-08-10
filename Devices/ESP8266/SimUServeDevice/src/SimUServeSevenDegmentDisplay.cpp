@@ -45,12 +45,12 @@ static const uint8_t displayLookUp[] PROGMEM = {
 
 SimUServeSevenSegmentDisplay::SimUServeSevenSegmentDisplay()
 {
-    init();
+    init(ESP_D3, ESP_D4, 1, MAX_CLOCK_FREQUENCY_KHZ);
 }
 
 SimUServeSevenSegmentDisplay::SimUServeSevenSegmentDisplay(uint8_t sda, uint8_t scl, uint8_t numberOfDisplays)
 {
-    init(sda, scl, numberOfDisplays);
+    init(sda, scl, numberOfDisplays, MAX_CLOCK_FREQUENCY_KHZ);
 }
 
 void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_D4, uint8_t numberOfDisplays = 1, uint8_t clockFrequencyKHz = MAX_CLOCK_FREQUENCY_KHZ)
@@ -70,6 +70,7 @@ void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_
     _scl = scl;
     _clockDutyTime = 1000 / clockFrequencyKHz;
     
+
     _displaybuffer = new uint8_t[_numberOfDisplays];
 
     for(uint8_t index = 0; index < _numberOfDisplays; index++)

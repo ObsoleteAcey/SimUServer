@@ -116,9 +116,10 @@ void SimUServeWiFi::startMdns(void)
 
 void SimUServeWiFi::setupAccessPoint(void)
 {
-    WiFi.mode(WIFI_AP_STA);
+    WiFi.mode(WIFI_STA);
     WiFi.disconnect();
     delay(100);
+    this->getAvailableWifiNetworks();
     Serial.println("Starting access point on" + _settings->getServerSsid() + " using password " + _settings->getServerPassword());
     WiFi.softAPConfig(_settings->getServerIpAddress(), _settings->getServerGatewayIpAddress(),
         _settings->getServerNetmask());
@@ -127,13 +128,14 @@ void SimUServeWiFi::setupAccessPoint(void)
 
 WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 {
-    Serial.println("SimUServeWiFi::getAvailableWifiNetworks");
-    numberOfNetworks = WiFi.scanNetworks();
-    Serial.println("Found " + String(numberOfNetworks) + " networks.");
     if(_availableNetworks)
     {
-        delete[] _availableNetworks;
+       return _availableNetworks;
     }
+
+    Serial.println("SimUServeWiFi::getAvailableWifiNetworks");
+    numberOfNetworks = WiFi.scanNetworks(false, true);
+    Serial.println("Found " + String(numberOfNetworks) + " networks.");
 
     _availableNetworks = new WifiNetwork[numberOfNetworks];
 
@@ -144,6 +146,16 @@ WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
     }
 
     return _availableNetworks;
+}
+
+WifiNetwork* const SimUServeWiFi::refreshAvailableWifiNetworks(void)
+{
+    if(_availableNetworks)
+    {
+       delete[] _availableNetworks;
+    }
+
+    return this->getAvailableWifiNetworks();
 }
 
 void SimUServeWiFi::launchWebServer(void)
@@ -162,7 +174,7 @@ void SimUServeWiFi::launchWebServer(void)
     _server->begin();
 }
 
-void SimUServeWiFi::checkForWebRequests(void)
+void SimUServeWiFi::checkForRequests(void)
 {
     MDNS.update();
 }
