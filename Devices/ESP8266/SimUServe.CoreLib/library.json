@@ -1,0 +1,8 @@
+{
+    "name": "SimUServeCore",
+    "version": "0.1",
+    "description": "Libraries for use in the SimUServe platformio project",
+    "authors": "Stefan Park",
+    "frameworks": ["esp8266-rtos-sdk"],
+    "platforms": ["espressif8266", "espressif32"]
+}
