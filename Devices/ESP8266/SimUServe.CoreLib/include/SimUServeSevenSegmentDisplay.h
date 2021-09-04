@@ -11,6 +11,7 @@
 #define SimUServeSevenSegmentDisplay_h
 
 #include "SimUServeCommon.h"
+#include <stdint.h>
 
 /* 
 *   for the TM1637, the display write mode flow is:

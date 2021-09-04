@@ -12,6 +12,7 @@
 
 #include "SimUServeWiFiSettings.h"
 #include "SimUServeCommon.h"
+#include <stdint.h>
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
 #include <ESP8266mDNS.h>

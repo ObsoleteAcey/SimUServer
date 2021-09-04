@@ -11,6 +11,7 @@
 #define SimUServeWiFiSettings_h
 
 #include <ESP8266WiFi.h>
+#include <stdint.h>
 
 class SimUServeWiFiSettings {
   protected:
@@ -32,10 +33,34 @@ class SimUServeWiFiSettings {
     
   public:
     ~SimUServeWiFiSettings();
+
+    /**
+     * @brief Set the SimUServe Server Port
+     * 
+     */
     void setServerPort(int);
+
+    /**
+     * @brief Get the SimUServe Server Port
+     * 
+     * @return int The server port
+     */
     int getServerPort(void) const;
+
+    /**
+     * @brief Set the SimUServe Server Ip Address
+     * 
+     */
     void setServerIpAddress(String const&);
+
+    /**
+     * @brief Get the SimUServe Server Ip Address
+     * 
+     * @return An IPAddress object containing information about the 
+     * SimUServe server IP Address
+     */
     IPAddress const& getServerIpAddress(void) const;
+    
     void setServerGatewayIpAddress(String const&);
     IPAddress const& getServerGatewayIpAddress(void) const;
     void setServerNetmask(String const&);

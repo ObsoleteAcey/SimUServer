@@ -11,6 +11,7 @@
 #define SimUServeAlphaSegmentDisplay_h
 
 #include "SimUServeCommon.h"
+#include <stdint.h>
 
 #define DEFAULT_I2C_ADDRESS 0x70
 #define DEFAULT_NUMBER_OF_DISPLAYS 4
