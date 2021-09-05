@@ -135,7 +135,7 @@ class SimUServeSevenSegmentDisplay {
         void setBrightness(uint8_t);
     
     private:
-        void init(uint8_t, uint8_t, uint8_t, uint8_t);
+        void init(uint8_t, uint8_t, uint8_t, uint16_t);
         bool writeCommandToDisplay(uint8_t);
         bool writeWordToDisplay(uint8_t);
         void clockHigh(void);

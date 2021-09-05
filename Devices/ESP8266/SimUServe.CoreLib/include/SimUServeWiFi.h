@@ -47,7 +47,8 @@ typedef struct WifiNetwork {
     EncryptionType = encryptionType;
   }
 
-  int getSignalStrength() {
+  int getSignalStrength() 
+  {
       int quality = 0;
       if(RSSI <= -100)
       {
@@ -60,7 +61,8 @@ typedef struct WifiNetwork {
       return 2 * (RSSI + 100);
   }
 
-  String const& toJson(void) {
+  String const& toJson(void) 
+  {
     String jsonString = "{\"ssid\":\"";
     jsonString.concat(SSID);
     jsonString.concat("\",\"signalStrength\":\"");

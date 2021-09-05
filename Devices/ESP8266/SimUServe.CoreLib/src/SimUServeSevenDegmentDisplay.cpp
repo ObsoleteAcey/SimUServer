@@ -8,6 +8,7 @@
 */
 
 #include "SimUServeSevenSegmentDisplay.h"
+#include <Arduino.h>
 
 // TM1637 encoding - each bit represents a single segment
 // 7 Segment display - https://en.wikipedia.org/wiki/Seven-segment_display
@@ -53,7 +54,7 @@ SimUServeSevenSegmentDisplay::SimUServeSevenSegmentDisplay(uint8_t sda, uint8_t 
     init(sda, scl, numberOfDisplays, MAX_CLOCK_FREQUENCY_KHZ);
 }
 
-void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_D4, uint8_t numberOfDisplays = 1, uint8_t clockFrequencyKHz = MAX_CLOCK_FREQUENCY_KHZ)
+void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_D4, uint8_t numberOfDisplays = 1, uint16_t clockFrequencyKHz = MAX_CLOCK_FREQUENCY_KHZ)
 {
     if(numberOfDisplays > 6) 
     {
@@ -105,7 +106,7 @@ bool SimUServeSevenSegmentDisplay::writeCommandToDisplay(uint8_t commandToWrite)
     waitCycle();
     dataLow();
     waitCycle();
-    writeWordToDisplay(commandToWrite);
+    return writeWordToDisplay(commandToWrite);
 }
 
 bool SimUServeSevenSegmentDisplay::writeWordToDisplay(uint8_t wordToWrite)

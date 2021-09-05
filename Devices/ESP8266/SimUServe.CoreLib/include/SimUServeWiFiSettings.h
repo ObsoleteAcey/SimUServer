@@ -12,6 +12,7 @@
 
 #include <ESP8266WiFi.h>
 #include <stdint.h>
+#include <String>
 
 class SimUServeWiFiSettings {
   protected:

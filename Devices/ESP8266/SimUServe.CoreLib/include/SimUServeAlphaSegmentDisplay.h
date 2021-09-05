@@ -11,6 +11,7 @@
 #define SimUServeAlphaSegmentDisplay_h
 
 #include "SimUServeCommon.h"
+#include <WString.h>
 #include <stdint.h>
 
 #define DEFAULT_I2C_ADDRESS 0x70

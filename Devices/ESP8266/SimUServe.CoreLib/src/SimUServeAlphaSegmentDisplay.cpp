@@ -206,7 +206,6 @@ void SimUServeAlphaSegmentDisplay::writeCharacter(uint8_t displayNumber, uint8_t
 
 void SimUServeAlphaSegmentDisplay::writeWord(uint8_t startDisplay, String stringToWrite)
 {
-    bool containsDecimal = stringToWrite.indexOf('.') > 0;
     int displayNumber = 0;
     // cycle through the string, writing to the display. 
     // TODO: If the string is longer, we should scroll it along the whole display.
