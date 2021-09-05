@@ -63,19 +63,33 @@ class SimUServeWiFiSettings {
     IPAddress const& getServerIpAddress(void) const;
     
     void setServerGatewayIpAddress(String const&);
+
     IPAddress const& getServerGatewayIpAddress(void) const;
+
     void setServerNetmask(String const&);
+
     IPAddress const& getServerNetmask(void) const;
+
     void setServerSsid(String const&);
+
     String const& getServerSsid(void) const;
+
     void setServerPassword(String const&);
+
     String const& getServerPassword(void) const;
+
     void setConnectedSsid(String const&);
+
     String const& getConnectedSsid(void) const;
+
     void setConnectedPassword(String const&);
+
     String const& getConnectedPassword(void) const;
+
     void setDeviceHostName(String const&);
+
     String const& getDeviceHostName(void) const;
+    
     /*
      * Resets the dirty flag
     */

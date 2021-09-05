@@ -31,7 +31,7 @@
 #define DEFAULT_SERVER_PASSWORD "SimUServeWiFIPassword"
 #define SERVER_LOCAL_ADDRESS "http://simuserve.device"
 
-typedef struct WifiNetwork {
+struct WifiNetwork {
   int Index;
   String SSID;
   int32_t RSSI;
@@ -49,7 +49,6 @@ typedef struct WifiNetwork {
 
   int getSignalStrength() 
   {
-      int quality = 0;
       if(RSSI <= -100)
       {
           return 0;
@@ -61,7 +60,7 @@ typedef struct WifiNetwork {
       return 2 * (RSSI + 100);
   }
 
-  String const& toJson(void) 
+  String const toJson(void) 
   {
     String jsonString = "{\"ssid\":\"";
     jsonString.concat(SSID);
@@ -137,7 +136,8 @@ class SimUServeWiFi {
     */
     bool testWifiConnection(void);
     
-    
+    String getWifiStatus(wl_status_t);
+
   protected:
     template <typename T>
     bool checkEepromForValue(int, T&);

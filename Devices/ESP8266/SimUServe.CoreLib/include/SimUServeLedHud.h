@@ -45,8 +45,8 @@ class SimUServeLedHud {
     unsigned long previousRedlineMillis;
     unsigned long previousPitLimitMillis;
     unsigned long previousLowFuelMillis;
-    long flagCycleTime = 500;
-    long redlineCycleTime = 100;
+    unsigned long flagCycleTime = 500;
+    unsigned long redlineCycleTime = 100;
 
   public:
     SimUServeLedHud();

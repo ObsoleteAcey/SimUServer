@@ -95,7 +95,7 @@ bool SimUServeWiFi::testWifiConnection()
             return(true);
         } 
         delay(500);
-        Serial.print("WiFi Status: " + WiFi.status());    
+        Serial.print("WiFi Status: " + this->getWifiStatus(WiFi.status()));    
         waitRetryCounter++;
     }
     Serial.println("Connect timed out");
@@ -188,11 +188,12 @@ void SimUServeWiFi::handleRootGet(AsyncWebServerRequest *request)
 void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
 {
     auto* availableNetworks = getAvailableWifiNetworks();
-    String returnJson;
-    returnJson = "{[";
+    String returnJson = "{[";
+
     for (int i = 0; i < numberOfNetworks; i++)
     {
-        returnJson.concat(availableNetworks[i].toJson());
+        String json = availableNetworks[i].toJson();
+        returnJson.concat(json);
         if(i < numberOfNetworks - 1) 
         {
             returnJson.concat(",");
@@ -248,6 +249,38 @@ void SimUServeWiFi::handleNotFound(AsyncWebServerRequest *request)
     response->addHeader("Expires", "-1");
     response->addHeader("Content-Length", String(message.length()));
     request->send(response);
+}
+
+String SimUServeWiFi::getWifiStatus(wl_status_t status)
+{
+    switch(status){
+        case WL_IDLE_STATUS:
+            return "Idle";
+            break;
+        case WL_NO_SSID_AVAIL:
+            return "No SSID available";
+            break;
+        case WL_SCAN_COMPLETED:
+            return "Scan completed";
+            break;
+        case WL_CONNECTED:
+            return "Connected";
+            break;
+        case WL_CONNECT_FAILED:
+            return "Connection failed";
+            break;
+        case WL_CONNECTION_LOST:
+            return "Connection lost";
+            break;
+        case WL_WRONG_PASSWORD:
+            return "Wrong password";
+            break;
+        case WL_DISCONNECTED:
+            return "Disconnected";
+            break;
+        default:
+            return "Unknown error";
+    }
 }
 
 SimUServeWiFi simUServeWiFi;
