@@ -11,7 +11,7 @@
 
 SimUServeWiFiSettings::~SimUServeWiFiSettings()
 {
-    delete _ipAddress;
+    
 }
 
 void SimUServeWiFiSettings::update(SimUServeWiFiSettings const& fromSettings)
@@ -47,15 +47,15 @@ void SimUServeWiFiSettings::setServerIpAddress(String const& ipAddress)
         _serverIpAddress = String(ipAddress);
         if (!_ipAddress)
         {
-            _ipAddress = new IPAddress();
+            _ipAddress = IPAddress();
         }
-        _ipAddress->fromString(ipAddress);
+        _ipAddress.fromString(ipAddress);
     }
 }
 
 IPAddress const& SimUServeWiFiSettings::getServerIpAddress(void) const
 {
-    return *_ipAddress;
+    return _ipAddress;
 }
 
 void SimUServeWiFiSettings::setServerGatewayIpAddress(String const& ipAddress)
@@ -66,15 +66,15 @@ void SimUServeWiFiSettings::setServerGatewayIpAddress(String const& ipAddress)
         _serverGatewayIpAddress = String(ipAddress);
         if (!_gatewayIpAddress)
         {
-            _gatewayIpAddress = new IPAddress();
+            _gatewayIpAddress = IPAddress();
         }
-        _gatewayIpAddress->fromString(ipAddress);
+        _gatewayIpAddress.fromString(ipAddress);
     }
 }
 
 IPAddress const& SimUServeWiFiSettings::getServerGatewayIpAddress(void) const
 {
-    return *_gatewayIpAddress;
+    return _gatewayIpAddress;
 }
 
 void SimUServeWiFiSettings::setServerNetmask(String const& ipAddress)
@@ -85,15 +85,15 @@ void SimUServeWiFiSettings::setServerNetmask(String const& ipAddress)
         _serverNetmask = String(ipAddress);
         if (!_netmask)
         {
-            _netmask = new IPAddress();
+            _netmask = IPAddress();
         }
-        _netmask->fromString(ipAddress);
+        _netmask.fromString(ipAddress);
     }
 }
 
 IPAddress const& SimUServeWiFiSettings::getServerNetmask(void) const
 {
-    return *_netmask;
+    return _netmask;
 }
 
 void SimUServeWiFiSettings::setServerSsid(String const& serverSsid)

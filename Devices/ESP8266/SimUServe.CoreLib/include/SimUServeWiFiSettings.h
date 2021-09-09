@@ -28,9 +28,9 @@ class SimUServeWiFiSettings {
 
   private:
     bool _isDirty = false;
-    IPAddress* _ipAddress;
-    IPAddress* _gatewayIpAddress;
-    IPAddress* _netmask;
+    IPAddress _ipAddress;
+    IPAddress _gatewayIpAddress;
+    IPAddress _netmask;
     
   public:
     ~SimUServeWiFiSettings();
