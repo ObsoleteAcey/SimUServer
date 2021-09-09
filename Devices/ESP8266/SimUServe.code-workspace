@@ -3,6 +3,10 @@
 		{
 			"name": "SimUServe.CoreLib",
 			"path": "SimUServe.CoreLib"
+		},
+		{
+			"name": "SumUServe.F1LED",
+			"path": "SumUServe.F1LED"
 		}
 	],
 	"settings": {
