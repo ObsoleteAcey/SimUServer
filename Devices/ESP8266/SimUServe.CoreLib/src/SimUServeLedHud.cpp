@@ -116,4 +116,12 @@ void SimUServeLedHud::updateLedState()
   FastLED.show();
 }
 
+void SimUServeLedHud::initDefaults()
+{
+  // init flag cycle times
+  redlineCycleTime = REDLINE_CYCLE_TIME_MILLIS;
+  flagCycleTime = FLAG_CYCLE_TIME_MILLIS;
+
+}
+
 SimUServeLedHud simUServeLedHud;

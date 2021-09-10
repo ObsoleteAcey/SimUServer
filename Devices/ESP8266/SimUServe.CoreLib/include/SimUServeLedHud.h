@@ -12,7 +12,9 @@
 
 #include "SimUServeCommon.h"
 #include <FastLED.h>
+#include <stdint.h>
 
+// default settings
 #define NUM_LEDS 22
 #define NUM_LEDS_REV 16
 #define LED_TYPE WS2812B
@@ -23,6 +25,8 @@
 #define LAST_STATE_LED_END_INDEX 21
 #define REV_DISPLAY_START_INDEX 3
 #define REV_DISPLAY_END_INDEX 18
+#define FLAG_CYCLE_TIME_MILLIS 500
+#define REDLINE_CYCLE_TIME_MILLIS 100
 
 // these come from SimHub.  The first 2 are between 0 and 1 and represent the 2 zones
 // for 16 LEDs, we'll go [G,G,G,G,G,G,R,R,R,R,R,B,B,B,B,B]
@@ -41,15 +45,32 @@ class SimUServeLedHud {
     bool redlineState;
     bool pitLimitState;
     bool lowFuelState;
+
+    // timer state attributes
     unsigned long previousFlagMillis;
     unsigned long previousRedlineMillis;
     unsigned long previousPitLimitMillis;
     unsigned long previousLowFuelMillis;
-    unsigned long flagCycleTime = 500;
-    unsigned long redlineCycleTime = 100;
+    unsigned long flagCycleTime;
+    unsigned long redlineCycleTime;
+    // LED config settings
+
 
   public:
+    /**
+     * @brief Construct a new Sim U Serve Led Hud object
+     * with default settings
+     * 
+     */
     SimUServeLedHud();
+
+    /**
+     * @brief Construct a new Sim U Serve Led Hud object
+     * with just Rev LEDs
+     * @param numRevLeds The number of rev LEDs
+     */
+    SimUServeLedHud(uint8_t)
+
     ~SimUServeLedHud();
     void updateLedState(void);
     
