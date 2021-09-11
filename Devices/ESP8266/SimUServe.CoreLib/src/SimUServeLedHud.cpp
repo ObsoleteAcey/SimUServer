@@ -11,16 +11,33 @@
 
 SimUServeLedHud::SimUServeLedHud() 
 {
-    initDefaults();
+  initDefaults(NUM_LEDS);
+
+  this->leds = new CRGB[NUM_LEDS];
+}
+
+SimUServeLedHud::SimUServeLedHud(uint8_t numberOfRevLeds)
+{
+  initDefaults(numberOfRevLeds);
+  this->numberOfRevLeds = numberOfRevLeds;
+  this->revLedStartIndex = 0;
+  this->revLedEndIndex = numberOfRevLeds - 1;
+  // disable state LEDs
+  this->hasStateLeds = false;
+  // re-evaluate the rev increment per LED.
+  this->revIncrementPerLed = 2/numberOfRevLeds;
+
+  this->leds = new CRGB[numberOfRevLeds];
 }
 
 SimUServeLedHud::~SimUServeLedHud()
 {
-
+  delete this->leds;
 }
 
-CRGB SimUServeLedHud::indexToColour(int index) {
-  if(index >= 3 && index < 9)
+CRGB SimUServeLedHud::indexToColour(uint8_t index) {
+
+  if(index >= this->revLedStartIndex && index < this->revLedStartIndex + 6)
   {
     return CRGB::Green;
   }
@@ -32,15 +49,14 @@ CRGB SimUServeLedHud::indexToColour(int index) {
   return CRGB::Blue;
 }
 
-int SimUServeLedHud::rpmShiftToIndexLimit(double rpm1, double rpm2)
+uint8_t SimUServeLedHud::rpmShiftToIndexLimit(double rpm1, double rpm2)
 {
-  int index = (int)((rpm1+rpm2)/0.125);
-  return index;
+  return (uint8_t)((rpm1+rpm2)/this->revIncrementPerLed);
 }
 
-void SimUServeLedHud::clearLeds(int startIndex, int endIndex) 
+void SimUServeLedHud::clearLeds(uint8_t startIndex, uint8_t endIndex) 
 {
-  for (int i = startIndex; i <= endIndex; i++) {
+  for (uint8_t i = startIndex; i <= endIndex; i++) {
     leds[i] = CRGB::Black;
   }
 }
@@ -52,7 +68,7 @@ void SimUServeLedHud::displayRedline(unsigned long currentMillis)
     return;
   }
 
-  for (int i = REV_DISPLAY_START_INDEX; i <= REV_DISPLAY_END_INDEX; i++) {
+  for (uint8_t i = this->revLedStartIndex; i <= this->revLedEndIndex; i++) {
     leds[i] = redlineState ? CRGB::Blue : CRGB::Black;
   }
 
@@ -62,38 +78,41 @@ void SimUServeLedHud::displayRedline(unsigned long currentMillis)
 
 void SimUServeLedHud::flashFlag(CRGB colour, unsigned long currentMillis)
 {
-  if(currentMillis - previousFlagMillis < flagCycleTime)
+  // bail if no state LEDs, or the time expired to flash isn't up
+  if(!this->hasStateLeds || (currentMillis - this->previousFlagMillis < this->flagCycleTime))
   {
     return;
   }
   
-  for(int index = FIRST_STATE_LED_START_INDEX; index <= LAST_STATE_LED_END_INDEX; index++)
+  for(uint8_t index = this->firstStateLedStartIndex; index <= this->lastStateLedEndIndex; index++)
   {
     leds[index] = flagState ? colour : CRGB::Black;
-    if(index == FIRST_STATE_LED_END_INDEX)
+    if(index == this->firstStateLedEndIndex)
     {
-      index = LAST_STATE_LED_START_INDEX - 1;
+      index = this->lastStateLedStartIndex - 1;
     }
   }
 
-  flagState = !flagState;
-  previousFlagMillis = currentMillis;
+  this->flagState = !this->flagState;
+  this->previousFlagMillis = currentMillis;
 }
 
 void SimUServeLedHud::displayRpmLine()
 {
 
-  int indexMax = rpmShiftToIndexLimit(rpmShiftLight1, rpmShiftLight2);
+  int indexMax = rpmShiftToIndexLimit(this->rpmShiftLight1, this->rpmShiftLight2);
 
   if(indexMax == 0)
   {
-    clearLeds(REV_DISPLAY_START_INDEX, REV_DISPLAY_END_INDEX);
+    clearLeds(this->revLedStartIndex, this->revLedEndIndex);
     return;
   }
 
-  indexMax+=3;
+  // increment the max index as it's zero based, and we need
+  // it to start from the first rev LED index
+  indexMax += this->revLedStartIndex;
 
-  for(int index = 3; index < indexMax; index++)
+  for(int index = this->revLedStartIndex; index < indexMax; index++)
   {
     leds[index] = indexToColour(index);
   } 
@@ -103,7 +122,7 @@ void SimUServeLedHud::updateLedState()
 {
   unsigned long currentMillis = millis();
   
-  if(redLineReached) 
+  if(this->redLineReached) 
   {
     displayRedline(currentMillis);
   }
@@ -116,12 +135,32 @@ void SimUServeLedHud::updateLedState()
   FastLED.show();
 }
 
-void SimUServeLedHud::initDefaults()
+void SimUServeLedHud::initDefaults(uint8_t totalNumberOfLeds)
 {
   // init flag cycle times
-  redlineCycleTime = REDLINE_CYCLE_TIME_MILLIS;
-  flagCycleTime = FLAG_CYCLE_TIME_MILLIS;
+  this->redlineCycleTime = REDLINE_CYCLE_TIME_MILLIS;
+  this->flagCycleTime = FLAG_CYCLE_TIME_MILLIS;
+  // init the flash timers
+  this->previousFlagMillis = 0;
+  this->previousRedlineMillis = 0;
+  this->previousPitLimitMillis = 0;
+  this->previousLowFuelMillis = 0;
+  // init the Rev LEDs
+  this->numberOfRevLeds = NUM_LEDS_REV;
+  this->revLedStartIndex = REV_DISPLAY_START_INDEX;
+  this->revLedEndIndex = REV_DISPLAY_END_INDEX;
+  this->revIncrementPerLed = 2/NUM_LEDS_REV; 
+  // init the state LEDs
+  this->hasStateLeds = true;
+  this->firstStateLedStartIndex = FIRST_STATE_LED_START_INDEX;
+  this->firstStateLedEndIndex = FIRST_STATE_LED_END_INDEX;
+  this->lastStateLedStartIndex = LAST_STATE_LED_START_INDEX;
+  this->lastStateLedEndIndex = LAST_STATE_LED_END_INDEX;
 
+  
 }
 
-SimUServeLedHud simUServeLedHud;
+uint8_t SimUServeLedHud::totalNumberOfLeds(void)
+{
+  return this->numberOfRevLeds;
+}

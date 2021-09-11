@@ -31,7 +31,7 @@
 // these come from SimHub.  The first 2 are between 0 and 1 and represent the 2 zones
 // for 16 LEDs, we'll go [G,G,G,G,G,G,R,R,R,R,R,B,B,B,B,B]
 //                       |--    rpm1   --|--    rpm2   --|
-// this fies 0.125 per LED
+// this means 0.125 per LED
 class SimUServeLedHud {
   protected:
 
@@ -40,20 +40,33 @@ class SimUServeLedHud {
     double rpmShiftLight1;
     double rpmShiftLight2;
     double redLineReached;
-    CRGB leds[NUM_LEDS];
     bool flagState;
     bool redlineState;
     bool pitLimitState;
     bool lowFuelState;
 
     // timer state attributes
-    unsigned long previousFlagMillis;
-    unsigned long previousRedlineMillis;
-    unsigned long previousPitLimitMillis;
-    unsigned long previousLowFuelMillis;
-    unsigned long flagCycleTime;
-    unsigned long redlineCycleTime;
-    // LED config settings
+    uint16_t previousFlagMillis;
+    uint16_t previousRedlineMillis;
+    uint16_t previousPitLimitMillis;
+    uint16_t previousLowFuelMillis;
+    uint16_t flagCycleTime;
+    uint16_t redlineCycleTime;
+    /*---------- LED config settings -------------*/
+    // make sure this is initilised only once
+    CRGB* leds;
+    // Rev LED config
+    uint8_t numberOfRevLeds;
+    uint8_t revLedStartIndex;
+    uint8_t revLedEndIndex;
+    float revIncrementPerLed;
+    // State LED onfig
+    bool hasStateLeds;
+    uint8_t firstStateLedStartIndex;
+    uint8_t firstStateLedEndIndex;
+    uint8_t lastStateLedStartIndex;
+    uint8_t lastStateLedEndIndex;
+    
 
 
   public:
@@ -66,10 +79,10 @@ class SimUServeLedHud {
 
     /**
      * @brief Construct a new Sim U Serve Led Hud object
-     * with just Rev LEDs
+     * with just Rev LEDs 
      * @param numRevLeds The number of rev LEDs
      */
-    SimUServeLedHud(uint8_t)
+    SimUServeLedHud(uint8_t);
 
     ~SimUServeLedHud();
     void updateLedState(void);
@@ -80,10 +93,11 @@ class SimUServeLedHud {
     void displayRedline(unsigned long);
 
   private:
-    CRGB indexToColour(int);
-    int rpmShiftToIndexLimit(double, double);
-    void clearLeds(int, int);
-    void initDefaults(void);
+    CRGB indexToColour(uint8_t);
+    uint8_t rpmShiftToIndexLimit(double, double);
+    void clearLeds(uint8_t, uint8_t);
+    void initDefaults(uint8_t);
+    uint8_t totalNumberOfLeds(void);
 };
 
 #endif

@@ -283,4 +283,3 @@ String SimUServeWiFi::getWifiStatus(wl_status_t status)
     }
 }
 
-SimUServeWiFi simUServeWiFi;
