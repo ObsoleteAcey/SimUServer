@@ -32,7 +32,7 @@ SimUServeLedHud::SimUServeLedHud(uint8_t numberOfRevLeds)
 
 SimUServeLedHud::~SimUServeLedHud()
 {
-  delete this->leds;
+  delete[] this->leds;
 }
 
 CRGB SimUServeLedHud::indexToColour(uint8_t index) {
@@ -79,15 +79,15 @@ void SimUServeLedHud::displayRedline(unsigned long currentMillis)
 void SimUServeLedHud::flashFlag(CRGB colour, unsigned long currentMillis)
 {
   // bail if no state LEDs, or the time expired to flash isn't up
-  if(!this->hasStateLeds || (currentMillis - this->previousFlagMillis < this->flagCycleTime))
+  if (!this->hasStateLeds || (currentMillis - this->previousFlagMillis < this->flagCycleTime))
   {
     return;
   }
   
-  for(uint8_t index = this->firstStateLedStartIndex; index <= this->lastStateLedEndIndex; index++)
+  for (uint8_t index = this->firstStateLedStartIndex; index <= this->lastStateLedEndIndex; index++)
   {
     leds[index] = flagState ? colour : CRGB::Black;
-    if(index == this->firstStateLedEndIndex)
+    if (index == this->firstStateLedEndIndex)
     {
       index = this->lastStateLedStartIndex - 1;
     }
@@ -156,8 +156,21 @@ void SimUServeLedHud::initDefaults(uint8_t totalNumberOfLeds)
   this->firstStateLedEndIndex = FIRST_STATE_LED_END_INDEX;
   this->lastStateLedStartIndex = LAST_STATE_LED_START_INDEX;
   this->lastStateLedEndIndex = LAST_STATE_LED_END_INDEX;
+  this->colourOrder = COLOUR_ORDER;
+  this->dataPin = DATA_PIN
+}
 
-  
+SimUServeLedHud* SimUServeLedHud::setDataPin(uint8_t dataPin)
+{
+  this->dataPin = dataPin;
+  return this;
+}
+
+SimUServeLedHud* SimUServeLedHud::initLeds(void)
+{
+  FastLED.addLeds<LED_TYPE, this->dataPin, this->colourOrder>(this->leds, this->totalNumberOfLeds()).setCorrection(TypicalLEDStrip);
+
+  return this;
 }
 
 uint8_t SimUServeLedHud::totalNumberOfLeds(void)

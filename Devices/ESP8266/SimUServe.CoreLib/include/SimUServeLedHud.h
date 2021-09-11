@@ -18,6 +18,7 @@
 #define NUM_LEDS 22
 #define NUM_LEDS_REV 16
 #define LED_TYPE WS2812B
+#define DATA_PIN 6;
 #define COLOUR_ORDER GRB
 #define FIRST_STATE_LED_START_INDEX 0
 #define FIRST_STATE_LED_END_INDEX 2
@@ -44,16 +45,19 @@ class SimUServeLedHud {
     bool redlineState;
     bool pitLimitState;
     bool lowFuelState;
+    
 
     // timer state attributes
-    uint16_t previousFlagMillis;
-    uint16_t previousRedlineMillis;
-    uint16_t previousPitLimitMillis;
-    uint16_t previousLowFuelMillis;
+    uint64_t previousFlagMillis;
+    uint64_t previousRedlineMillis;
+    uint64_t previousPitLimitMillis;
+    uint64_t previousLowFuelMillis;
     uint16_t flagCycleTime;
     uint16_t redlineCycleTime;
     /*---------- LED config settings -------------*/
     // make sure this is initilised only once
+    EOrder colourOrder;
+    uint8_t dataPin;
     CRGB* leds;
     // Rev LED config
     uint8_t numberOfRevLeds;
@@ -66,8 +70,6 @@ class SimUServeLedHud {
     uint8_t firstStateLedEndIndex;
     uint8_t lastStateLedStartIndex;
     uint8_t lastStateLedEndIndex;
-    
-
 
   public:
     /**
@@ -85,7 +87,24 @@ class SimUServeLedHud {
     SimUServeLedHud(uint8_t);
 
     ~SimUServeLedHud();
+
     void updateLedState(void);
+
+    /**
+     * @brief Set the Data Pin that the LEDs are connected to
+     * Default pin is 6, but call this after construction to change this pin
+     * 
+     * @return SimUServeLedHud* 
+     */
+    SimUServeLedHud* setDataPin(uint8_t);
+
+    /**
+     * @brief Sets up the LEDs based on the current config
+     * This should be the last thing called
+     * 
+     * @return SimUServeLedHud* 
+     */
+    SimUServeLedHud* initLeds(void);
     
   protected:
     void displayRpmLine(void);
@@ -97,6 +116,7 @@ class SimUServeLedHud {
     uint8_t rpmShiftToIndexLimit(double, double);
     void clearLeds(uint8_t, uint8_t);
     void initDefaults(uint8_t);
+    
     uint8_t totalNumberOfLeds(void);
 };
 
