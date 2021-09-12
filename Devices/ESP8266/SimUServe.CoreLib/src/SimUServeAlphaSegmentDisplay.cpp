@@ -116,6 +116,9 @@ static const uint16_t displayLookUp[] PROGMEM = {
     0x0CC0 // ~ 
 };
 
+
+#pragma region Constructors/Destructor
+
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay()
 {
     init(ESP_D2, ESP_D1, DEFAULT_I2C_ADDRESS, DEFAULT_NUMBER_OF_DISPLAYS);
@@ -132,33 +135,20 @@ SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t sda, uint8_t 
     init(sda, scl, deviceAddress, numberOfDisplays);
 }
 
-void SimUServeAlphaSegmentDisplay::init(uint8_t sda = ESP_D2, uint8_t scl = ESP_D1, uint8_t deviceAddress = DEFAULT_I2C_ADDRESS, 
-        uint8_t numberOfDisplays = DEFAULT_NUMBER_OF_DISPLAYS)
-{
-    if(numberOfDisplays > 4) 
-    {
-        numberOfDisplays = 4;
-    }
-    else if(numberOfDisplays == 0)
-    {
-        numberOfDisplays = 1;
-    }
-
-    _deviceAddress = deviceAddress;
-    _sda = sda;
-    _scl = scl;
-    _displaybuffer = new uint16_t[numberOfDisplays];
-
-    for(uint8_t index = 0; index < numberOfDisplays; index++)
-    {
-        _displaybuffer[index] = 0;
-    }
-}
-
 SimUServeAlphaSegmentDisplay::~SimUServeAlphaSegmentDisplay()
 {
     delete[] _displaybuffer;
 }
+
+#pragma endregion
+
+
+#pragma region Public methods
+
+
+
+
+
 
 void SimUServeAlphaSegmentDisplay::setUpDisplay(void)
 {
@@ -258,3 +248,32 @@ void SimUServeAlphaSegmentDisplay::setBrightness(uint8_t brightness)
     Wire.write(DISPLAY_BRIGHTNESS_COMMAND & brightness);
     Wire.endTransmission();
 }
+
+#pragma endregion
+
+#pragma region Private methods
+
+void SimUServeAlphaSegmentDisplay::init(uint8_t sda = ESP_D2, uint8_t scl = ESP_D1, uint8_t deviceAddress = DEFAULT_I2C_ADDRESS, 
+        uint8_t numberOfDisplays = DEFAULT_NUMBER_OF_DISPLAYS)
+{
+    if(numberOfDisplays > 4) 
+    {
+        numberOfDisplays = 4;
+    }
+    else if(numberOfDisplays == 0)
+    {
+        numberOfDisplays = 1;
+    }
+
+    _deviceAddress = deviceAddress;
+    _sda = sda;
+    _scl = scl;
+    _displaybuffer = new uint16_t[numberOfDisplays];
+
+    for(uint8_t index = 0; index < numberOfDisplays; index++)
+    {
+        _displaybuffer[index] = 0;
+    }
+}
+
+#pragma endregion

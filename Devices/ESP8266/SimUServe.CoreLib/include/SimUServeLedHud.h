@@ -18,8 +18,10 @@
 #define NUM_LEDS 22
 #define NUM_LEDS_REV 16
 #define LED_TYPE WS2812B
-#define DATA_PIN 6;
-#define COLOUR_ORDER GRB
+#define LED_DEFAULT_DATA_PIN ESP_D5
+#define LED_DEFAULT_COLOUR_ORDER GRB
+#define LED_DEFAULT_COLOUR_CORRECTION TypicalLEDStrip
+#define LED_DEFAULT_BRIGHTNESS 50
 #define FIRST_STATE_LED_START_INDEX 0
 #define FIRST_STATE_LED_END_INDEX 2
 #define LAST_STATE_LED_START_INDEX 19
@@ -33,43 +35,48 @@
 // for 16 LEDs, we'll go [G,G,G,G,G,G,R,R,R,R,R,B,B,B,B,B]
 //                       |--    rpm1   --|--    rpm2   --|
 // this means 0.125 per LED
+
+
+/**
+ * @brief Class for driving an LED hud.  Can be used with just a rev LED strip, or rev and
+ * status LEDs
+ * 
+ */
 class SimUServeLedHud {
   protected:
 
   
   private:
-    double rpmShiftLight1;
-    double rpmShiftLight2;
-    double redLineReached;
-    bool flagState;
-    bool redlineState;
-    bool pitLimitState;
-    bool lowFuelState;
+    double _rpmShiftLight1;
+    double _rpmShiftLight2;
+    double _redLineReached;
+    bool _flagState;
+    bool _redlineState;
+    bool _pitLimitState;
+    bool _lowFuelState;
     
-
     // timer state attributes
-    uint64_t previousFlagMillis;
-    uint64_t previousRedlineMillis;
-    uint64_t previousPitLimitMillis;
-    uint64_t previousLowFuelMillis;
-    uint16_t flagCycleTime;
-    uint16_t redlineCycleTime;
+    uint32_t _currentMillis;
+    uint32_t _previousFlagMillis;
+    uint32_t _previousRedlineMillis;
+    uint32_t _previousPitLimitMillis;
+    uint32_t _previousLowFuelMillis;
+    uint16_t _flagCycleTime;
+    uint16_t _redlineCycleTime;
     /*---------- LED config settings -------------*/
-    // make sure this is initilised only once
-    EOrder colourOrder;
-    uint8_t dataPin;
-    CRGB* leds;
+    // array of LEDs
+    CRGB *_leds;
     // Rev LED config
-    uint8_t numberOfRevLeds;
-    uint8_t revLedStartIndex;
-    uint8_t revLedEndIndex;
-    float revIncrementPerLed;
+    uint8_t _numberOfRevLeds;
+    uint8_t _revLedStartIndex;
+    uint8_t _revLedEndIndex;
+    float _revIncrementPerLed;
     // State LED onfig
-    bool hasStateLeds;
-    uint8_t firstStateLedStartIndex;
-    uint8_t firstStateLedEndIndex;
-    uint8_t lastStateLedStartIndex;
-    uint8_t lastStateLedEndIndex;
+    bool _hasStateLeds;
+    uint8_t _firstStateLedStartIndex;
+    uint8_t _firstStateLedEndIndex;
+    uint8_t _lastStateLedStartIndex;
+    uint8_t _lastStateLedEndIndex;
 
   public:
     /**
@@ -91,32 +98,46 @@ class SimUServeLedHud {
     void updateLedState(void);
 
     /**
-     * @brief Set the Data Pin that the LEDs are connected to
-     * Default pin is 6, but call this after construction to change this pin
-     * 
-     * @return SimUServeLedHud* 
+     * @brief Updates the brightness of the LEDs
+     * @param brightness brightness to change to
      */
-    SimUServeLedHud* setDataPin(uint8_t);
+    void updateLedBrightness(uint8_t);
 
     /**
      * @brief Sets up the LEDs based on the current config
-     * This should be the last thing called
+     * This should be the last thing called.  Uses LED_DEFAULT_COLOUR_CORRECTION and 
+     * LED_DEFAULT_BRIGHTNESS.
      * 
+     * @tparam SPIChipsets The chipset being used.  Use LED_DEFAULT_TYPE for default
+     * @tparam uint8_t The port pin to use for data.  Use LED_DEFAULT_DATA_PIN for default
+     * @tparam EOrder The order of the colours in the LED strip.  Use LED_DEFAULT_COLOUR_ORDER for default
      * @return SimUServeLedHud* 
      */
-    SimUServeLedHud* initLeds(void);
+    template<ESPIChipsets,  uint8_t, EOrder> SimUServeLedHud* initLeds(void);
+
+    /**
+     * @brief Sets up the LEDs based on the current config
+     * 
+     * @tparam SPIChipsets The chipset being used.  Use LED_DEFAULT_TYPE for default
+     * @tparam uint8_t The port pin to use for data.  Use LED_DEFAULT_DATA_PIN for default
+     * @tparam EOrder The order of the colours in the LED strip.  Use LED_DEFAULT_COLOUR_ORDER for default
+     * @param colourCorrection Colour correction to be applied to the LED strip
+     * @param brightness brightness of the LED strip
+     * @return SimUServeLedHud* 
+     * 
+     */
+    template<ESPIChipsets,  uint8_t, EOrder> SimUServeLedHud* initLeds(LEDColorCorrection, uint8_t);
     
   protected:
     void displayRpmLine(void);
-    void flashFlag(CRGB, unsigned long);
-    void displayRedline(unsigned long);
+    void flashFlag(CRGB);
+    void displayRedline();
 
   private:
     CRGB indexToColour(uint8_t);
     uint8_t rpmShiftToIndexLimit(double, double);
     void clearLeds(uint8_t, uint8_t);
     void initDefaults(uint8_t);
-    
     uint8_t totalNumberOfLeds(void);
 };
 
