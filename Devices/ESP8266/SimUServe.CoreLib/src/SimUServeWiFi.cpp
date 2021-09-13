@@ -12,6 +12,9 @@
 SimUServeWiFi::SimUServeWiFi() 
 {
     Serial.println("SimUServeWiFi::SimUServeWiFi");
+    this->_settings = nullptr;
+    this->_server = nullptr;
+    this->_availableNetworks = nullptr;
     initDefaults();
     // now check and load any settings that have been saved
 }
@@ -19,6 +22,9 @@ SimUServeWiFi::SimUServeWiFi()
 SimUServeWiFi::SimUServeWiFi(int serverPort, String const& serverSsid)
 {
     Serial.println("SimUServeWiFi::SimUServeWiFi(" + String(serverPort) +", " + serverSsid + ")");
+    this->_settings = nullptr;
+    this->_server = nullptr;
+    this->_availableNetworks = nullptr;
     initDefaults();
     _settings->setServerPort(serverPort);
     _settings->setServerSsid(serverSsid);
@@ -26,7 +32,6 @@ SimUServeWiFi::SimUServeWiFi(int serverPort, String const& serverSsid)
 
 SimUServeWiFi::~SimUServeWiFi()
 {
-    delete _settings;
     delete _server;
     delete[] _availableNetworks;
 }
@@ -69,10 +74,11 @@ void SimUServeWiFi::initServices(void)
 void SimUServeWiFi::initDefaults()
 {
     Serial.println("SimUServeWiFi::initDefaults");
-    if(!_settings) 
+    if(_settings = nullptr) 
     {
-        _settings = new SimUServeWiFiSettings();
+        _settings = SimUServeNetworkSettings::GetSettings();;
     }
+
    _settings->setServerPort(DEFAULT_SERVER_PORT);
    _settings->setServerIpAddress(DEFAULT_SERVER_IP);
    _settings->setServerGatewayIpAddress(DEFAULT_SERVER_GATEWAY);

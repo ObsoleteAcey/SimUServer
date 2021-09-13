@@ -10,7 +10,7 @@
 #ifndef SimUServeWiFi_h
 #define SimUServeWiFi_h
 
-#include "SimUServeWiFiSettings.h"
+#include "SimUServeNetworkSettings.h"
 #include "SimUServeCommon.h"
 #include <stdint.h>
 #include <ESP8266WiFi.h>
@@ -99,7 +99,7 @@ class SimUServeWiFi {
   protected:
     // contains the settings for both the server and the WiFiSettings
     // we want to connect to
-    SimUServeWiFiSettings* _settings;
+    SimUServeNetworkSettings* _settings;
     AsyncWebServer* _server;
     WifiNetwork* _availableNetworks;
     int numberOfNetworks;

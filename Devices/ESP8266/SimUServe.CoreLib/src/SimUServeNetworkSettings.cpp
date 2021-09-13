@@ -9,6 +9,18 @@
 
 #include "SimUServeNetworkSettings.h"
 
+SimUServeNetworkSettings* SimUServeNetworkSettings::_settings = nullptr;
+
+SimUServeNetworkSettings* SimUServeNetworkSettings::GetSettings(void)
+{
+    if (_settings == nullptr)
+    {
+        _settings = new SimUServeNetworkSettings();
+    }
+
+    return _settings;
+}
+
 SimUServeNetworkSettings::~SimUServeNetworkSettings()
 {
     

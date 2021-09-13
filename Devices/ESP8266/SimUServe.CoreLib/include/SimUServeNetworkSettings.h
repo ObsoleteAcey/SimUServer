@@ -31,9 +31,12 @@ class SimUServeNetworkSettings {
     IPAddress _ipAddress;
     IPAddress _gatewayIpAddress;
     IPAddress _netmask;
+    static SimUServeNetworkSettings* _settings;
     
   public:
     ~SimUServeNetworkSettings();
+
+    static SimUServeNetworkSettings* GetSettings(void);
 
     /**
      * @brief Set the SimUServe Server Port
