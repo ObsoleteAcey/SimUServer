@@ -7,14 +7,14 @@
 * contact Stefan at stefan.john.park@gmail.com.
 */
 
-#include "SimUServeWiFiSettings.h"
+#include "SimUServeNetworkSettings.h"
 
-SimUServeWiFiSettings::~SimUServeWiFiSettings()
+SimUServeNetworkSettings::~SimUServeNetworkSettings()
 {
     
 }
 
-void SimUServeWiFiSettings::update(SimUServeWiFiSettings const& fromSettings)
+void SimUServeNetworkSettings::update(SimUServeNetworkSettings const& fromSettings)
 {
     // TODO - some kind fo detection for default vs loaded vs dirty
     setConnectedPassword(fromSettings.getConnectedPassword());
@@ -25,7 +25,7 @@ void SimUServeWiFiSettings::update(SimUServeWiFiSettings const& fromSettings)
     setServerSsid(fromSettings.getServerSsid());
 }
 
-void SimUServeWiFiSettings::setServerPort(int const port)
+void SimUServeNetworkSettings::setServerPort(int const port)
 {
     if(_serverPort != port)
     {
@@ -34,12 +34,12 @@ void SimUServeWiFiSettings::setServerPort(int const port)
     }
 }
 
-int SimUServeWiFiSettings::getServerPort(void) const
+int SimUServeNetworkSettings::getServerPort(void) const
 {
     return _serverPort;
 }
 
-void SimUServeWiFiSettings::setServerIpAddress(String const& ipAddress)
+void SimUServeNetworkSettings::setServerIpAddress(String const& ipAddress)
 {
     if(_serverIpAddress != ipAddress)
     {
@@ -53,12 +53,12 @@ void SimUServeWiFiSettings::setServerIpAddress(String const& ipAddress)
     }
 }
 
-IPAddress const& SimUServeWiFiSettings::getServerIpAddress(void) const
+IPAddress const& SimUServeNetworkSettings::getServerIpAddress(void) const
 {
     return _ipAddress;
 }
 
-void SimUServeWiFiSettings::setServerGatewayIpAddress(String const& ipAddress)
+void SimUServeNetworkSettings::setServerGatewayIpAddress(String const& ipAddress)
 {
     if(_serverGatewayIpAddress != ipAddress)
     {
@@ -72,12 +72,12 @@ void SimUServeWiFiSettings::setServerGatewayIpAddress(String const& ipAddress)
     }
 }
 
-IPAddress const& SimUServeWiFiSettings::getServerGatewayIpAddress(void) const
+IPAddress const& SimUServeNetworkSettings::getServerGatewayIpAddress(void) const
 {
     return _gatewayIpAddress;
 }
 
-void SimUServeWiFiSettings::setServerNetmask(String const& ipAddress)
+void SimUServeNetworkSettings::setServerNetmask(String const& ipAddress)
 {
     if(_serverNetmask != ipAddress)
     {
@@ -91,12 +91,12 @@ void SimUServeWiFiSettings::setServerNetmask(String const& ipAddress)
     }
 }
 
-IPAddress const& SimUServeWiFiSettings::getServerNetmask(void) const
+IPAddress const& SimUServeNetworkSettings::getServerNetmask(void) const
 {
     return _netmask;
 }
 
-void SimUServeWiFiSettings::setServerSsid(String const& serverSsid)
+void SimUServeNetworkSettings::setServerSsid(String const& serverSsid)
 {
     if(_serverSsid != serverSsid)
     {
@@ -105,12 +105,12 @@ void SimUServeWiFiSettings::setServerSsid(String const& serverSsid)
     }
 }
 
-String const& SimUServeWiFiSettings::getServerSsid(void) const
+String const& SimUServeNetworkSettings::getServerSsid(void) const
 {
     return _serverSsid;
 }
 
-void SimUServeWiFiSettings::setServerPassword(String const& serverPassword)
+void SimUServeNetworkSettings::setServerPassword(String const& serverPassword)
 {
     if(_serverPassword != serverPassword)
     {
@@ -119,12 +119,12 @@ void SimUServeWiFiSettings::setServerPassword(String const& serverPassword)
     }
 }
 
-String const& SimUServeWiFiSettings::getServerPassword(void) const
+String const& SimUServeNetworkSettings::getServerPassword(void) const
 {
     return _serverPassword;
 }
 
-void SimUServeWiFiSettings::setConnectedSsid(String const& connectedSsid)
+void SimUServeNetworkSettings::setConnectedSsid(String const& connectedSsid)
 {
     if(_connectedSsid != connectedSsid)
     {
@@ -133,12 +133,12 @@ void SimUServeWiFiSettings::setConnectedSsid(String const& connectedSsid)
     }
 }
 
-String const& SimUServeWiFiSettings::getConnectedSsid(void) const
+String const& SimUServeNetworkSettings::getConnectedSsid(void) const
 {
     return _connectedSsid;
 }
 
-void SimUServeWiFiSettings::setConnectedPassword(String const& connectedPassword) 
+void SimUServeNetworkSettings::setConnectedPassword(String const& connectedPassword) 
 {
     if(_connectedPassword != connectedPassword)
     {
@@ -147,12 +147,12 @@ void SimUServeWiFiSettings::setConnectedPassword(String const& connectedPassword
     }
 }
 
-String const& SimUServeWiFiSettings::getConnectedPassword(void) const
+String const& SimUServeNetworkSettings::getConnectedPassword(void) const
 {
     return _connectedPassword;
 }
 
-void SimUServeWiFiSettings::setDeviceHostName(String const& deviceHostName) 
+void SimUServeNetworkSettings::setDeviceHostName(String const& deviceHostName) 
 {
     if(_deviceHostName != deviceHostName)
     {
@@ -161,12 +161,12 @@ void SimUServeWiFiSettings::setDeviceHostName(String const& deviceHostName)
     }
 }
 
-String const& SimUServeWiFiSettings::getDeviceHostName(void) const
+String const& SimUServeNetworkSettings::getDeviceHostName(void) const
 {
     return _deviceHostName;
 }
 
-void SimUServeWiFiSettings::setClean(void)
+void SimUServeNetworkSettings::setClean(void)
 {
     _isDirty = false;
 }

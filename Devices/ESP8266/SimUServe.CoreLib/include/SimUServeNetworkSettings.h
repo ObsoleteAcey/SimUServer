@@ -7,14 +7,14 @@
 * contact Stefan at stefan.john.park@gmail.com.
 */
 
-#ifndef SimUServeWiFiSettings_h
-#define SimUServeWiFiSettings_h
+#ifndef SimUServeNetworkSettings_h
+#define SimUServeNetworkSettings_h
 
 #include <ESP8266WiFi.h>
 #include <stdint.h>
 #include <String>
 
-class SimUServeWiFiSettings {
+class SimUServeNetworkSettings {
   protected:
     int _serverPort;
     String _serverIpAddress;
@@ -33,7 +33,7 @@ class SimUServeWiFiSettings {
     IPAddress _netmask;
     
   public:
-    ~SimUServeWiFiSettings();
+    ~SimUServeNetworkSettings();
 
     /**
      * @brief Set the SimUServe Server Port
@@ -94,7 +94,7 @@ class SimUServeWiFiSettings {
      * Resets the dirty flag
     */
     void setClean(void);
-    void update(SimUServeWiFiSettings const&);
+    void update(SimUServeNetworkSettings const&);
 };
 
 #endif
