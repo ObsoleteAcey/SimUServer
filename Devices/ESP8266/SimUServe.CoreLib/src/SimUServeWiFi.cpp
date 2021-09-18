@@ -15,35 +15,35 @@ SimUServeWiFi::SimUServeWiFi()
     this->_settings = nullptr;
     this->_server = nullptr;
     this->_availableNetworks = nullptr;
-    initDefaults();
+    this->initDefaults();
     // now check and load any settings that have been saved
 }
 
-SimUServeWiFi::SimUServeWiFi(int serverPort, String const& serverSsid)
+SimUServeWiFi::SimUServeWiFi(String const& serverSsid, uint16_t serverPort)
 {
     Serial.println("SimUServeWiFi::SimUServeWiFi(" + String(serverPort) +", " + serverSsid + ")");
     this->_settings = nullptr;
     this->_server = nullptr;
     this->_availableNetworks = nullptr;
-    initDefaults();
-    _settings->setServerPort(serverPort);
-    _settings->setServerSsid(serverSsid);
+    this->initDefaults();
+    this->_settings->setServerPort(serverPort);
+    //_settings->setServerSsid(serverSsid);
 }
 
 SimUServeWiFi::~SimUServeWiFi()
 {
-    delete _server;
-    delete[] _availableNetworks;
+    delete this->_server;
+    delete[] this->_availableNetworks;
 }
 
 String const& SimUServeWiFi::getWiFiSsid(void) const
 {
-    return _settings->getConnectedSsid();
+    return this->_settings->getConnectedNetworkSsid();
 }
 
 String const& SimUServeWiFi::getWiFiPassword(void) const
 {
-    return _settings->getConnectedPassword();
+    return this->_settings->getConnectedNetworkSecurityKey();
 }
 
 template <typename T>
@@ -67,24 +67,23 @@ void SimUServeWiFi::initServices(void)
     {
         Serial.println("An Error has occurred while mounting SPIFFS");
     }
-    setupAccessPoint();
-    startMdns();
+    this->setupAccessPoint();
+    this->startMdns();
 }
 
 void SimUServeWiFi::initDefaults()
 {
     Serial.println("SimUServeWiFi::initDefaults");
-    if(_settings = nullptr) 
+    if(this->_settings == nullptr) 
     {
-        _settings = SimUServeNetworkSettings::GetSettings();;
+        this->_settings = SimUServeNetworkSettings::getSettings();;
     }
 
-   _settings->setServerPort(DEFAULT_SERVER_PORT);
-   _settings->setServerIpAddress(DEFAULT_SERVER_IP);
-   _settings->setServerGatewayIpAddress(DEFAULT_SERVER_GATEWAY);
-   _settings->setServerNetmask(DEFAULT_SERVER_NETMASK);
-   _settings->setServerSsid(DEFAULT_SERVER_SSID + String(ESP.getChipId()));
-   _settings->setServerPassword(DEFAULT_SERVER_PASSWORD + String(ESP.getChipId()));
+   this->_settings->setDeviceApIpAddress(DEFAULT_AP_IP);
+   this->_settings->setDeviceApGatwayIpAddress(DEFAULT_AP_GATEWAY);
+   this->_settings->setDeviceApNetmask(DEFAULT_AP_NETMASK);
+   this->_settings->setDeviceApSsid(DEFAULT_AP_SSID + String(ESP.getChipId()));
+   this->_settings->setDeviceApNetworkSecurityKey(DEFAULT_AP_PASSWORD + String(ESP.getChipId()));
    numberOfNetworks = 0;
 }
 
@@ -112,12 +111,12 @@ void SimUServeWiFi::startMdns(void)
 {
     Serial.println("SimUServeWiFi::startMdns");
 
-    if(!MDNS.begin(SERVER_LOCAL_ADDRESS, _settings->getServerIpAddress())) {
+    if(!MDNS.begin(SERVER_LOCAL_ADDRESS, this->_settings->getServerIpAddress())) {
 
     };
-    launchWebServer();
-    Serial.println("Adding http service to MDNS on port " + String(_settings->getServerPort()));
-    MDNS.addService("http", "tcp", _settings->getServerPort());
+    this->launchWebServer();
+    Serial.println("Adding http service to MDNS on port " + String(this->_settings->getServerPort()));
+    MDNS.addService("http", "tcp", this->_settings->getServerPort());
 }
 
 void SimUServeWiFi::setupAccessPoint(void)
@@ -126,32 +125,32 @@ void SimUServeWiFi::setupAccessPoint(void)
     WiFi.disconnect();
     delay(100);
     this->getAvailableWifiNetworks();
-    Serial.println("Starting access point on" + _settings->getServerSsid() + " using password " + _settings->getServerPassword());
-    WiFi.softAPConfig(_settings->getServerIpAddress(), _settings->getServerGatewayIpAddress(),
-        _settings->getServerNetmask());
-    WiFi.softAP(_settings->getServerSsid(), _settings->getServerPassword());
+    Serial.println("Starting access point on" + this->_settings->getDeviceApSsid() + " using password " + this->_settings->getDeviceApNetworkSecurityKey());
+    WiFi.softAPConfig(this->_settings->getDeviceApIpAddress(), this->_settings->getDeviceApGatwayIpAddress(),
+        _settings->getDeviceApNetmask());
+    WiFi.softAP(this->_settings->getDeviceApSsid(), this->_settings->getDeviceApNetworkSecurityKey());
 }
 
 WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 {
-    if(_availableNetworks)
+    if(this->_availableNetworks)
     {
-       return _availableNetworks;
+       return this->_availableNetworks;
     }
 
     Serial.println("SimUServeWiFi::getAvailableWifiNetworks");
     numberOfNetworks = WiFi.scanNetworks(false, true);
     Serial.println("Found " + String(numberOfNetworks) + " networks.");
 
-    _availableNetworks = new WifiNetwork[numberOfNetworks];
+    this->_availableNetworks = new WifiNetwork[numberOfNetworks];
 
     for (int i = 0; i < numberOfNetworks; i++)
     {
         Serial.println("Adding network " + WiFi.SSID(i));
-        _availableNetworks[i] = WifiNetwork(i, WiFi.SSID(i), WiFi.RSSI(i), WiFi.encryptionType(i));
+        this->_availableNetworks[i] = WifiNetwork(i, WiFi.SSID(i), WiFi.RSSI(i), WiFi.encryptionType(i));
     }
 
-    return _availableNetworks;
+    return this->_availableNetworks;
 }
 
 WifiNetwork* const SimUServeWiFi::refreshAvailableWifiNetworks(void)
@@ -167,17 +166,17 @@ WifiNetwork* const SimUServeWiFi::refreshAvailableWifiNetworks(void)
 void SimUServeWiFi::launchWebServer(void)
 {
     Serial.println("SimUServeWiFi::launchWebServer");
-    if(!_server)
+    if(!this->_server)
     {
         Serial.println("SimUServeWiFi::launchWebServer");
-        _server = new AsyncWebServer(_settings->getServerPort());
+        this->_server = new AsyncWebServer(_settings->getServerPort());
     }
     // set up the routes
-    _server->on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleRootGet(request);});
-    _server->on("/network/all", HTTP_GET,  [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleRefreshNetworksGet(request);});
-    _server->on("/network", HTTP_POST, [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleSaveNetwork(request);});
-    _server->onNotFound([this](AsyncWebServerRequest *request) {SimUServeWiFi::handleNotFound(request);});
-    _server->begin();
+    this->_server->on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleRootGet(request);});
+    this->_server->on("/network/all", HTTP_GET,  [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleRefreshNetworksGet(request);});
+    this->_server->on("/network", HTTP_POST, [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleSaveNetwork(request);});
+    this->_server->onNotFound([this](AsyncWebServerRequest *request) {SimUServeWiFi::handleNotFound(request);});
+    this->_server->begin();
 }
 
 void SimUServeWiFi::checkForRequests(void)
@@ -193,7 +192,7 @@ void SimUServeWiFi::handleRootGet(AsyncWebServerRequest *request)
 
 void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
 {
-    auto* availableNetworks = getAvailableWifiNetworks();
+    auto* availableNetworks = this->getAvailableWifiNetworks();
     String returnJson = "{[";
 
     for (int i = 0; i < numberOfNetworks; i++)
@@ -224,7 +223,7 @@ void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
     String password = request->arg("password");
 
     WiFi.begin(ssid, password);
-    if(testWifiConnection()) {
+    if(this->testWifiConnection()) {
         // save settings here and respond with all good
 
         request->send(200, "Connection successful and settings saved");
@@ -245,7 +244,8 @@ void SimUServeWiFi::handleNotFound(AsyncWebServerRequest *request)
     message += request->args();
     message += "\n";
 
-    for ( uint8_t i = 0; i < request->args(); i++ ) {
+    for ( uint8_t i = 0; i < request->args(); i++ ) 
+    {
         message += " " + request->argName ( i ) + ": " + request->arg ( i ) + "\n";
     }
 

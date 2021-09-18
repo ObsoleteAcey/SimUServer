@@ -11,6 +11,7 @@
 #ifndef SimUServeNetworkClient_h
 #define SimUServeNetworkClient_h
 
+#include "SimUServeNetworkSettings.h"
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
@@ -18,11 +19,16 @@ class SimUServeNetworkClient {
     protected:
 
     private:
-
+        SimUServeNetworkSettings* _networkSettings;
 
     public:
         SimUServeNetworkClient();
-        SimUServeNetworkClient(IpAddress);
+
+        /**
+         * @brief Construct a new Sim U Serve Network Client object
+         * 
+         */
+        SimUServeNetworkClient(IPAddress, uint16_t);
 };
 
 

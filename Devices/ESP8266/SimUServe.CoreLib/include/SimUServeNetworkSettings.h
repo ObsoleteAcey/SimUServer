@@ -18,29 +18,41 @@ class SimUServeNetworkSettings {
   protected:
     int _serverPort;
     String _serverIpAddress;
-    String _serverGatewayIpAddress;
-    String _serverNetmask;
-    String _serverSsid;
-    String _serverPassword;
-    String _connectedSsid;
-    String _connectedPassword;
-    String _deviceHostName;
+    
+    String _connectedNetworkSsid;
+    String _connectedNetworkSecurityKey;
+    String _connectedNetworkGatewayIpAddress;
+    String _connectedNetworkNetmask;
+    
+    
+    String _deviceApSsid;
+    String _deviceApNetworkSecurityKey;
+    String _deviceApHostName;
+    String _deviceApIpAddress;
+    String _deviceApGatewayIpAddress;
+    String _deviceApNetmask;
 
   private:
     bool _isDirty = false;
-    IPAddress _ipAddress;
-    IPAddress _gatewayIpAddress;
-    IPAddress _netmask;
+    IPAddress _apIpAddress;
+    IPAddress _apGatewayIpAddress;
+    IPAddress _apNetmask;
+    IPAddress _cnGatewayIpAddress;
+    IPAddress _cnNetmask;
+    IPAddress _svrIpAddress;
     static SimUServeNetworkSettings* _settings;
     
   public:
     ~SimUServeNetworkSettings();
 
-    static SimUServeNetworkSettings* GetSettings(void);
+    static SimUServeNetworkSettings* getSettings(void);
+
+    #pragma region Related to remote (PC) SimUServe server
 
     /**
      * @brief Set the SimUServe Server Port
-     * 
+     * The is, the server we are connecting to, usually hosted
+     * on a PC
      */
     void setServerPort(int);
 
@@ -53,7 +65,8 @@ class SimUServeNetworkSettings {
 
     /**
      * @brief Set the SimUServe Server Ip Address
-     * 
+     * The is, the server we are connecting to, usually hosted
+     * on a PC
      */
     void setServerIpAddress(String const&);
 
@@ -65,39 +78,64 @@ class SimUServeNetworkSettings {
      */
     IPAddress const& getServerIpAddress(void) const;
     
-    void setServerGatewayIpAddress(String const&);
+    #pragma endregion
 
-    IPAddress const& getServerGatewayIpAddress(void) const;
+    #pragma region Related to Device Access Point (Local) server, for setup purposes
 
-    void setServerNetmask(String const&);
+    void setDeviceApSsid(String const&);
 
-    IPAddress const& getServerNetmask(void) const;
+    String const& getDeviceApSsid(void) const;
 
-    void setServerSsid(String const&);
+    void setDeviceApNetworkSecurityKey(String const&);
 
-    String const& getServerSsid(void) const;
+    String const& getDeviceApNetworkSecurityKey(void) const;
 
-    void setServerPassword(String const&);
+    void setDeviceApHostName(String const&);
 
-    String const& getServerPassword(void) const;
+    String const& getDeviceApHostName(void) const;
 
-    void setConnectedSsid(String const&);
+    void setDeviceApIpAddress(String const&);
 
-    String const& getConnectedSsid(void) const;
+    IPAddress const& getDeviceApIpAddress(void) const;
 
-    void setConnectedPassword(String const&);
+    void setDeviceApGatwayIpAddress(String const&);
 
-    String const& getConnectedPassword(void) const;
+    IPAddress const& getDeviceApGatwayIpAddress(void) const;
 
-    void setDeviceHostName(String const&);
+    void setDeviceApNetmask(String const&);
 
-    String const& getDeviceHostName(void) const;
+    IPAddress const& getDeviceApNetmask(void) const;
+
+    #pragma endregion
+
+
+    #pragma region Related to connecting to main WiFi access point
+
+    void setConnectedNetworkGatewayIpAddress(String const&);
+
+    IPAddress const& getConnectedNetworkGatewayIpAddress(void) const;
+
+    void setConnectedNetworkNetmask(String const&);
+
+    IPAddress const& getConnectedNetworkNetmask(void) const;
+    
+    void setConnectedNetworkSsid(String const&);
+
+    String const& getConnectedNetworkSsid(void) const;
+
+    void setConnectedNetworkSecurityKey(String const&);
+
+    String const& getConnectedNetworkSecurityKey(void) const;
+
+    #pragma endregion
     
     /*
      * Resets the dirty flag
     */
     void setClean(void);
-    void update(SimUServeNetworkSettings const&);
+    void update(SimUServeNetworkSettings const&, bool);
+
+    void saveSettings(void);
 };
 
 #endif

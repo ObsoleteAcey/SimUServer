@@ -9,9 +9,11 @@
 
 #include "SimUServeNetworkSettings.h"
 
+#pragma region Constructors/Destructors
+
 SimUServeNetworkSettings* SimUServeNetworkSettings::_settings = nullptr;
 
-SimUServeNetworkSettings* SimUServeNetworkSettings::GetSettings(void)
+SimUServeNetworkSettings* SimUServeNetworkSettings::getSettings(void)
 {
     if (_settings == nullptr)
     {
@@ -26,16 +28,9 @@ SimUServeNetworkSettings::~SimUServeNetworkSettings()
     
 }
 
-void SimUServeNetworkSettings::update(SimUServeNetworkSettings const& fromSettings)
-{
-    // TODO - some kind fo detection for default vs loaded vs dirty
-    setConnectedPassword(fromSettings.getConnectedPassword());
-    setConnectedSsid(fromSettings.getConnectedSsid());
-    setServerIpAddress(fromSettings.getServerIpAddress().toString());
-    setServerPort(fromSettings.getServerPort());
-    setServerPassword(fromSettings.getServerPassword());
-    setServerSsid(fromSettings.getServerSsid());
-}
+#pragma endregion
+
+#pragma region Related to remote (PC) SimUServe server
 
 void SimUServeNetworkSettings::setServerPort(int const port)
 {
@@ -53,132 +48,230 @@ int SimUServeNetworkSettings::getServerPort(void) const
 
 void SimUServeNetworkSettings::setServerIpAddress(String const& ipAddress)
 {
-    if(_serverIpAddress != ipAddress)
+    if(this->_serverIpAddress != ipAddress)
     {
-        _isDirty = true;
-        _serverIpAddress = String(ipAddress);
-        if (!_ipAddress)
+        this->_isDirty = true;
+        this->_serverIpAddress = String(ipAddress);
+        if (!this->_svrIpAddress)
         {
-            _ipAddress = IPAddress();
+            this->_svrIpAddress = IPAddress();
         }
-        _ipAddress.fromString(ipAddress);
+        this->_svrIpAddress.fromString(ipAddress);
     }
 }
 
 IPAddress const& SimUServeNetworkSettings::getServerIpAddress(void) const
 {
-    return _ipAddress;
+    return this->_svrIpAddress;
 }
 
-void SimUServeNetworkSettings::setServerGatewayIpAddress(String const& ipAddress)
+
+#pragma endregion
+
+#pragma region Related to Device Access Point (Local) server, for setup purposes
+
+void SimUServeNetworkSettings::setDeviceApSsid(String const& deviceApSsid)
 {
-    if(_serverGatewayIpAddress != ipAddress)
+    if(this->_deviceApSsid != deviceApSsid)
     {
         _isDirty = true;
-        _serverGatewayIpAddress = String(ipAddress);
-        if (!_gatewayIpAddress)
+        this->_deviceApSsid = String(deviceApSsid);
+    }
+}
+
+String const& SimUServeNetworkSettings::getDeviceApSsid(void) const
+{
+    return this->_deviceApSsid;
+}
+
+void SimUServeNetworkSettings::setDeviceApNetworkSecurityKey(String const& apSecurityKey)
+{
+    if(this->_deviceApNetworkSecurityKey != apSecurityKey)
+    {
+        _isDirty = true;
+        this->_deviceApNetworkSecurityKey = String(apSecurityKey);
+    }
+}
+
+String const& SimUServeNetworkSettings::getDeviceApNetworkSecurityKey(void) const
+{
+    return this->_deviceApNetworkSecurityKey;
+}
+
+void SimUServeNetworkSettings::setDeviceApHostName(String const& deviceHostName) 
+{
+    if (this->_deviceApHostName != deviceHostName)
+    {
+        _isDirty = true;
+        this->_deviceApHostName = String(deviceHostName);
+    }
+}
+
+String const& SimUServeNetworkSettings::getDeviceApHostName(void) const
+{
+    return this->_deviceApHostName;
+}
+
+void SimUServeNetworkSettings::setDeviceApIpAddress(String const& deviceApIp)
+{
+    if (this->_deviceApIpAddress != deviceApIp)
+    {
+        this->_isDirty = true;
+        this->_deviceApIpAddress = String(deviceApIp);
+        if (!this->_apIpAddress)
         {
-            _gatewayIpAddress = IPAddress();
+            this->_apIpAddress = IPAddress();
         }
-        _gatewayIpAddress.fromString(ipAddress);
+        this->_apIpAddress.fromString(deviceApIp);
     }
 }
 
-IPAddress const& SimUServeNetworkSettings::getServerGatewayIpAddress(void) const
+IPAddress const& SimUServeNetworkSettings::getDeviceApIpAddress(void) const
 {
-    return _gatewayIpAddress;
+    return this->_apIpAddress;
 }
 
-void SimUServeNetworkSettings::setServerNetmask(String const& ipAddress)
+void SimUServeNetworkSettings::setDeviceApGatwayIpAddress(String const& deviceApGatewayIp)
 {
-    if(_serverNetmask != ipAddress)
+    if (this->_deviceApGatewayIpAddress != deviceApGatewayIp)
     {
-        _isDirty = true;
-        _serverNetmask = String(ipAddress);
-        if (!_netmask)
+        this->_isDirty = true;
+        this->_deviceApGatewayIpAddress = String(deviceApGatewayIp);
+        if (!this->_apGatewayIpAddress)
         {
-            _netmask = IPAddress();
+            this->_apGatewayIpAddress = IPAddress();
         }
-        _netmask.fromString(ipAddress);
+        this->_apGatewayIpAddress.fromString(deviceApGatewayIp);
     }
 }
 
-IPAddress const& SimUServeNetworkSettings::getServerNetmask(void) const
+IPAddress const& SimUServeNetworkSettings::getDeviceApGatwayIpAddress(void) const
 {
-    return _netmask;
+    return this->_apGatewayIpAddress;
 }
 
-void SimUServeNetworkSettings::setServerSsid(String const& serverSsid)
+void SimUServeNetworkSettings::setDeviceApNetmask(String const& apNetmaskIp)
 {
-    if(_serverSsid != serverSsid)
+    if (this->_deviceApNetmask != apNetmaskIp)
     {
-        _isDirty = true;
-        _serverSsid = String(serverSsid);
+        this-> _isDirty = true;
+        this-> _deviceApNetmask = String(apNetmaskIp);
+        if (!this->_apNetmask)
+        {
+            this->_apNetmask = IPAddress();
+        }
+        this->_apNetmask.fromString(apNetmaskIp);
     }
 }
 
-String const& SimUServeNetworkSettings::getServerSsid(void) const
+IPAddress const& SimUServeNetworkSettings::getDeviceApNetmask(void) const
 {
-    return _serverSsid;
+    return this->_apNetmask;
 }
 
-void SimUServeNetworkSettings::setServerPassword(String const& serverPassword)
-{
-    if(_serverPassword != serverPassword)
+#pragma endregion
+
+
+  #pragma region Related to connecting to main WiFi access point
+
+  void SimUServeNetworkSettings::setConnectedNetworkGatewayIpAddress(String const& gatewayIp)
+  {
+    if (this->_connectedNetworkGatewayIpAddress != gatewayIp)
     {
-        _isDirty = true;
-        _serverPassword = String(serverPassword);
+        this-> _isDirty = true;
+        this-> _connectedNetworkGatewayIpAddress = String(gatewayIp);
+        if(!this->_cnGatewayIpAddress)
+        {
+            this->_cnGatewayIpAddress = IPAddress();
+        }
+        this->_cnGatewayIpAddress.fromString(gatewayIp);
     }
-}
+  };
 
-String const& SimUServeNetworkSettings::getServerPassword(void) const
-{
-    return _serverPassword;
-}
-
-void SimUServeNetworkSettings::setConnectedSsid(String const& connectedSsid)
-{
-    if(_connectedSsid != connectedSsid)
+    IPAddress const& SimUServeNetworkSettings::getConnectedNetworkGatewayIpAddress(void) const
     {
-        _isDirty = true;
-        _connectedSsid = String(connectedSsid);
-    }
-}
+        return this->_cnGatewayIpAddress;
+    };
 
-String const& SimUServeNetworkSettings::getConnectedSsid(void) const
-{
-    return _connectedSsid;
-}
-
-void SimUServeNetworkSettings::setConnectedPassword(String const& connectedPassword) 
-{
-    if(_connectedPassword != connectedPassword)
+    void SimUServeNetworkSettings::setConnectedNetworkNetmask(String const& netmask)
     {
-        _isDirty = true;
-        _connectedPassword = String(connectedPassword);
-    }
-}
+        if (this->_connectedNetworkNetmask != netmask)
+        {
+            this-> _isDirty = true;
+            this-> _connectedNetworkNetmask = String(netmask);
+            if(!this->_cnNetmask)
+            {
+                this->_cnNetmask = IPAddress();
+            }
+            this->_cnNetmask.fromString(netmask);
+        }
+    };
 
-String const& SimUServeNetworkSettings::getConnectedPassword(void) const
-{
-    return _connectedPassword;
-}
-
-void SimUServeNetworkSettings::setDeviceHostName(String const& deviceHostName) 
-{
-    if(_deviceHostName != deviceHostName)
+    IPAddress const& SimUServeNetworkSettings::getConnectedNetworkNetmask(void) const
     {
-        _isDirty = true;
-        _deviceHostName = String(deviceHostName);
+        return this->_cnNetmask;
+    }
+
+void SimUServeNetworkSettings::setConnectedNetworkSsid(String const& connectedSsid)
+{
+    if(this->_connectedNetworkSsid != connectedSsid)
+    {
+        this->_isDirty = true;
+        this->_connectedNetworkSsid = String(connectedSsid);
     }
 }
 
-String const& SimUServeNetworkSettings::getDeviceHostName(void) const
+String const& SimUServeNetworkSettings::getConnectedNetworkSsid(void) const
 {
-    return _deviceHostName;
+    return this->_connectedNetworkSsid;
 }
+
+void SimUServeNetworkSettings::setConnectedNetworkSecurityKey(String const& securityKey) 
+{
+    if(this->_connectedNetworkSecurityKey != securityKey)
+    {
+        this->_isDirty = true;
+        this->_connectedNetworkSecurityKey = String(securityKey);
+    }
+}
+
+String const& SimUServeNetworkSettings::getConnectedNetworkSecurityKey(void) const
+{
+    return this->_connectedNetworkSecurityKey;
+}
+
+  #pragma endregion
+
+
+
 
 void SimUServeNetworkSettings::setClean(void)
 {
-    _isDirty = false;
+    this->_isDirty = false;
+}
+
+void SimUServeNetworkSettings::update(SimUServeNetworkSettings const& fromSettings, bool autoPersist)
+{
+    // TODO - some kind fo detection for default vs loaded vs dirty
+    // set up server settings
+    this->setServerIpAddress(fromSettings.getServerIpAddress().toString());
+    this->setServerPort(fromSettings.getServerPort());
+
+    // set up AP settings
+    this->setDeviceApSsid(fromSettings.getDeviceApSsid());
+    this->setDeviceApSsid(fromSettings.getDeviceApSsid());
+    this->setDeviceApIpAddress(fromSettings.getDeviceApIpAddress().toString());
+    this->setDeviceApNetworkSecurityKey(fromSettings.getDeviceApNetworkSecurityKey());
+    this->setDeviceApGatwayIpAddress(fromSettings.getDeviceApGatwayIpAddress().toString());
+    this->setDeviceApHostName(fromSettings.getDeviceApHostName());
+
+    if (autoPersist)
+    {
+        this->saveSettings();
+    }
+}
+
+void SimUServeNetworkSettings::saveSettings(void)
+{
+    // TODO - handle saving this to EEPROM or FS
 }

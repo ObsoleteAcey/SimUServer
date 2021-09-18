@@ -24,11 +24,11 @@
 #define MAX_SSID_LENGTH 32
 #define MAX_PASSWORD_LENGTH 63
 #define DEFAULT_SERVER_PORT 80
-#define DEFAULT_SERVER_IP "10.0.1.1"
-#define DEFAULT_SERVER_GATEWAY "10.0.1.1"
-#define DEFAULT_SERVER_NETMASK "255.255.255.0"
-#define DEFAULT_SERVER_SSID "SimUServeWiFiHost_"
-#define DEFAULT_SERVER_PASSWORD "SimUServeWiFIPassword"
+#define DEFAULT_AP_IP "10.0.1.1"
+#define DEFAULT_AP_GATEWAY "10.0.1.1"
+#define DEFAULT_AP_NETMASK "255.255.255.0"
+#define DEFAULT_AP_SSID "SimUServeWiFiHost_"
+#define DEFAULT_AP_PASSWORD "SimUServeWiFIPassword"
 #define SERVER_LOCAL_ADDRESS "http://simuserve.device"
 
 struct WifiNetwork {
@@ -114,7 +114,12 @@ class SimUServeWiFi {
 
   public:
     SimUServeWiFi();
-    SimUServeWiFi(int, String const&);
+    /**
+     * @brief Construct a new Sim U Serve Wi Fi object
+     * @param SSID SSID of the WiFi network being connected to
+     * @param port 
+     */
+    SimUServeWiFi(String const&, uint16_t);
     ~SimUServeWiFi();
     String const& getWiFiSsid(void) const;
     String const& getWiFiPassword(void) const;
