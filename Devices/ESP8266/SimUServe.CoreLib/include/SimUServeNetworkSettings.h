@@ -84,37 +84,38 @@ class SimUServeNetworkSettings {
      */
     IPAddress const& getServerIpAddress(void) const;
 
-    /**
-     * @brief Set the SimUServe Server Port
-     * The is, the server we are connecting to, usually hosted
-     * on a PC
-     */
-    void setDeviceUdpPort(uint16_t const);
-
-    /**
-     * @brief Get the SimUServe Server Port
-     * 
-     * @return int The server port
-     */
-    uint16_t getDeviceUdpPort(void) const;
-
-    /**
-     * @brief Set the SimUServe Server Port
-     * The is, the server we are connecting to, usually hosted
-     * on a PC
-     */
-    void setDeviceConfigServerPort(uint16_t const);
-
-    /**
-     * @brief Get the SimUServe Server Port
-     * 
-     * @return int The server port
-     */
-    uint16_t getDeviceConfigServerPort(void) const;
+    
     
     #pragma endregion
 
     #pragma region Related to Device Access Point (Local) server, for setup purposes
+
+    /**
+     * @brief Set the SimUServe Device UDP Listen Port
+     * The is the port we are listening to for incoming
+     * UDP data
+     */
+    void setDeviceUdpPort(uint16_t const);
+
+    /**
+     * @brief Get the SimUServe Device UDP Listen Port
+     * 
+     * @return uint16_t The server port
+     */
+    uint16_t getDeviceUdpPort(void) const;
+
+    /**
+     * @brief Set the SimUServe Device configuration Port
+     * The is the web server port we will be listening on
+     */
+    void setDeviceConfigServerPort(uint16_t const);
+
+    /**
+     * @brief Get the SimUServe Device configuration Port
+     * 
+     * @return uint16_t The server port
+     */
+    uint16_t getDeviceConfigServerPort(void) const;
 
     void setDeviceApSsid(String const&);
 

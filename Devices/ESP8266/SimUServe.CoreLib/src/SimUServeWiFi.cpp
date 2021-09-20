@@ -116,8 +116,8 @@ void SimUServeWiFi::startMdns(void)
 
     };
     this->launchWebServer();
-    Serial.println("Adding http service to MDNS on port " + String(this->_settings->getServerPort()));
-    MDNS.addService("http", "tcp", this->_settings->getServerPort());
+    Serial.println("Adding http service to MDNS on port " + String(this->_settings->getDeviceConfigServerPort()));
+    MDNS.addService("http", "tcp", this->_settings->getDeviceConfigServerPort());
 }
 
 void SimUServeWiFi::setupAccessPoint(void)
@@ -170,12 +170,12 @@ void SimUServeWiFi::launchWebServer(void)
     if(!this->_server)
     {
         Serial.println("SimUServeWiFi::launchWebServer");
-        this->_server = new AsyncWebServer(_settings->getServerPort());
+        this->_server = new AsyncWebServer(_settings->getDeviceConfigServerPort());
     }
     // set up the routes
     this->_server->on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleRootGet(request);});
-    this->_server->on("/network/all", HTTP_GET,  [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleRefreshNetworksGet(request);});
-    this->_server->on("/network", HTTP_POST, [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleSaveNetwork(request);});
+    this->_server->on("/api/network/all", HTTP_GET,  [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleRefreshNetworksGet(request);});
+    this->_server->on("/api/network", HTTP_POST, [this](AsyncWebServerRequest *request) {SimUServeWiFi::handleSaveNetwork(request);});
     this->_server->onNotFound([this](AsyncWebServerRequest *request) {SimUServeWiFi::handleNotFound(request);});
     this->_server->begin();
 }
@@ -212,8 +212,8 @@ void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
 
 void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
 {
-    if(!request->hasArg("ssid") || !request->hasArg("password") ||
-        request->arg("ssid") == NULL || request->arg("password") == NULL)
+    if(!request->hasArg("ssid") || !request->hasArg("networkkey") ||
+        request->arg("ssid") == NULL || request->arg("networkkey") == NULL)
     {
         // The request is invalid, so send HTTP status 400
         request->send(400, "text/plain", "400: Invalid Request");         
@@ -221,11 +221,14 @@ void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
     }
 
     String ssid =  request->arg("ssid");
-    String password = request->arg("password");
+    String password = request->arg("networkkey");
+    String netmask =  request->arg("netmask");
+    String gateway = request->arg("gateway");
 
     WiFi.begin(ssid, password);
     if(this->testWifiConnection()) {
         // save settings here and respond with all good
+        this->_settings->setConnectedNetworkSsid(ssid);
 
         request->send(200, "Connection successful and settings saved");
         return;

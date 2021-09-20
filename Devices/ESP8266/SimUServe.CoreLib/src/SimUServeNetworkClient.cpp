@@ -31,22 +31,27 @@ SimUServeNetworkClient::~SimUServeNetworkClient()
     delete _udp;
 }
 
-void SimUServeNetworkClient::udpBeginListening(AuPacketHandlerFunction callback)
+bool SimUServeNetworkClient::udpBeginListening(AuPacketHandlerFunction callback)
 {
-    if(this->_udp == nullptr)
+    if (this->_udp == nullptr)
     {
-        _udp = new AsyncUDP();
+        this->_udp = new AsyncUDP();
     }
 
-    if(_udp->connected())
+    // prevent multiple connection attempts
+    if (this->_udp->connected())
     {
-        return;
+        return true;
     }
 
-    if(_udp->connect(this->_networkSettings->getServerIpAddress(), this->_networkSettings->getServerUdpPort()))
+    bool isListening = this->_udp->listen(this->_networkSettings->getServerIpAddress(), this->_networkSettings->getDeviceUdpPort());
+
+    if (isListening)
     {
-        
+        this->_udp->onPacket(callback);
     }
+
+    return isListening;
 }
 
 #pragma endregion

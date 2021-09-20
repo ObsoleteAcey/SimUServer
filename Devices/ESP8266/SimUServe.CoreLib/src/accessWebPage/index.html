@@ -98,12 +98,14 @@
             <h1>SimUServe Device Info</h1>
         </div>
         <script>
-            function sendRequest(url, method, successCallback, failureCallback) {
+            function sendRequest(url, method, body, successCallback, failureCallback) {
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (this.readyState == 4){
                         switch(this.status){
                             case 200:
+                            case 201:
+                            case 202:
                                 successCallback();
                                 break;
                             default:
@@ -114,13 +116,13 @@
                     }
                 };
                 xhr.open(method, url);
-                xhr.send();
+                xhr.send(body);
             }
-            function get(url, callback) {
-                sendRequest(url, 'GET', callback);
+            function get(url, successCallback, failureCallback) {
+                sendRequest(url, 'GET', null, successCallback, failureCallback);
             }
-            function post(url, data) {
-
+            function post(url, data, successCallback, failureCallback) {
+                sendRequest(url, 'POST', data, successCallback, failureCallback);
             }
             function removeClass(element, className) {
                 element.className = element.className.replace(className, "");

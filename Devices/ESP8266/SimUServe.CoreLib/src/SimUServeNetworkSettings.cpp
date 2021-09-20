@@ -70,6 +70,34 @@ IPAddress const& SimUServeNetworkSettings::getServerIpAddress(void) const
 
 #pragma region Related to Device Access Point (Local) server, for setup purposes
 
+void SimUServeNetworkSettings::setDeviceUdpPort(uint16_t const port)
+{
+    if(this->_deviceUdpPort != port)
+    {
+        this->_isDirty = true;
+        this->_deviceUdpPort = port;
+    }
+}
+
+uint16_t SimUServeNetworkSettings::getDeviceUdpPort(void) const
+{
+    return this->_deviceUdpPort;
+}
+
+void SimUServeNetworkSettings::setDeviceConfigServerPort(uint16_t const port)
+{
+    if(this->_deviceConfigServerPort != port)
+    {
+        this->_isDirty = true;
+        this->_deviceConfigServerPort = port;
+    }
+}
+
+uint16_t SimUServeNetworkSettings::getDeviceConfigServerPort(void) const
+{
+    return this->_deviceConfigServerPort;
+}
+
 void SimUServeNetworkSettings::setDeviceApSsid(String const& deviceApSsid)
 {
     if(this->_deviceApSsid != deviceApSsid)
@@ -255,7 +283,7 @@ void SimUServeNetworkSettings::update(SimUServeNetworkSettings const& fromSettin
     // TODO - some kind fo detection for default vs loaded vs dirty
     // set up server settings
     this->setServerIpAddress(fromSettings.getServerIpAddress().toString());
-    this->setUdpServerPort(fromSettings.getServerUdpPort());
+    this->setServerUdpPort(fromSettings.getServerUdpPort());
 
     // set up AP settings
     this->setDeviceApSsid(fromSettings.getDeviceApSsid());

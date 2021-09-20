@@ -34,7 +34,7 @@ class SimUServeNetworkClient {
 
         ~SimUServeNetworkClient();
 
-        void udpBeginListening(AuPacketHandlerFunction);
+        bool udpBeginListening(AuPacketHandlerFunction);
 };
 
 
