@@ -16,8 +16,10 @@
 
 class SimUServeNetworkSettings {
   protected:
-    int _serverPort;
+    uint16_t _serverUdpPort;
     String _serverIpAddress;
+
+    uint16_t _deviceUdpPort;
     
     String _connectedNetworkSsid;
     String _connectedNetworkSecurityKey;
@@ -31,6 +33,7 @@ class SimUServeNetworkSettings {
     String _deviceApIpAddress;
     String _deviceApGatewayIpAddress;
     String _deviceApNetmask;
+
 
   private:
     bool _isDirty = false;
@@ -54,14 +57,14 @@ class SimUServeNetworkSettings {
      * The is, the server we are connecting to, usually hosted
      * on a PC
      */
-    void setServerPort(int);
+    void setServerUdpPort(uint16_t const);
 
     /**
      * @brief Get the SimUServe Server Port
      * 
      * @return int The server port
      */
-    int getServerPort(void) const;
+    uint16_t getServerUdpPort(void) const;
 
     /**
      * @brief Set the SimUServe Server Ip Address

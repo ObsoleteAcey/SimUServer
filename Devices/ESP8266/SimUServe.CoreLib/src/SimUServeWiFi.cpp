@@ -26,8 +26,9 @@ SimUServeWiFi::SimUServeWiFi(String const& serverSsid, uint16_t serverPort)
     this->_server = nullptr;
     this->_availableNetworks = nullptr;
     this->initDefaults();
-    this->_settings->setServerPort(serverPort);
+    this->_settings->setServerUdpPort(serverPort);
     //_settings->setServerSsid(serverSsid);
+    
 }
 
 SimUServeWiFi::~SimUServeWiFi()
@@ -100,7 +101,7 @@ bool SimUServeWiFi::testWifiConnection()
             return(true);
         } 
         delay(500);
-        Serial.print("WiFi Status: " + this->getWifiStatus(WiFi.status()));    
+        Serial.print("WiFi Status: " + this->getWifiStatus());    
         waitRetryCounter++;
     }
     Serial.println("Connect timed out");
@@ -131,7 +132,7 @@ void SimUServeWiFi::setupAccessPoint(void)
     WiFi.softAP(this->_settings->getDeviceApSsid(), this->_settings->getDeviceApNetworkSecurityKey());
 }
 
-WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
+WiFiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
 {
     if(this->_availableNetworks)
     {
@@ -142,18 +143,18 @@ WifiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
     numberOfNetworks = WiFi.scanNetworks(false, true);
     Serial.println("Found " + String(numberOfNetworks) + " networks.");
 
-    this->_availableNetworks = new WifiNetwork[numberOfNetworks];
+    this->_availableNetworks = new WiFiNetwork[numberOfNetworks];
 
     for (int i = 0; i < numberOfNetworks; i++)
     {
         Serial.println("Adding network " + WiFi.SSID(i));
-        this->_availableNetworks[i] = WifiNetwork(i, WiFi.SSID(i), WiFi.RSSI(i), WiFi.encryptionType(i));
+        this->_availableNetworks[i] = WiFiNetwork(i, WiFi.SSID(i), WiFi.RSSI(i), WiFi.encryptionType(i));
     }
 
     return this->_availableNetworks;
 }
 
-WifiNetwork* const SimUServeWiFi::refreshAvailableWifiNetworks(void)
+WiFiNetwork* const SimUServeWiFi::refreshAvailableWifiNetworks(void)
 {
     if(_availableNetworks)
     {
@@ -257,8 +258,10 @@ void SimUServeWiFi::handleNotFound(AsyncWebServerRequest *request)
     request->send(response);
 }
 
-String SimUServeWiFi::getWifiStatus(wl_status_t status)
+String SimUServeWiFi::getWifiStatus(void)
 {
+    wl_status_t status = WiFi.status();
+
     switch(status){
         case WL_IDLE_STATUS:
             return "Idle";

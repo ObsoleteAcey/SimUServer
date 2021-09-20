@@ -14,12 +14,39 @@
 SimUServeNetworkClient::SimUServeNetworkClient()
 {
     this->_networkSettings = SimUServeNetworkSettings::getSettings();
-
+    this->_udp = nullptr;
 }
 
-SimUServeNetworkClient::SimUServeNetworkClient(IPAddress serverIpAddress, uint16_t serverPort)
+SimUServeNetworkClient::SimUServeNetworkClient(String serverIpAddress, uint16_t serverPort)
 {
-    
+    this->_networkSettings = SimUServeNetworkSettings::getSettings();
+    this->_networkSettings->setServerIpAddress(serverIpAddress);
+    this->_networkSettings->setServerUdpPort(serverPort);
+    this->_networkSettings->saveSettings();
+    this->_udp = nullptr;
+}
+
+SimUServeNetworkClient::~SimUServeNetworkClient()
+{
+    delete _udp;
+}
+
+void SimUServeNetworkClient::udpBeginListening(AuPacketHandlerFunction callback)
+{
+    if(this->_udp == nullptr)
+    {
+        _udp = new AsyncUDP();
+    }
+
+    if(_udp->connected())
+    {
+        return;
+    }
+
+    if(_udp->connect(this->_networkSettings->getServerIpAddress(), this->_networkSettings->getServerPort()))
+    {
+        
+    }
 }
 
 #pragma endregion

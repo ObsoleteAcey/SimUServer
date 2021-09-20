@@ -12,14 +12,16 @@
 #define SimUServeNetworkClient_h
 
 #include "SimUServeNetworkSettings.h"
+#include "SimUServeWiFi.h"
 #include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
+#include <ESPAsyncUDP.h>
 
 class SimUServeNetworkClient {
     protected:
 
     private:
         SimUServeNetworkSettings* _networkSettings;
+        AsyncUDP* _udp;
 
     public:
         SimUServeNetworkClient();
@@ -28,7 +30,11 @@ class SimUServeNetworkClient {
          * @brief Construct a new Sim U Serve Network Client object
          * 
          */
-        SimUServeNetworkClient(IPAddress, uint16_t);
+        SimUServeNetworkClient(String, uint16_t);
+
+        ~SimUServeNetworkClient();
+
+        void udpBeginListening(AuPacketHandlerFunction);
 };
 
 

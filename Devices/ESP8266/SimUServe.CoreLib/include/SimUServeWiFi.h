@@ -31,15 +31,15 @@
 #define DEFAULT_AP_PASSWORD "SimUServeWiFIPassword"
 #define SERVER_LOCAL_ADDRESS "http://simuserve.device"
 
-struct WifiNetwork {
+struct WiFiNetwork {
   int Index;
   String SSID;
   int32_t RSSI;
   int EncryptionType;
 
-  WifiNetwork(){}
+  WiFiNetwork(){}
 
-  WifiNetwork(int const index, String const& ssid, int32_t const rssi, int encryptionType)
+  WiFiNetwork(int const index, String const& ssid, int32_t const rssi, int encryptionType)
   {
     Index = index;
     SSID = String(ssid);
@@ -47,7 +47,7 @@ struct WifiNetwork {
     EncryptionType = encryptionType;
   }
 
-  int getSignalStrength() 
+  int32_t getSignalStrength() 
   {
       if(RSSI <= -100)
       {
@@ -65,7 +65,7 @@ struct WifiNetwork {
     String jsonString = "{\"ssid\":\"";
     jsonString.concat(SSID);
     jsonString.concat("\",\"signalStrength\":\"");
-    jsonString.concat(WifiNetwork::getSignalStrength());
+    jsonString.concat(WiFiNetwork::getSignalStrength());
     jsonString.concat("\",\"index\":\"");
     jsonString.concat(Index);
     jsonString.concat("\",\"encryptionType\":\"");
@@ -101,7 +101,7 @@ class SimUServeWiFi {
     // we want to connect to
     SimUServeNetworkSettings* _settings;
     AsyncWebServer* _server;
-    WifiNetwork* _availableNetworks;
+    WiFiNetwork* _availableNetworks;
     int numberOfNetworks;
   
   private:
@@ -141,7 +141,7 @@ class SimUServeWiFi {
     */
     bool testWifiConnection(void);
     
-    String getWifiStatus(wl_status_t);
+    static String getWifiStatus(void);
 
   protected:
     template <typename T>
@@ -162,12 +162,12 @@ class SimUServeWiFi {
     /*
      * gets a list of available Wifi networks that can be connected to
     */
-    WifiNetwork* const getAvailableWifiNetworks(void);
+    WiFiNetwork* const getAvailableWifiNetworks(void);
 
     /*
      * refreshes the list of available Wifi networks that can be connected to
     */
-    WifiNetwork* const refreshAvailableWifiNetworks(void);
+    WiFiNetwork* const refreshAvailableWifiNetworks(void);
 
     /*
      * sets up the access point and populates available wireless networks

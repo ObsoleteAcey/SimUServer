@@ -32,18 +32,18 @@ SimUServeNetworkSettings::~SimUServeNetworkSettings()
 
 #pragma region Related to remote (PC) SimUServe server
 
-void SimUServeNetworkSettings::setServerPort(int const port)
+void SimUServeNetworkSettings::setServerUdpPort(uint16_t const port)
 {
-    if(_serverPort != port)
+    if(this->_serverUdpPort != port)
     {
-        _isDirty = true;
-        _serverPort = port;
+        this->_isDirty = true;
+        this->_serverUdpPort = port;
     }
 }
 
-int SimUServeNetworkSettings::getServerPort(void) const
+uint16_t SimUServeNetworkSettings::getServerUdpPort(void) const
 {
-    return _serverPort;
+    return this->_serverUdpPort;
 }
 
 void SimUServeNetworkSettings::setServerIpAddress(String const& ipAddress)
@@ -255,7 +255,7 @@ void SimUServeNetworkSettings::update(SimUServeNetworkSettings const& fromSettin
     // TODO - some kind fo detection for default vs loaded vs dirty
     // set up server settings
     this->setServerIpAddress(fromSettings.getServerIpAddress().toString());
-    this->setServerPort(fromSettings.getServerPort());
+    this->setUdpServerPort(fromSettings.getServerUdpPort());
 
     // set up AP settings
     this->setDeviceApSsid(fromSettings.getDeviceApSsid());
