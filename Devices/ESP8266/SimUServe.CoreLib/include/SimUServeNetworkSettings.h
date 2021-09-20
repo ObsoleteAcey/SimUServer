@@ -14,12 +14,15 @@
 #include <stdint.h>
 #include <String>
 
+#define DEFAULT_SERVER_PORT 80
+
 class SimUServeNetworkSettings {
   protected:
     uint16_t _serverUdpPort;
     String _serverIpAddress;
 
     uint16_t _deviceUdpPort;
+    uint16_t _deviceConfigServerPort;
     
     String _connectedNetworkSsid;
     String _connectedNetworkSecurityKey;
@@ -80,6 +83,34 @@ class SimUServeNetworkSettings {
      * SimUServe server IP Address
      */
     IPAddress const& getServerIpAddress(void) const;
+
+    /**
+     * @brief Set the SimUServe Server Port
+     * The is, the server we are connecting to, usually hosted
+     * on a PC
+     */
+    void setDeviceUdpPort(uint16_t const);
+
+    /**
+     * @brief Get the SimUServe Server Port
+     * 
+     * @return int The server port
+     */
+    uint16_t getDeviceUdpPort(void) const;
+
+    /**
+     * @brief Set the SimUServe Server Port
+     * The is, the server we are connecting to, usually hosted
+     * on a PC
+     */
+    void setDeviceConfigServerPort(uint16_t const);
+
+    /**
+     * @brief Get the SimUServe Server Port
+     * 
+     * @return int The server port
+     */
+    uint16_t getDeviceConfigServerPort(void) const;
     
     #pragma endregion
 

@@ -43,7 +43,7 @@ void SimUServeNetworkClient::udpBeginListening(AuPacketHandlerFunction callback)
         return;
     }
 
-    if(_udp->connect(this->_networkSettings->getServerIpAddress(), this->_networkSettings->getServerPort()))
+    if(_udp->connect(this->_networkSettings->getServerIpAddress(), this->_networkSettings->getServerUdpPort()))
     {
         
     }
