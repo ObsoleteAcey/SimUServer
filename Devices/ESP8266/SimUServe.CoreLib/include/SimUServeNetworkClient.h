@@ -22,6 +22,7 @@ class SimUServeNetworkClient {
     private:
         SimUServeNetworkSettings* _networkSettings;
         AsyncUDP* _udp;
+        //AsyncUDP* _udpReceive;
 
     public:
         SimUServeNetworkClient();
@@ -35,6 +36,9 @@ class SimUServeNetworkClient {
         ~SimUServeNetworkClient();
 
         bool udpBeginListening(AuPacketHandlerFunction);
+        
+
+        void sendMessage(String& const) const;
 };
 
 
