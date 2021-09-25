@@ -54,18 +54,19 @@ bool SimUServeNetworkClient::udpBeginListening(AuPacketHandlerFunction callback)
     return isListening;
 }
 
-void SimUServeNetworkClient::sendMessage(String& const messageToSend) const
+bool SimUServeNetworkClient::sendMessage(String& const messageToSend)
 {
     if (this->_udp == nullptr)
     {
         this->_udp = new AsyncUDP();
     }
-
-    const char* stringMessage = messageToSend.c_str();
-    AsyncUDPMessage message = AsyncUDPMessage();
     
+    AsyncUDPMessage message = AsyncUDPMessage(messageToSend.length());
+    message.print(messageToSend);
 
-    this->_udp->sendTo()
+    this->_udp->sendTo(message, this->_networkSettings->getServerIpAddress(), this->_networkSettings->getServerUdpPort());
+
+    return true;
 }
 
 #pragma endregion
