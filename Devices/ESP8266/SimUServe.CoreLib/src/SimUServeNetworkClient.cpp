@@ -31,6 +31,8 @@ SimUServeNetworkClient::~SimUServeNetworkClient()
     delete _udp;
 }
 
+#pragma endregion
+
 bool SimUServeNetworkClient::udpBeginListening(AuPacketHandlerFunction callback)
 {
     if (this->_udp == nullptr)
@@ -54,7 +56,7 @@ bool SimUServeNetworkClient::udpBeginListening(AuPacketHandlerFunction callback)
     return isListening;
 }
 
-bool SimUServeNetworkClient::sendMessage(String& const messageToSend)
+bool SimUServeNetworkClient::sendMessage(String const& messageToSend)
 {
     if (this->_udp == nullptr)
     {
@@ -68,5 +70,3 @@ bool SimUServeNetworkClient::sendMessage(String& const messageToSend)
 
     return true;
 }
-
-#pragma endregion

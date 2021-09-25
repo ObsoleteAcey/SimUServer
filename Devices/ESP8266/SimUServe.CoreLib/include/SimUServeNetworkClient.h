@@ -38,7 +38,7 @@ class SimUServeNetworkClient {
         bool udpBeginListening(AuPacketHandlerFunction);
         
 
-        bool sendMessage(String& const);
+        bool sendMessage(String const&);
 };
 
 
