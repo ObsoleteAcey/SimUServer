@@ -35,6 +35,7 @@ SimUServeNetworkClient::~SimUServeNetworkClient()
 
 bool SimUServeNetworkClient::udpBeginListening(AuPacketHandlerFunction callback)
 {
+    Serial.println("SimUServeNetworkClient::udpBeginListening");
     if (this->_udp == nullptr)
     {
         this->_udp = new AsyncUDP();
@@ -43,13 +44,16 @@ bool SimUServeNetworkClient::udpBeginListening(AuPacketHandlerFunction callback)
     // prevent multiple connection attempts
     if (this->_udp->connected())
     {
+        Serial.println("Already connected to UDP");
         return true;
     }
 
+    Serial.println("Beginning listen on " + this->_networkSettings->getServerIpAddress().toString() + " port " + String(this->_networkSettings->getDeviceUdpPort()));
     bool isListening = this->_udp->listen(this->_networkSettings->getServerIpAddress(), this->_networkSettings->getDeviceUdpPort());
 
     if (isListening)
     {
+        Serial.println("Now listening - setting callback");
         this->_udp->onPacket(callback);
     }
 

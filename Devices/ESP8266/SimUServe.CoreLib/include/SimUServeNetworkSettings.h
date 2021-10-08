@@ -28,6 +28,7 @@ class SimUServeNetworkSettings {
     String _connectedNetworkSecurityKey;
     String _connectedNetworkGatewayIpAddress;
     String _connectedNetworkNetmask;
+    String _connectedNetworkDeviceIp;
     
     
     String _deviceApSsid;
@@ -37,12 +38,12 @@ class SimUServeNetworkSettings {
     String _deviceApGatewayIpAddress;
     String _deviceApNetmask;
 
-
   private:
     bool _isDirty = false;
     IPAddress _apIpAddress;
     IPAddress _apGatewayIpAddress;
     IPAddress _apNetmask;
+    IPAddress _cnDeviceIp;
     IPAddress _cnGatewayIpAddress;
     IPAddress _cnNetmask;
     IPAddress _svrIpAddress;
@@ -145,6 +146,10 @@ class SimUServeNetworkSettings {
 
 
     #pragma region Related to connecting to main WiFi access point
+
+    void setConnectedNetworkDeviceIpAddress(String const&);
+
+    IPAddress const& getConnectedNetworkDeviceIpAddress(void) const;
 
     void setConnectedNetworkGatewayIpAddress(String const&);
 

@@ -37,14 +37,26 @@ SimUServeWiFi::~SimUServeWiFi()
     delete[] this->_availableNetworks;
 }
 
+
+
 String const& SimUServeWiFi::getWiFiSsid(void) const
 {
     return this->_settings->getConnectedNetworkSsid();
 }
 
-String const& SimUServeWiFi::getWiFiPassword(void) const
+String const& SimUServeWiFi::getWifiNetworkSecurityKey(void) const
 {
     return this->_settings->getConnectedNetworkSecurityKey();
+}
+
+void SimUServeWiFi::setWifiSsid(String const& ssId)
+{
+    this->_settings->setConnectedNetworkSsid(ssId);
+}
+
+void SimUServeWiFi::setWifiNetworkSecurityKey(String const& networkKey)
+{
+    this->_settings->setConnectedNetworkSecurityKey(networkKey);
 }
 
 template <typename T>
@@ -64,9 +76,9 @@ void SimUServeWiFi::writeValueToEeprom(int startOffset, T const& valueToSave)
 void SimUServeWiFi::initServices(void) 
 { 
     Serial.println("SimUServeWiFi::initServices");
-    if(!SPIFFS.begin())
+    if(!LittleFS.begin())
     {
-        Serial.println("An Error has occurred while mounting SPIFFS");
+        Serial.println("An Error has occurred while mounting LittleFS");
     }
     this->setupAccessPoint();
     this->startMdns();
@@ -85,7 +97,8 @@ void SimUServeWiFi::initDefaults()
    this->_settings->setDeviceApNetmask(DEFAULT_AP_NETMASK);
    this->_settings->setDeviceApSsid(DEFAULT_AP_SSID + String(ESP.getChipId()));
    this->_settings->setDeviceApNetworkSecurityKey(DEFAULT_AP_PASSWORD + String(ESP.getChipId()));
-   numberOfNetworks = 0;
+   this->_settings->setDeviceConfigServerPort(DEFAULT_CONFIG_SERVER_PORT);
+   this->_numberOfNetworks = 0;
 }
 
 bool SimUServeWiFi::testWifiConnection() 
@@ -111,9 +124,9 @@ bool SimUServeWiFi::testWifiConnection()
 void SimUServeWiFi::startMdns(void)
 {
     Serial.println("SimUServeWiFi::startMdns");
-
-    if(!MDNS.begin(SERVER_LOCAL_ADDRESS, this->_settings->getServerIpAddress())) {
-
+    Serial.println("Starting MDNS on address " + this->_settings->getDeviceApIpAddress().toString());
+    if(!MDNS.begin(SERVER_LOCAL_ADDRESS, this->_settings->getDeviceApIpAddress())) {
+        Serial.println("Error starting MDNS on address " + this->_settings->getDeviceApIpAddress().toString());
     };
     this->launchWebServer();
     Serial.println("Adding http service to MDNS on port " + String(this->_settings->getDeviceConfigServerPort()));
@@ -140,12 +153,12 @@ WiFiNetwork* const SimUServeWiFi::getAvailableWifiNetworks(void)
     }
 
     Serial.println("SimUServeWiFi::getAvailableWifiNetworks");
-    numberOfNetworks = WiFi.scanNetworks(false, true);
-    Serial.println("Found " + String(numberOfNetworks) + " networks.");
+    this->_numberOfNetworks = WiFi.scanNetworks(false, true);
+    Serial.println("Found " + String(this->_numberOfNetworks) + " networks.");
 
-    this->_availableNetworks = new WiFiNetwork[numberOfNetworks];
+    this->_availableNetworks = new WiFiNetwork[this->_numberOfNetworks];
 
-    for (int i = 0; i < numberOfNetworks; i++)
+    for (int i = 0; i < this->_numberOfNetworks; i++)
     {
         Serial.println("Adding network " + WiFi.SSID(i));
         this->_availableNetworks[i] = WiFiNetwork(i, WiFi.SSID(i), WiFi.RSSI(i), WiFi.encryptionType(i));
@@ -188,7 +201,7 @@ void SimUServeWiFi::checkForRequests(void)
 void SimUServeWiFi::handleRootGet(AsyncWebServerRequest *request)
 {
     Serial.println("SimUServeWiFi::handleRootGet");
-    request->send(SPIFFS, "index.min.html", "text/html");
+    request->send(LittleFS, "/index.min.html", "text/html");
 }
 
 void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
@@ -196,11 +209,11 @@ void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
     auto* availableNetworks = this->getAvailableWifiNetworks();
     String returnJson = "{[";
 
-    for (int i = 0; i < numberOfNetworks; i++)
+    for (int i = 0; i < this->_numberOfNetworks; i++)
     {
         String json = availableNetworks[i].toJson();
         returnJson.concat(json);
-        if(i < numberOfNetworks - 1) 
+        if(i < this->_numberOfNetworks - 1) 
         {
             returnJson.concat(",");
         }
@@ -212,6 +225,7 @@ void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
 
 void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
 {
+    Serial.println("SimUServeWiFi::handleSaveNetwork");
     if(!request->hasArg("ssid") || !request->hasArg("networkkey") ||
         request->arg("ssid") == NULL || request->arg("networkkey") == NULL)
     {
@@ -222,6 +236,8 @@ void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
 
     String ssid =  request->arg("ssid");
     String password = request->arg("networkkey");
+    String advancedSettings = request->arg("advancedSettings");
+    String deviceIp = request->arg("deviceIp");
     String netmask =  request->arg("netmask");
     String gateway = request->arg("gateway");
 
@@ -229,7 +245,22 @@ void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
     if(this->testWifiConnection()) {
         // save settings here and respond with all good
         this->_settings->setConnectedNetworkSsid(ssid);
+        this->_settings->setConnectedNetworkSecurityKey(password);
+        if (advancedSettings == "true")
+        {
+            this->_settings->setConnectedNetworkDeviceIpAddress(deviceIp);
+            this->_settings->setConnectedNetworkGatewayIpAddress(gateway);
+            this->_settings->setConnectedNetworkNetmask(netmask);
+        }
+        else
+        {
+            this->_settings->setConnectedNetworkDeviceIpAddress(WiFi.localIP().toString());
+            this->_settings->setConnectedNetworkGatewayIpAddress(WiFi.gatewayIP().toString());
+            this->_settings->setConnectedNetworkNetmask(WiFi.subnetMask().toString());
+        }
 
+        this->_settings->saveSettings();
+        
         request->send(200, "Connection successful and settings saved");
         return;
     }

@@ -202,6 +202,26 @@ IPAddress const& SimUServeNetworkSettings::getDeviceApNetmask(void) const
 
   #pragma region Related to connecting to main WiFi access point
 
+
+  void SimUServeNetworkSettings::setConnectedNetworkDeviceIpAddress(String const& deviceIp)
+  {
+    if (this->_connectedNetworkDeviceIp != deviceIp)
+        {
+            this-> _isDirty = true;
+            this-> _connectedNetworkDeviceIp = String(deviceIp);
+            if(!this->_cnDeviceIp)
+            {
+                this->_cnDeviceIp = IPAddress();
+            }
+            this->_cnDeviceIp.fromString(deviceIp);
+        }
+  }
+
+    IPAddress const& SimUServeNetworkSettings::getConnectedNetworkDeviceIpAddress(void) const
+    {
+        return this->_cnDeviceIp;
+    }
+
   void SimUServeNetworkSettings::setConnectedNetworkGatewayIpAddress(String const& gatewayIp)
   {
     if (this->_connectedNetworkGatewayIpAddress != gatewayIp)
