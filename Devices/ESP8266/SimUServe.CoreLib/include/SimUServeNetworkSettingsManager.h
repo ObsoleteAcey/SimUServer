@@ -16,28 +16,29 @@
 
 #define DEFAULT_SERVER_PORT 80
 
-class SimUServeNetworkSettings {
-  protected:
-    uint16_t _serverUdpPort;
-    String _serverIpAddress;
+typedef struct NetworkSettings {
+    uint16_t ServerUdpPort;
+    String ServerIpAddress;
 
-    uint16_t _deviceUdpPort;
-    uint16_t _deviceConfigServerPort;
+    uint16_t DeviceUdpPort;
+    uint16_t DeviceConfigServerPort;
     
-    String _connectedNetworkSsid;
-    String _connectedNetworkSecurityKey;
-    String _connectedNetworkGatewayIpAddress;
-    String _connectedNetworkNetmask;
-    String _connectedNetworkDeviceIp;
+    String ConnectedNetworkSsid;
+    String ConnectedNetworkSecurityKey;
+    String ConnectedNetworkGatewayIpAddress;
+    String ConnectedNetworkNetmask;
+    String ConnectedNetworkDeviceIp;
     
     
-    String _deviceApSsid;
-    String _deviceApNetworkSecurityKey;
-    String _deviceApHostName;
-    String _deviceApIpAddress;
-    String _deviceApGatewayIpAddress;
-    String _deviceApNetmask;
+    String DeviceApSsid;
+    String DeviceApNetworkSecurityKey;
+    String DeviceApHostName;
+    String DeviceApIpAddress;
+    String DeviceApGatewayIpAddress;
+    String DeviceApNetmask;
+};
 
+class SimUServeNetworkSettingsManager {
   private:
     bool _isDirty = false;
     IPAddress _apIpAddress;
@@ -47,12 +48,17 @@ class SimUServeNetworkSettings {
     IPAddress _cnGatewayIpAddress;
     IPAddress _cnNetmask;
     IPAddress _svrIpAddress;
-    static SimUServeNetworkSettings* _settings;
+    NetworkSettings _networkSettings;
+    static SimUServeNetworkSettingsManager* _settings;
+    SimUServeNetworkSettingsManager();
+
+    void loadSettings();
+
     
   public:
-    ~SimUServeNetworkSettings();
+    ~SimUServeNetworkSettingsManager();
 
-    static SimUServeNetworkSettings* getSettings(void);
+    static SimUServeNetworkSettingsManager* getSettings(void);
 
     #pragma region Related to remote (PC) SimUServe server
 
@@ -134,9 +140,9 @@ class SimUServeNetworkSettings {
 
     IPAddress const& getDeviceApIpAddress(void) const;
 
-    void setDeviceApGatwayIpAddress(String const&);
+    void setDeviceApGatewayIpAddress(String const&);
 
-    IPAddress const& getDeviceApGatwayIpAddress(void) const;
+    IPAddress const& getDeviceApGatewayIpAddress(void) const;
 
     void setDeviceApNetmask(String const&);
 
@@ -173,7 +179,7 @@ class SimUServeNetworkSettings {
      * Resets the dirty flag
     */
     void setClean(void);
-    void update(SimUServeNetworkSettings const&, bool);
+    void update(NetworkSettings const, bool);
 
     void saveSettings(void);
 };

@@ -56,11 +56,11 @@ SimUServeSevenSegmentDisplay::SimUServeSevenSegmentDisplay(uint8_t sda, uint8_t 
 
 void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_D4, uint8_t numberOfDisplays = 1, uint16_t clockFrequencyKHz = MAX_CLOCK_FREQUENCY_KHZ)
 {
-    if(numberOfDisplays > 6) 
+    if (numberOfDisplays > 6)
     {
         numberOfDisplays = 6;
     }
-    else if(numberOfDisplays == 0)
+    else if (numberOfDisplays == 0)
     {
         numberOfDisplays = 1;
     }
@@ -70,11 +70,10 @@ void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_
     _sda = sda;
     _scl = scl;
     _clockDutyTime = 1000 / clockFrequencyKHz;
-    
 
     _displaybuffer = new uint8_t[_numberOfDisplays];
 
-    for(uint8_t index = 0; index < _numberOfDisplays; index++)
+    for (uint8_t index = 0; index < _numberOfDisplays; index++)
     {
         _displaybuffer[index] = 0;
     }
@@ -89,7 +88,7 @@ void SimUServeSevenSegmentDisplay::writeToDisplay(void)
 {
     writeCommandToDisplay(DATA_COMMAND_WRITE_TO_REGISTER);
     writeCommandToDisplay(DISPLAY_BASE_ADDRESS);
-    for(uint8_t index = 0; index < _numberOfDisplays; index++)
+    for (uint8_t index = 0; index < _numberOfDisplays; index++)
     {
         writeWordToDisplay(_displaybuffer[index]);
     }
@@ -113,7 +112,7 @@ bool SimUServeSevenSegmentDisplay::writeWordToDisplay(uint8_t wordToWrite)
 {
     // from datasheet, each bit is clocked in on rising edge
     // so write goes - set clock low, write bit, set clock high
-    for(uint8_t bitCount = 0; bitCount < 8; bitCount++)
+    for (uint8_t bitCount = 0; bitCount < 8; bitCount++)
     {
         // set clock low
         clockLow();

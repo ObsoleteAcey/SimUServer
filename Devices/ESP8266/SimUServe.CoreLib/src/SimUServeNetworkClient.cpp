@@ -9,7 +9,7 @@
 
 #include "SimUServeNetworkClient.h"
 
-#pragma region Constructors/Destructor
+#pragma region Constructors / Destructor
 
 SimUServeNetworkClient::SimUServeNetworkClient()
 {
@@ -60,13 +60,13 @@ bool SimUServeNetworkClient::udpBeginListening(AuPacketHandlerFunction callback)
     return isListening;
 }
 
-bool SimUServeNetworkClient::sendMessage(String const& messageToSend)
+bool SimUServeNetworkClient::sendMessage(String const &messageToSend)
 {
     if (this->_udp == nullptr)
     {
         this->_udp = new AsyncUDP();
     }
-    
+
     AsyncUDPMessage message = AsyncUDPMessage(messageToSend.length());
     message.print(messageToSend);
 

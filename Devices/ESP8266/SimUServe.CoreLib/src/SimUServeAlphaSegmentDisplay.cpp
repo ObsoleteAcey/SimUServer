@@ -10,7 +10,6 @@
 #include "SimUServeAlphaSegmentDisplay.h"
 #include <Wire.h>
 
-
 // HT16K33 encoding - each bit represents a single segment
 // 14 Segment display - https://en.wikipedia.org/wiki/Fourteen-segment_display
 // dp | m | l | k | j | i | h | g2  | g1 | f | e | d | c | b | a
@@ -84,40 +83,39 @@ static const uint16_t displayLookUp[] PROGMEM = {
     0x2800, // ^
     0x0008, // _
     0x0100, // `
-    0x1058, // a 
-    0x2078, // b 
-    0x00D8, // c 
-    0x088E, // d 
-    0x0858, // e 
-    0x14C0, // f 
-    0x048E, // g 
-    0x1070, // h 
-    0x1000, // i 
-    0x0A10, // j 
-    0x3600, // k 
-    0x0030, // l 
-    0x10D4, // m 
-    0x1050, // n 
-    0x00DC, // o 
-    0x0170, // p 
-    0x0486, // q 
-    0x0050, // r 
-    0x2088, // s 
-    0x0078, // t 
-    0x001C, // u 
-    0x0810, // v 
-    0x2814, // w 
-    0x2D00, // x 
-    0x028E, // y 
-    0x0848, // z 
-    0x0949, // { 
-    0x1200, // | 
-    0x2489, // } 
-    0x0CC0 // ~ 
+    0x1058, // a
+    0x2078, // b
+    0x00D8, // c
+    0x088E, // d
+    0x0858, // e
+    0x14C0, // f
+    0x048E, // g
+    0x1070, // h
+    0x1000, // i
+    0x0A10, // j
+    0x3600, // k
+    0x0030, // l
+    0x10D4, // m
+    0x1050, // n
+    0x00DC, // o
+    0x0170, // p
+    0x0486, // q
+    0x0050, // r
+    0x2088, // s
+    0x0078, // t
+    0x001C, // u
+    0x0810, // v
+    0x2814, // w
+    0x2D00, // x
+    0x028E, // y
+    0x0848, // z
+    0x0949, // {
+    0x1200, // |
+    0x2489, // }
+    0x0CC0  // ~
 };
 
-
-#pragma region Constructors/Destructor
+#pragma region Constructors / Destructor
 
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay()
 {
@@ -130,7 +128,7 @@ SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t deviceAddress
 }
 
 SimUServeAlphaSegmentDisplay::SimUServeAlphaSegmentDisplay(uint8_t sda, uint8_t scl, uint8_t deviceAddress = DEFAULT_I2C_ADDRESS,
-    uint8_t numberOfDisplays = DEFAULT_NUMBER_OF_DISPLAYS)
+                                                           uint8_t numberOfDisplays = DEFAULT_NUMBER_OF_DISPLAYS)
 {
     init(sda, scl, deviceAddress, numberOfDisplays);
 }
@@ -142,13 +140,7 @@ SimUServeAlphaSegmentDisplay::~SimUServeAlphaSegmentDisplay()
 
 #pragma endregion
 
-
 #pragma region Public methods
-
-
-
-
-
 
 void SimUServeAlphaSegmentDisplay::setUpDisplay(void)
 {
@@ -171,12 +163,13 @@ void SimUServeAlphaSegmentDisplay::writeToDisplay(void)
     Wire.beginTransmission(_deviceAddress);
     Wire.write((uint8_t)0x00);
 
-    for (uint8_t index = 0; index < 4; index++) {
+    for (uint8_t index = 0; index < 4; index++)
+    {
         Wire.write(_displaybuffer[index] & 0xFF); // take the first 8 bits
-        Wire.write(_displaybuffer[index] >> 8);  // take the last 8 bits
-    } 
+        Wire.write(_displaybuffer[index] >> 8);   // take the last 8 bits
+    }
 
-    Wire.endTransmission();    
+    Wire.endTransmission();
 }
 
 void SimUServeAlphaSegmentDisplay::writeCharacter(uint8_t displayNumber, uint8_t charToWrite, bool includeDecimal = false)
@@ -188,7 +181,7 @@ void SimUServeAlphaSegmentDisplay::writeCharacter(uint8_t displayNumber, uint8_t
 
     uint8_t address = (charToWrite - ASCII_START_CHAR);
     _displaybuffer[displayNumber] = pgm_read_word(displayLookUp + address); // subtract the offset as we don't use the first 30 odd ASCII chars
-    if(includeDecimal)
+    if (includeDecimal)
     {
         _displaybuffer[displayNumber] = _displaybuffer[displayNumber] | displayLookUp[14];
     }
@@ -197,14 +190,14 @@ void SimUServeAlphaSegmentDisplay::writeCharacter(uint8_t displayNumber, uint8_t
 void SimUServeAlphaSegmentDisplay::writeWord(uint8_t startDisplay, String stringToWrite)
 {
     int displayNumber = 0;
-    // cycle through the string, writing to the display. 
+    // cycle through the string, writing to the display.
     // TODO: If the string is longer, we should scroll it along the whole display.
-    for(uint8_t index = 0; index < stringToWrite.length(); index++)
+    for (uint8_t index = 0; index < stringToWrite.length(); index++)
     {
         // check if there's a decimal - no need to boundry check as String[] operator seems to handle out of bounds
         bool writeDecimal = stringToWrite[index + 1] == '.';
         writeCharacter(displayNumber, stringToWrite[index], writeDecimal);
-        if(writeDecimal)
+        if (writeDecimal)
         {
             index++; // skip the decimal on next loop
         }
@@ -220,7 +213,7 @@ void SimUServeAlphaSegmentDisplay::blinkDisplay(uint8_t blinkRate)
     {
         blinkRate = DISPLAY_BLINK_HALFHZ_COMMAND;
     }
-    
+
     Wire.beginTransmission(_deviceAddress);
     Wire.write(DISPLAY_SETUP_REGISTER | (blinkRate << 1));
     Wire.endTransmission();
@@ -229,7 +222,7 @@ void SimUServeAlphaSegmentDisplay::blinkDisplay(uint8_t blinkRate)
 void SimUServeAlphaSegmentDisplay::clearDisplay(void)
 {
     // set the buffer to zero
-    for(uint8_t index = 0; index < 4; index++)
+    for (uint8_t index = 0; index < 4; index++)
     {
         _displaybuffer[index] = 0x00;
     }
@@ -239,7 +232,7 @@ void SimUServeAlphaSegmentDisplay::clearDisplay(void)
 
 void SimUServeAlphaSegmentDisplay::setBrightness(uint8_t brightness)
 {
-    if(brightness > DISPLAY_BRIGHTNESS_MAX)
+    if (brightness > DISPLAY_BRIGHTNESS_MAX)
     {
         brightness = DISPLAY_BRIGHTNESS_MAX;
     }
@@ -253,14 +246,14 @@ void SimUServeAlphaSegmentDisplay::setBrightness(uint8_t brightness)
 
 #pragma region Private methods
 
-void SimUServeAlphaSegmentDisplay::init(uint8_t sda = ESP_D2, uint8_t scl = ESP_D1, uint8_t deviceAddress = DEFAULT_I2C_ADDRESS, 
-        uint8_t numberOfDisplays = DEFAULT_NUMBER_OF_DISPLAYS)
+void SimUServeAlphaSegmentDisplay::init(uint8_t sda = ESP_D2, uint8_t scl = ESP_D1, uint8_t deviceAddress = DEFAULT_I2C_ADDRESS,
+                                        uint8_t numberOfDisplays = DEFAULT_NUMBER_OF_DISPLAYS)
 {
-    if(numberOfDisplays > 4) 
+    if (numberOfDisplays > 4)
     {
         numberOfDisplays = 4;
     }
-    else if(numberOfDisplays == 0)
+    else if (numberOfDisplays == 0)
     {
         numberOfDisplays = 1;
     }
@@ -270,7 +263,7 @@ void SimUServeAlphaSegmentDisplay::init(uint8_t sda = ESP_D2, uint8_t scl = ESP_
     _scl = scl;
     _displaybuffer = new uint16_t[numberOfDisplays];
 
-    for(uint8_t index = 0; index < numberOfDisplays; index++)
+    for (uint8_t index = 0; index < numberOfDisplays; index++)
     {
         _displaybuffer[index] = 0;
     }
