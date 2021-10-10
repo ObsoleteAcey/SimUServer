@@ -13,13 +13,13 @@
 
 SimUServeNetworkClient::SimUServeNetworkClient()
 {
-    this->_networkSettings = SimUServeNetworkSettings::getSettings();
+    this->_networkSettings = SimUServeNetworkSettingsManager::getSettings();
     this->_udp = nullptr;
 }
 
 SimUServeNetworkClient::SimUServeNetworkClient(String serverIpAddress, uint16_t serverPort)
 {
-    this->_networkSettings = SimUServeNetworkSettings::getSettings();
+    this->_networkSettings = SimUServeNetworkSettingsManager::getSettings();
     this->_networkSettings->setServerIpAddress(serverIpAddress);
     this->_networkSettings->setServerUdpPort(serverPort);
     this->_networkSettings->saveSettings();

@@ -9,6 +9,8 @@
 
 #include "SimUServeNetworkSettingsManager.h"
 #include <LittleFS.h>
+#include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
 
 #pragma region Constructors / Destructors
 
@@ -35,7 +37,40 @@ SimUServeNetworkSettingsManager::~SimUServeNetworkSettingsManager()
 
 void SimUServeNetworkSettingsManager::loadSettings()
 {
+    if(!LittleFS.begin())
+    {
+        Serial.println("Could not mount LittleFS");
+        return;
+    }
+
     File file = LittleFS.open("/settings.json", "r");
+
+    String jsonSettings = file.readString();
+
+    StaticJsonDocument<768> doc;
+
+    Serial.println("Deserializing JSON settings");
+    deserializeJson(doc, jsonSettings);
+
+    // set the PC server settings
+    this->setServerIpAddress(doc[S_IP_ADDRESS]);
+    this->setServerUdpPort(doc[S_UDP_PORT].as<uint16_t>());
+
+    // get the network stuff from the WiFi class
+    this->setConnectedNetworkSecurityKey(WiFi.psk());
+    // but the remainder from the settings
+    this->setConnectedNetworkSsid(doc[CN_SSID]);
+    this->setConnectedNetworkGatewayIpAddress(doc[CN_GATEWAY_IP_ADDRESS]);
+    this->setConnectedNetworkDeviceIpAddress(doc[CN_DEVICE_IP]);
+    this->setConnectedNetworkNetmask(doc[CN_NETMASK]);
+
+    // access point related config
+    this->setDeviceApHostName(doc[D_AP_HOST_NAME] | DEFAULT_AP_HOST_NAME);
+    this->setDeviceApIpAddress(doc[D_AP_IP_ADDRESS] | DEFAULT_AP_IP);
+    this->setDeviceApSsid(doc[D_AP_SSID] | DEFAULT_AP_SSID);
+
+    
+    this->setDeviceConfigServerPort(doc[D_CONFIG_SERVER_PORT] | DEFAULT_CONFIG_SERVER_PORT);
 }
 
 #pragma endregion
@@ -44,24 +79,24 @@ void SimUServeNetworkSettingsManager::loadSettings()
 
 void SimUServeNetworkSettingsManager::setServerUdpPort(uint16_t const port)
 {
-    if (this->_serverUdpPort != port)
+    if (this->_networkSettings.ServerUdpPort != port)
     {
         this->_isDirty = true;
-        this->_serverUdpPort = port;
+        this->_networkSettings.ServerUdpPort = port;
     }
 }
 
 uint16_t SimUServeNetworkSettingsManager::getServerUdpPort(void) const
 {
-    return this->_serverUdpPort;
+    return this->_networkSettings.ServerUdpPort;
 }
 
 void SimUServeNetworkSettingsManager::setServerIpAddress(String const &ipAddress)
 {
-    if (this->_serverIpAddress != ipAddress)
+    if (this->_networkSettings.ServerIpAddress != ipAddress)
     {
         this->_isDirty = true;
-        this->_serverIpAddress = String(ipAddress);
+        this->_networkSettings.ServerIpAddress = String(ipAddress);
         if (!this->_svrIpAddress)
         {
             this->_svrIpAddress = IPAddress();
@@ -81,72 +116,72 @@ IPAddress const &SimUServeNetworkSettingsManager::getServerIpAddress(void) const
 
 void SimUServeNetworkSettingsManager::setDeviceUdpPort(uint16_t const port)
 {
-    if (this->_deviceUdpPort != port)
+    if (this->_networkSettings.DeviceUdpPort != port)
     {
         this->_isDirty = true;
-        this->_deviceUdpPort = port;
+        this->_networkSettings.DeviceUdpPort = port;
     }
 }
 
 uint16_t SimUServeNetworkSettingsManager::getDeviceUdpPort(void) const
 {
-    return this->_deviceUdpPort;
+    return this->_networkSettings.DeviceUdpPort;
 }
 
 void SimUServeNetworkSettingsManager::setDeviceConfigServerPort(uint16_t const port)
 {
-    if (this->_deviceConfigServerPort != port)
+    if (this->_networkSettings.DeviceConfigServerPort != port)
     {
         this->_isDirty = true;
-        this->_deviceConfigServerPort = port;
+        this->_networkSettings.DeviceConfigServerPort = port;
     }
 }
 
 uint16_t SimUServeNetworkSettingsManager::getDeviceConfigServerPort(void) const
 {
-    return this->_deviceConfigServerPort;
+    return this->_networkSettings.DeviceConfigServerPort;
 }
 
 void SimUServeNetworkSettingsManager::setDeviceApSsid(String const &deviceApSsid)
 {
-    if (this->_deviceApSsid != deviceApSsid)
+    if (this->_networkSettings.DeviceApSsid != deviceApSsid)
     {
         _isDirty = true;
-        this->_deviceApSsid = String(deviceApSsid);
+        this->_networkSettings.DeviceApSsid = String(deviceApSsid);
     }
 }
 
 String const &SimUServeNetworkSettingsManager::getDeviceApSsid(void) const
 {
-    return this->_deviceApSsid;
+    return this->_networkSettings.DeviceApSsid;
 }
 
 void SimUServeNetworkSettingsManager::setDeviceApNetworkSecurityKey(String const &apSecurityKey)
 {
-    if (this->_deviceApNetworkSecurityKey != apSecurityKey)
+    if (this->_networkSettings.DeviceApNetworkSecurityKey != apSecurityKey)
     {
         _isDirty = true;
-        this->_deviceApNetworkSecurityKey = String(apSecurityKey);
+        this->_networkSettings.DeviceApNetworkSecurityKey = String(apSecurityKey);
     }
 }
 
 String const &SimUServeNetworkSettingsManager::getDeviceApNetworkSecurityKey(void) const
 {
-    return this->_deviceApNetworkSecurityKey;
+    return this->_networkSettings.DeviceApNetworkSecurityKey;
 }
 
 void SimUServeNetworkSettingsManager::setDeviceApHostName(String const &deviceHostName)
 {
-    if (this->_deviceApHostName != deviceHostName)
+    if (this->_networkSettings.DeviceApHostName != deviceHostName)
     {
         _isDirty = true;
-        this->_deviceApHostName = String(deviceHostName);
+        this->_networkSettings.DeviceApHostName = String(deviceHostName);
     }
 }
 
 String const &SimUServeNetworkSettingsManager::getDeviceApHostName(void) const
 {
-    return this->_deviceApHostName;
+    return this->_networkSettings.DeviceApHostName;
 }
 
 void SimUServeNetworkSettingsManager::setDeviceApIpAddress(String const &deviceApIp)

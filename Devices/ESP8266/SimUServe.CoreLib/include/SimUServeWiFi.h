@@ -23,13 +23,7 @@
 
 #define MAX_SSID_LENGTH 32
 #define MAX_PASSWORD_LENGTH 63
-#define DEFAULT_CONFIG_SERVER_PORT 80
-#define DEFAULT_AP_IP "10.0.1.1"
-#define DEFAULT_AP_GATEWAY "10.0.1.1"
-#define DEFAULT_AP_NETMASK "255.255.255.0"
-#define DEFAULT_AP_SSID "SimUServeWiFiHost_"
-#define DEFAULT_AP_PASSWORD "SimUServeWiFIPassword"
-#define SERVER_LOCAL_ADDRESS "http://simuserve.device"
+
 
 struct WiFiNetwork {
   int Index;

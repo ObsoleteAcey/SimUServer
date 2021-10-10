@@ -14,9 +14,28 @@
 #include <stdint.h>
 #include <String>
 
-#define DEFAULT_SERVER_PORT 80
+#define DEFAULT_CONFIG_SERVER_PORT 80
+#define DEFAULT_AP_IP "10.0.1.1"
+#define DEFAULT_AP_GATEWAY "10.0.1.1"
+#define DEFAULT_AP_NETMASK "255.255.255.0"
+#define DEFAULT_AP_SSID "SimUServeWiFiHost_"
+#define DEFAULT_AP_PASSWORD "SimUServeWiFIPassword"
+#define DEFAULT_AP_HOST_NAME "http://simuserve.device"
+#define S_UDP_PORT "ServerUdpPort"
+#define S_IP_ADDRESS "ServerIpAddress"
+#define D_UDP_PORT "DeviceUdpPort"
+#define D_CONFIG_SERVER_PORT "DeviceConfigServerPort"
+#define CN_SSID "ConnectedNetworkSsid"
+#define CN_GATEWAY_IP_ADDRESS "ConnectedNetworkGatewayIpAddress"
+#define CN_NETMASK "ConnectedNetworkNetmask"
+#define CN_DEVICE_IP "ConnectedNetworkDeviceIp"
+#define D_AP_SSID "DeviceApSsid"
+#define D_AP_HOST_NAME "DeviceApHostName"
+#define D_AP_IP_ADDRESS "DeviceApIpAddress"
+#define D_AP_GATEWAY_IP_ADDRESS "DeviceApGatewayIpAddress"
+#define D_AP_NETMASK "DeviceApNetmask"
 
-typedef struct NetworkSettings {
+struct NetworkSettings {
     uint16_t ServerUdpPort;
     String ServerIpAddress;
 

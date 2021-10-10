@@ -11,7 +11,7 @@
 #ifndef SimUServeNetworkClient_h
 #define SimUServeNetworkClient_h
 
-#include "SimUServeNetworkSettings.h"
+#include "SimUServeNetworkSettingsManager.h"
 #include "SimUServeWiFi.h"
 #include <ESP8266WiFi.h>
 #include <ESPAsyncUDP.h>
@@ -20,7 +20,7 @@ class SimUServeNetworkClient {
     protected:
 
     private:
-        SimUServeNetworkSettings* _networkSettings;
+        SimUServeNetworkSettingsManager* _networkSettings;
         AsyncUDP* _udp;
         //AsyncUDP* _udpReceive;
 

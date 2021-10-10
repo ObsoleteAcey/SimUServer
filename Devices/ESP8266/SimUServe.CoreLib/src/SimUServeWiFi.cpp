@@ -90,12 +90,12 @@ void SimUServeWiFi::initDefaults()
         ;
     }
 
-    this->_settingsManager->setDeviceApIpAddress(DEFAULT_AP_IP);
-    this->_settingsManager->setDeviceApGatwayIpAddress(DEFAULT_AP_GATEWAY);
-    this->_settingsManager->setDeviceApNetmask(DEFAULT_AP_NETMASK);
+    // this->_settingsManager->setDeviceApIpAddress(DEFAULT_AP_IP);
+    // this->_settingsManager->setDeviceApGatewayIpAddress(DEFAULT_AP_GATEWAY);
+    // this->_settingsManager->setDeviceApNetmask(DEFAULT_AP_NETMASK);
     this->_settingsManager->setDeviceApSsid(DEFAULT_AP_SSID + String(ESP.getChipId()));
-    this->_settingsManager->setDeviceApNetworkSecurityKey(DEFAULT_AP_PASSWORD + String(ESP.getChipId()));
-    this->_settingsManager->setDeviceConfigServerPort(DEFAULT_CONFIG_SERVER_PORT);
+    // this->_settingsManager->setDeviceApNetworkSecurityKey(DEFAULT_AP_PASSWORD + String(ESP.getChipId()));
+    // this->_settingsManager->setDeviceConfigServerPort(DEFAULT_CONFIG_SERVER_PORT);
     this->_numberOfNetworks = 0;
 }
 
@@ -123,7 +123,7 @@ void SimUServeWiFi::startMdns(void)
 {
     Serial.println("SimUServeWiFi::startMdns");
     Serial.println("Starting MDNS on address " + this->_settingsManager->getDeviceApIpAddress().toString());
-    if (!MDNS.begin(SERVER_LOCAL_ADDRESS, this->_settingsManager->getDeviceApIpAddress()))
+    if (!MDNS.begin(this->_settingsManager->getDeviceApHostName(), this->_settingsManager->getDeviceApIpAddress()))
     {
         Serial.println("Error starting MDNS on address " + this->_settingsManager->getDeviceApIpAddress().toString());
     };
@@ -139,7 +139,7 @@ void SimUServeWiFi::setupAccessPoint(void)
     delay(100);
     this->getAvailableWifiNetworks();
     Serial.println("Starting access point on" + this->_settingsManager->getDeviceApSsid() + " using password " + this->_settingsManager->getDeviceApNetworkSecurityKey());
-    WiFi.softAPConfig(this->_settingsManager->getDeviceApIpAddress(), this->_settingsManager->getDeviceApGatwayIpAddress(),
+    WiFi.softAPConfig(this->_settingsManager->getDeviceApIpAddress(), this->_settingsManager->getDeviceApGatewayIpAddress(),
                       _settingsManager->getDeviceApNetmask());
     WiFi.softAP(this->_settingsManager->getDeviceApSsid(), this->_settingsManager->getDeviceApNetworkSecurityKey());
 }
