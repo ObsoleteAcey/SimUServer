@@ -86,16 +86,12 @@ void SimUServeWiFi::initDefaults()
     Serial.println("SimUServeWiFi::initDefaults");
     if (this->_settingsManager == nullptr)
     {
-        this->_settingsManager = SimUServeNetworkSettingsManager::getSettings();
-        ;
+        this->_settingsManager = SimUServeNetworkSettingsManager::getSettingsManager();
     }
 
-    // this->_settingsManager->setDeviceApIpAddress(DEFAULT_AP_IP);
-    // this->_settingsManager->setDeviceApGatewayIpAddress(DEFAULT_AP_GATEWAY);
-    // this->_settingsManager->setDeviceApNetmask(DEFAULT_AP_NETMASK);
     this->_settingsManager->setDeviceApSsid(DEFAULT_AP_SSID + String(ESP.getChipId()));
-    // this->_settingsManager->setDeviceApNetworkSecurityKey(DEFAULT_AP_PASSWORD + String(ESP.getChipId()));
-    // this->_settingsManager->setDeviceConfigServerPort(DEFAULT_CONFIG_SERVER_PORT);
+    this->_settingsManager->setDeviceApNetworkSecurityKey(DEFAULT_AP_PASSWORD + String(ESP.getChipId()));
+
     this->_numberOfNetworks = 0;
 }
 
@@ -134,6 +130,7 @@ void SimUServeWiFi::startMdns(void)
 
 void SimUServeWiFi::setupAccessPoint(void)
 {
+    Serial.println("SimUServeWiFi::setupAccessPoint");
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
     delay(100);
@@ -146,12 +143,12 @@ void SimUServeWiFi::setupAccessPoint(void)
 
 WiFiNetwork *const SimUServeWiFi::getAvailableWifiNetworks(void)
 {
+    Serial.println("SimUServeWiFi::getAvailableWifiNetworks");
     if (this->_availableNetworks)
     {
         return this->_availableNetworks;
     }
 
-    Serial.println("SimUServeWiFi::getAvailableWifiNetworks");
     this->_numberOfNetworks = WiFi.scanNetworks(false, true);
     Serial.println("Found " + String(this->_numberOfNetworks) + " networks.");
 
@@ -179,11 +176,12 @@ WiFiNetwork *const SimUServeWiFi::refreshAvailableWifiNetworks(void)
 void SimUServeWiFi::launchWebServer(void)
 {
     Serial.println("SimUServeWiFi::launchWebServer");
-    if (!this->_server)
+    if (this->_server)
     {
-        Serial.println("SimUServeWiFi::launchWebServer");
-        this->_server = new AsyncWebServer(_settingsManager->getDeviceConfigServerPort());
+        Serial.println("Web server already launched!");
     }
+
+    this->_server = new AsyncWebServer(_settingsManager->getDeviceConfigServerPort());
     // set up the routes
     this->_server->on("/", HTTP_GET, [this](AsyncWebServerRequest *request)
                       { SimUServeWiFi::handleRootGet(request); });

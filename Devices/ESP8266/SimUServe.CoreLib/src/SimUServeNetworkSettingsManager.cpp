@@ -14,21 +14,22 @@
 
 #pragma region Constructors / Destructors
 
-SimUServeNetworkSettingsManager *SimUServeNetworkSettingsManager::_settings = nullptr;
+SimUServeNetworkSettingsManager *SimUServeNetworkSettingsManager::_settingsManager = nullptr;
 
-SimUServeNetworkSettingsManager *SimUServeNetworkSettingsManager::getSettings(void)
+SimUServeNetworkSettingsManager *SimUServeNetworkSettingsManager::getSettingsManager(void)
 {
-    if (_settings == nullptr)
+    if (_settingsManager == nullptr)
     {
-        _settings = new SimUServeNetworkSettingsManager();
+        _settingsManager = new SimUServeNetworkSettingsManager();
     }
 
-    return _settings;
+    return _settingsManager;
 }
 
 SimUServeNetworkSettingsManager::SimUServeNetworkSettingsManager()
 {
     _networkSettings = NetworkSettings();
+    this->loadSettings();
 }
 
 SimUServeNetworkSettingsManager::~SimUServeNetworkSettingsManager()
@@ -37,6 +38,7 @@ SimUServeNetworkSettingsManager::~SimUServeNetworkSettingsManager()
 
 void SimUServeNetworkSettingsManager::loadSettings()
 {
+    Serial.println("SimUServeNetworkSettingsManager::loadSettings");
     if(!LittleFS.begin())
     {
         Serial.println("Could not mount LittleFS");
@@ -46,6 +48,7 @@ void SimUServeNetworkSettingsManager::loadSettings()
     File file = LittleFS.open("/settings.json", "r");
 
     String jsonSettings = file.readString();
+    file.close();
 
     StaticJsonDocument<768> doc;
 
@@ -71,6 +74,7 @@ void SimUServeNetworkSettingsManager::loadSettings()
 
     
     this->setDeviceConfigServerPort(doc[D_CONFIG_SERVER_PORT] | DEFAULT_CONFIG_SERVER_PORT);
+    Serial.println("Settings Deserialized successfully");
 }
 
 #pragma endregion

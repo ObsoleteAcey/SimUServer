@@ -68,7 +68,7 @@ class SimUServeNetworkSettingsManager {
     IPAddress _cnNetmask;
     IPAddress _svrIpAddress;
     NetworkSettings _networkSettings;
-    static SimUServeNetworkSettingsManager* _settings;
+    static SimUServeNetworkSettingsManager* _settingsManager;
     SimUServeNetworkSettingsManager();
 
     void loadSettings();
@@ -77,7 +77,7 @@ class SimUServeNetworkSettingsManager {
   public:
     ~SimUServeNetworkSettingsManager();
 
-    static SimUServeNetworkSettingsManager* getSettings(void);
+    static SimUServeNetworkSettingsManager* getSettingsManager(void);
 
     #pragma region Related to remote (PC) SimUServe server
 
