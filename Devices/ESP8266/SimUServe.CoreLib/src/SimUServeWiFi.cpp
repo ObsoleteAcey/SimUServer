@@ -27,7 +27,6 @@ SimUServeWiFi::SimUServeWiFi(String const &serverSsid, uint16_t serverPort)
     this->_availableNetworks = nullptr;
     this->initDefaults();
     this->_settingsManager->setServerUdpPort(serverPort);
-    //_settingsManager->setServerSsid(serverSsid);
 }
 
 SimUServeWiFi::~SimUServeWiFi()

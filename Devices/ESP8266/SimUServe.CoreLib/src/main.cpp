@@ -1,11 +1,10 @@
 // used for testing features in the library
 
 #include <Arduino.h>
-#include "SimUServeNetworkClient.h"
-#include "SimUServeWiFi.h"
+#include "SimUServeNetworkManager.h"
 
-SimUServeNetworkClient networkClient = SimUServeNetworkClient();
-SimUServeWiFi wifiHelper = SimUServeWiFi();
+SimUServeNetworkManager *_networkManager;
+
 bool serviceMode = false;
 
 void udpMessageReceivedCallback(AsyncUDPPacket& packet)
@@ -21,23 +20,13 @@ void setup() {
   Serial.println("");
   Serial.println("Startup");
 
-   serviceMode = !wifiHelper.testWifiConnection();
+   _networkManager = SimUServeNetworkManager::getNetworkManager();
   
-   if(serviceMode) 
-   {
-     Serial.println("Service mode is activated");
-     wifiHelper.initServices();
-   }
-
-   // put your setup code here, to run once:
-   networkClient.udpBeginListening(messageReceivedCallback);
+   _networkManager->initWifiServices();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-   if(serviceMode)
-   {
-     wifiHelper.checkForRequests();
-   }
+   _networkManager->checkForRequests();
 }
 

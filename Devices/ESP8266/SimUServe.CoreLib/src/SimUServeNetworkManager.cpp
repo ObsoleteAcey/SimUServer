@@ -25,9 +25,31 @@ SimUServeNetworkManager *SimUServeNetworkManager::getNetworkManager(void)
 
 SimUServeNetworkManager::SimUServeNetworkManager()
 {
-    
+    _wifi = new SimUServeWiFi();
+    _networkClient = new SimUServeNetworkClient();
 }
 
 SimUServeNetworkManager::~SimUServeNetworkManager()
 {
+    delete _wifi;
+    delete _networkClient;
+}
+
+void SimUServeNetworkManager::initWifiServices(void)
+{
+    this->_serviceMode = !(this->_wifi->testWifiConnection());
+  
+    if(this->_serviceMode) 
+    {
+        Serial.println("Service mode is activated");
+        this->_wifi->initServices();
+    }
+}
+
+void SimUServeNetworkManager::checkForRequests(void)
+{
+    if(this->_serviceMode)
+    {
+        this->_wifi->checkForRequests();
+    }
 }

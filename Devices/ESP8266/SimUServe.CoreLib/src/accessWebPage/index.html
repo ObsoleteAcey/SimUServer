@@ -59,8 +59,6 @@
                     <label for="ssid">SSID:</label>
                     <select id="ssid" name="ssid" onchange="ssidSelected(event)" >
                         <option value="PleaseSelect">Please select an SSID</option>
-                        <option value="DeepSpaceNine">DeepSpaceNine</option>
-                        <option value="DeepSpaceNine_5g">DeepSpaceNine_5g</option>
                     </select>
                 </div>
                 <div class="password-container">
@@ -100,6 +98,7 @@
         <script>
             function sendRequest(url, method, body, successCallback, failureCallback) {
                 var xhr = new XMLHttpRequest();
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 xhr.onreadystatechange = function() {
                     if (this.readyState == 4){
                         switch(this.status){
@@ -173,9 +172,24 @@
                     addClass(ssidCombo, ' error');
                     return;
                 }
+
+                var passwordText = document.getElementById("password");
+                if(passwordText.value === "") {
+                    addClass(passwordText, ' error');
+                    return;
+                }
+                
+                var params = "ssid=" + ssidCombo.value +"&networkkey=" + passwordText.value;
+                
+                post('/api/network', params, function(response) {
+                    console.log('/api/network - saved network');
+                },
+                function(response) {
+                    console.log('/api/network - network save FAILED!');
+                });
             }
             function refreshNetworks() {
-                get('refresh', function() {
+                get('/api/network/all', function() {
                     console.log(test);
                 });
             }
