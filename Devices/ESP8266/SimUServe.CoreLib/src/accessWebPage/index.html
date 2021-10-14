@@ -98,6 +98,7 @@
         <script>
             function sendRequest(url, method, body, successCallback, failureCallback) {
                 var xhr = new XMLHttpRequest();
+                xhr.open(method, url);
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 xhr.onreadystatechange = function() {
                     if (this.readyState == 4){
@@ -105,16 +106,15 @@
                             case 200:
                             case 201:
                             case 202:
-                                successCallback();
+                                successCallback(xhr.responseText);
                                 break;
                             default:
                                 if(failureCallback) {
-                                    failureCallback();
+                                    failureCallback(xhr.responseText);
                                 };
                         }
                     }
                 };
-                xhr.open(method, url);
                 xhr.send(body);
             }
             function get(url, successCallback, failureCallback) {
@@ -129,13 +129,23 @@
             function addClass(element, className) {
                 element.className += className;
             }
-            function removeAllOptions(optionElementId) {
-               var select = document.getElementById(optionElementId);
-                select.options.length = 0;
+            function removeOptions(optionElementId, startingAt) {
+                startingAt = startingAt ?? 0;
+                var select = document.getElementById(optionElementId);
+                while(select.options.length > startingAt) {
+                    select.remove(startingAt);
+                }
             }
             function addOption(optionElementId, optionDisplay, optionValue, defaultSelected, selected) {
                 var select = document.getElementById(optionElementId);
                 select.options[select.options.length] = new Option(optionDisplay, optionValue, defaultSelected, selected);
+            }
+            function addOptions(optionElementId, optionElements) {
+                for(var i = 0; i < optionElements.length; i++)
+                {
+                    addOption(optionElementId, optionElements[i].optionDisplay, optionElements[i].optionValue,
+                        optionElements[i].defaultSelected, optionElements[i].selected);
+                }
             }
             function togglePasswordVisibility() {
                 var passwordText = document.getElementById("password");
@@ -179,7 +189,7 @@
                     return;
                 }
                 
-                var params = "ssid=" + ssidCombo.value +"&networkkey=" + passwordText.value;
+                var params = "ssid=" + ssidCombo.value +"&networkkey=" + passwordText.value + "&advancedSettings=false";
                 
                 post('/api/network', params, function(response) {
                     console.log('/api/network - saved network');
@@ -188,11 +198,27 @@
                     console.log('/api/network - network save FAILED!');
                 });
             }
+            /**
+             * Refreshes the network list
+             **/
             function refreshNetworks() {
-                get('/api/network/all', function() {
-                    console.log(test);
+                get('/api/network/all', function(response) {
+                    var networks = JSON.parse(response);
+                    removeOptions('ssid', 1);
+                    
+                    var networks = JSON.parse(response);
+                    console.log(networks);
+
+                    for(var i = 0; i < networks.length; i++)
+                    {
+                        var networkData = networks[i];
+                        addOption('ssid', networkData.ssid + " (" + networkData.signalStrength + "%)", networkData.index);
+                    }
                 });
             }
+            /**
+             * Gets the device information for display
+             **/
             function getDeviceInfo() {
                 
             }

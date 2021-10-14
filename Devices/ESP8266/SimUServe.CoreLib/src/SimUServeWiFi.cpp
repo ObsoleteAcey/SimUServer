@@ -88,9 +88,6 @@ void SimUServeWiFi::initDefaults()
         this->_settingsManager = SimUServeNetworkSettingsManager::getSettingsManager();
     }
 
-    this->_settingsManager->setDeviceApSsid(DEFAULT_AP_SSID + String(ESP.getChipId()));
-    this->_settingsManager->setDeviceApNetworkSecurityKey(DEFAULT_AP_PASSWORD + String(ESP.getChipId()));
-
     this->_numberOfNetworks = 0;
 }
 
@@ -134,10 +131,19 @@ void SimUServeWiFi::setupAccessPoint(void)
     WiFi.disconnect();
     delay(100);
     this->getAvailableWifiNetworks();
-    Serial.println("Starting access point on" + this->_settingsManager->getDeviceApSsid() + " using password " + this->_settingsManager->getDeviceApNetworkSecurityKey());
+
+    String apSsid = this->_settingsManager->getDeviceApSsid() == DEFAULT_AP_SSID ? 
+        this->_settingsManager->getDeviceApSsid() + String(ESP.getChipId()) :
+        this->_settingsManager->getDeviceApSsid();
+
+    String apNetworkKey = this->_settingsManager->getDeviceApNetworkSecurityKey() == DEFAULT_AP_NETWORK_KEY ? 
+        this->_settingsManager->getDeviceApNetworkSecurityKey() + String(ESP.getChipId()) :
+        this->_settingsManager->getDeviceApNetworkSecurityKey();
+    
+    Serial.println("Starting access point on" + apSsid + " using password " + apNetworkKey);
     WiFi.softAPConfig(this->_settingsManager->getDeviceApIpAddress(), this->_settingsManager->getDeviceApGatewayIpAddress(),
                       _settingsManager->getDeviceApNetmask());
-    WiFi.softAP(this->_settingsManager->getDeviceApSsid(), this->_settingsManager->getDeviceApNetworkSecurityKey());
+    WiFi.softAP(apSsid, apNetworkKey);
 }
 
 WiFiNetwork *const SimUServeWiFi::getAvailableWifiNetworks(void)
@@ -207,7 +213,7 @@ void SimUServeWiFi::handleRootGet(AsyncWebServerRequest *request)
 void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
 {
     auto *availableNetworks = this->getAvailableWifiNetworks();
-    String returnJson = "{[";
+    String returnJson = "[";
 
     for (int i = 0; i < this->_numberOfNetworks; i++)
     {
@@ -219,7 +225,7 @@ void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
         }
     }
 
-    returnJson.concat("]}");
+    returnJson.concat("]");
     request->send(200, "application/json", returnJson);
 }
 
@@ -233,13 +239,15 @@ void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
         request->send(400, "text/plain", "400: Invalid Request");
         return;
     }
-
+    
     String ssid = request->arg("ssid");
     String password = request->arg("networkkey");
     String advancedSettings = request->arg("advancedSettings");
     String deviceIp = request->arg("deviceIp");
     String netmask = request->arg("netmask");
     String gateway = request->arg("gateway");
+
+    Serial.println("Setting SSID to " + ssid + " and password to " + password);
 
     WiFi.begin(ssid, password);
     if (this->testWifiConnection())

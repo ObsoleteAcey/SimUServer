@@ -71,7 +71,7 @@ void SimUServeNetworkSettingsManager::loadSettings()
     this->setDeviceApHostName(doc[D_AP_HOST_NAME] | DEFAULT_AP_HOST_NAME);
     this->setDeviceApIpAddress(doc[D_AP_IP_ADDRESS] | DEFAULT_AP_IP);
     this->setDeviceApSsid(doc[D_AP_SSID] | DEFAULT_AP_SSID);
-
+    this->setDeviceApNetworkSecurityKey(doc[D_AP_NETWORK_KEY] | DEFAULT_AP_NETWORK_KEY);
     
     this->setDeviceConfigServerPort(doc[D_CONFIG_SERVER_PORT] | DEFAULT_CONFIG_SERVER_PORT);
     Serial.println("Settings Deserialized successfully");
@@ -377,7 +377,7 @@ void SimUServeNetworkSettingsManager::saveSettings(void)
     }
 
     // TODO - handle saving this to EEPROM or FS
-    File file = LittleFS.open("/config.json", "w");
+    // File file = LittleFS.open("/config.json", "w");
     
     
 
