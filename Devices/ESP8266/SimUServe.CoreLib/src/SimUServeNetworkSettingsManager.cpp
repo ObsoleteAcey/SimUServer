@@ -372,7 +372,7 @@ void SimUServeNetworkSettingsManager::saveSettings(void)
 
     if(!LittleFS.begin())
     {
-        Serial.println("Count not mount LittleFS to save settings");
+        Serial.println("Counld not mount LittleFS to save settings");
         return;
     }
 

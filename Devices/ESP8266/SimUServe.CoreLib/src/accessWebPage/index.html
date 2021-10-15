@@ -99,10 +99,11 @@
             function sendRequest(url, method, body, successCallback, failureCallback) {
                 var xhr = new XMLHttpRequest();
                 xhr.open(method, url);
-                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader("Content-type",
+                "application/x-www-form-urlencoded");
                 xhr.onreadystatechange = function() {
-                    if (this.readyState == 4){
-                        switch(this.status){
+                    if (xhr.readyState === 4) {
+                        switch(xhr.status){
                             case 200:
                             case 201:
                             case 202:
@@ -111,17 +112,19 @@
                             default:
                                 if(failureCallback) {
                                     failureCallback(xhr.responseText);
-                                };
+                                }
                         }
                     }
                 };
                 xhr.send(body);
             }
             function get(url, successCallback, failureCallback) {
-                sendRequest(url, 'GET', null, successCallback, failureCallback);
+                sendRequest(url, "GET", null,
+                    successCallback, failureCallback);
             }
             function post(url, data, successCallback, failureCallback) {
-                sendRequest(url, 'POST', data, successCallback, failureCallback);
+                sendRequest(url, "POST", data,
+                    successCallback, failureCallback);
             }
             function removeClass(element, className) {
                 element.className = element.className.replace(className, "");
@@ -130,21 +133,28 @@
                 element.className += className;
             }
             function removeOptions(optionElementId, startingAt) {
-                startingAt = startingAt ?? 0;
                 var select = document.getElementById(optionElementId);
+                startingAt = startingAt ?? 0;
                 while(select.options.length > startingAt) {
                     select.remove(startingAt);
                 }
             }
-            function addOption(optionElementId, optionDisplay, optionValue, defaultSelected, selected) {
+            function addOption(optionElementId,
+                optionDisplay, optionValue,
+                defaultSelected, selected) {
                 var select = document.getElementById(optionElementId);
-                select.options[select.options.length] = new Option(optionDisplay, optionValue, defaultSelected, selected);
+                select.options[select.options.length] =
+                    new Option(optionDisplay, optionValue,
+                        defaultSelected, selected);
             }
             function addOptions(optionElementId, optionElements) {
-                for(var i = 0; i < optionElements.length; i++)
-                {
-                    addOption(optionElementId, optionElements[i].optionDisplay, optionElements[i].optionValue,
-                        optionElements[i].defaultSelected, optionElements[i].selected);
+                var i;
+                for(i = 0; i < optionElements.length; i++) {
+                    addOption(optionElementId,
+                        optionElements[i].optionDisplay,
+                        optionElements[i].optionValue,
+                        optionElements[i].defaultSelected,
+                        optionElements[i].selected);
                 }
             }
             function togglePasswordVisibility() {
@@ -156,7 +166,9 @@
                 }
             }
             function openTab(evt, tabToOpen) {
-              var i, tabcontent, tablinks;
+              var i;
+              var tabcontent;
+              var tablinks;
               tabcontent = document.getElementsByClassName("tabcontent");
               for (i = 0; i < tabcontent.length; i++) {
                 removeClass(tabcontent[i], " selected");
@@ -170,49 +182,58 @@
             }
             function ssidSelected(event) {
                 var ssidCombo = event.currentTarget;
-                if(ssidCombo.value === 'PleaseSelect') {
-                    addClass(ssidCombo, ' error');
+                if(ssidCombo.value === "PleaseSelect") {
+                    addClass(ssidCombo, " error");
                     return;
                 }
-                removeClass(ssidCombo, ' error');
+                removeClass(ssidCombo, " error");
             }
             function saveNetworkSettings() {
+                var params;
                 var ssidCombo = document.getElementById("ssid");
-                if(ssidCombo.value === 'PleaseSelect') {
-                    addClass(ssidCombo, ' error');
+                var passwordText = document.getElementById("password");
+                if(ssidCombo.value === "PleaseSelect") {
+                    addClass(ssidCombo, " error");
                     return;
                 }
 
-                var passwordText = document.getElementById("password");
                 if(passwordText.value === "") {
-                    addClass(passwordText, ' error');
+                    addClass(passwordText, " error");
                     return;
                 }
-                
-                var params = "ssid=" + ssidCombo.value +"&networkkey=" + passwordText.value + "&advancedSettings=false";
-                
-                post('/api/network', params, function(response) {
-                    console.log('/api/network - saved network');
+
+                params = "ssid=" + ssidCombo.value +
+                    "&networkkey=" + passwordText.value +
+                    "&advancedSettings=false";
+
+                post("/api/network", params, function(response) {
+                    console.log("/api/network - saved network");
                 },
                 function(response) {
-                    console.log('/api/network - network save FAILED!');
+                    console.log("/api/network - network save FAILED!");
                 });
             }
             /**
              * Refreshes the network list
              **/
             function refreshNetworks() {
-                get('/api/network/all', function(response) {
+                get("/api/network/all", function(response) {
                     var networks = JSON.parse(response);
-                    removeOptions('ssid', 1);
+                    var i;
+                    removeOptions("ssid", 1);
                     
-                    var networks = JSON.parse(response);
-                    console.log(networks);
+                    networks.sort(function(a,b) {
+                        return parseInt(b.networkStrength) - parseInt(a.networkStrength);
+                    });
 
-                    for(var i = 0; i < networks.length; i++)
+                    console.log(networks);
+                   
+                    for(i = 0; i < networks.length; i++)
                     {
                         var networkData = networks[i];
-                        addOption('ssid', networkData.ssid + " (" + networkData.signalStrength + "%)", networkData.index);
+                        addOption("ssid", networkData.ssid +
+                            " (" + networkData.signalStrength + "%)",
+                            networkData.index);
                     }
                 });
             }
@@ -225,11 +246,15 @@
             function toggleManualEntry() {
                 var checkBox = document.getElementById("manualServer");
                 if(checkBox.checked) {
-                    document.getElementById("serverAddress").removeAttribute("disabled");
-                    document.getElementById("findServer").setAttribute("disabled", "disabled");
+                    document.getElementById("serverAddress").
+                        removeAttribute("disabled");
+                    document.getElementById("findServer").
+                        setAttribute("disabled", "disabled");
                 } else {
-                    document.getElementById("findServer").removeAttribute("disabled");
-                    document.getElementById("serverAddress").setAttribute("disabled", "disabled");
+                    document.getElementById("findServer").
+                        removeAttribute("disabled");
+                    document.getElementById("serverAddress").
+                        setAttribute("disabled", "disabled");
                 }
             }
         </script>
