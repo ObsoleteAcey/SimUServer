@@ -202,6 +202,8 @@ class SimUServeWiFi {
     */
     WiFiNetwork* const refreshAvailableWifiNetworks(void);
 
+    String const networksToJson(void);
+    
     /*
      * sets up the access point and populates available wireless networks
     */
@@ -223,11 +225,18 @@ class SimUServeWiFi {
     void handleRefreshNetworksGet(AsyncWebServerRequest*);
 
     /*
+    *  handles a request to return the available networks
+    */
+    void handleAllNetworksGet(AsyncWebServerRequest*);
+
+    /*
     * Processes the network save for the SSID
     */
     void handleSaveNetwork(AsyncWebServerRequest*);
 
     void handleNotFound(AsyncWebServerRequest*);
+
+    
 };
 
 #endif

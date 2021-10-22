@@ -213,17 +213,13 @@
                     console.log("/api/network - network save FAILED!");
                 });
             }
-            /**
-             * Refreshes the network list
-             **/
-            function refreshNetworks() {
-                get("/api/network/all", function(response) {
-                    var networks = JSON.parse(response);
-                    var i;
+            function parseNetworksAndAddToOption(networks)
+            {
+                var i;
                     removeOptions("ssid", 1);
                     
                     networks.sort(function(a,b) {
-                        return parseInt(b.networkStrength) - parseInt(a.networkStrength);
+                        return parseInt(b.signalStrength) - parseInt(a.signalStrength);
                     });
 
                     console.log(networks);
@@ -233,8 +229,23 @@
                         var networkData = networks[i];
                         addOption("ssid", networkData.ssid +
                             " (" + networkData.signalStrength + "%)",
-                            networkData.index);
+                            networkData.ssid);
                     }
+            }
+            /**
+             * Get available networks
+             **/
+            function refreshNetworks() {
+                get("/api/network/all", function(response) {
+                    parseNetworksAndAddToOption(JSON.parse(response));
+                });
+            }
+            /**
+             * Refreshes the network list
+             **/
+            function refreshNetworks() {
+                get("/api/network/all/refresh", function(response) {
+                    parseNetworksAndAddToOption(JSON.parse(response));
                 });
             }
             /**

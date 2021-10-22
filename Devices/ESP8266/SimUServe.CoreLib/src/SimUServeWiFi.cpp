@@ -96,6 +96,12 @@ bool SimUServeWiFi::testWifiConnection()
     Serial.println("SimUServeWiFi::testWifiConnection");
     int waitRetryCounter = 0;
 
+    Serial.println("Setting mode to WIFI_STA");
+    // make sure any softAP is disconnected
+    WiFi.softAPdisconnect();
+    WiFi.disconnect();
+    WiFi.mode(WIFI_STA);
+    delay(100);
     while (waitRetryCounter < 20)
     {
         if (WiFi.status() == WL_CONNECTED)
@@ -107,6 +113,8 @@ bool SimUServeWiFi::testWifiConnection()
         Serial.println("WiFi Status: " + this->getWifiStatus());
         waitRetryCounter++;
     }
+
+    Serial.println("Setting mode to WIFI_AP as no connection could be established");
     Serial.println("Connect timed out");
     return (false);
 }
@@ -127,8 +135,8 @@ void SimUServeWiFi::startMdns(void)
 void SimUServeWiFi::setupAccessPoint(void)
 {
     Serial.println("SimUServeWiFi::setupAccessPoint");
-    WiFi.mode(WIFI_STA);
     WiFi.disconnect();
+    WiFi.mode(WIFI_AP);
     delay(100);
     this->getAvailableWifiNetworks();
 
@@ -178,6 +186,24 @@ WiFiNetwork *const SimUServeWiFi::refreshAvailableWifiNetworks(void)
     return this->getAvailableWifiNetworks();
 }
 
+String const SimUServeWiFi::networksToJson(void)
+{
+    String returnJson = "[";
+
+    for (int i = 0; i < this->_numberOfNetworks; i++)
+    {
+        String json = this->_availableNetworks[i].toJson();
+        returnJson.concat(json);
+        if (i < this->_numberOfNetworks - 1)
+        {
+            returnJson.concat(",");
+        }
+    }
+
+    returnJson.concat("]");
+    return returnJson;
+}
+
 void SimUServeWiFi::launchWebServer(void)
 {
     Serial.println("SimUServeWiFi::launchWebServer");
@@ -191,6 +217,8 @@ void SimUServeWiFi::launchWebServer(void)
     this->_server->on("/", HTTP_GET, [this](AsyncWebServerRequest *request)
                       { SimUServeWiFi::handleRootGet(request); });
     this->_server->on("/api/network/all", HTTP_GET, [this](AsyncWebServerRequest *request)
+                      { SimUServeWiFi::handleAllNetworksGet(request); });
+    this->_server->on("/api/network/all/refresh", HTTP_GET, [this](AsyncWebServerRequest *request)
                       { SimUServeWiFi::handleRefreshNetworksGet(request); });
     this->_server->on("/api/network", HTTP_POST, [this](AsyncWebServerRequest *request)
                       { SimUServeWiFi::handleSaveNetwork(request); });
@@ -210,23 +238,15 @@ void SimUServeWiFi::handleRootGet(AsyncWebServerRequest *request)
     request->send(LittleFS, "/index.min.html", "text/html");
 }
 
+void SimUServeWiFi::handleAllNetworksGet(AsyncWebServerRequest *request)
+{
+    request->send(200, "application/json", this->networksToJson());
+}
+
 void SimUServeWiFi::handleRefreshNetworksGet(AsyncWebServerRequest *request)
 {
-    auto *availableNetworks = this->getAvailableWifiNetworks();
-    String returnJson = "[";
-
-    for (int i = 0; i < this->_numberOfNetworks; i++)
-    {
-        String json = availableNetworks[i].toJson();
-        returnJson.concat(json);
-        if (i < this->_numberOfNetworks - 1)
-        {
-            returnJson.concat(",");
-        }
-    }
-
-    returnJson.concat("]");
-    request->send(200, "application/json", returnJson);
+    this->refreshAvailableWifiNetworks();
+    request->send(200, "application/json", this->networksToJson());
 }
 
 void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
