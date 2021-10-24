@@ -43,7 +43,7 @@ void SimUServeNetworkManager::initWifiServices(void)
     if(this->_serviceMode) 
     {
         Serial.println("Service mode is activated");
-        this->_wifi->initServices();
+        this->_wifi->initHostingServices();
     }
 }
 
@@ -52,5 +52,7 @@ void SimUServeNetworkManager::checkForRequests(void)
     if(this->_serviceMode)
     {
         this->_wifi->checkForRequests();
+        // check if we still need service mode
+        //this->_wifi.
     }
 }

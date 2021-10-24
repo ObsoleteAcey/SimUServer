@@ -69,9 +69,9 @@ void SimUServeWiFi::writeValueToEeprom(int startOffset, T const &valueToSave)
     EEPROM.put<T>(startOffset, valueToSave);
 }
 
-void SimUServeWiFi::initServices(void)
+void SimUServeWiFi::initHostingServices(void)
 {
-    Serial.println("SimUServeWiFi::initServices");
+    Serial.println("SimUServeWiFi::initHostingServices");
     if (!LittleFS.begin())
     {
         Serial.println("An Error has occurred while mounting LittleFS");
@@ -91,9 +91,25 @@ void SimUServeWiFi::initDefaults()
     this->_numberOfNetworks = 0;
 }
 
+bool SimUServeWiFi::checkWiFiIsConnected(void)
+{
+    if (WiFi.status() == WL_CONNECTED)
+    {
+        return (true);
+    }
+
+    return (false);
+}
+
 bool SimUServeWiFi::testWifiConnection()
 {
     Serial.println("SimUServeWiFi::testWifiConnection");
+
+    if (this->checkWiFiIsConnected())
+    {
+        return (true);
+    }
+
     int waitRetryCounter = 0;
 
     Serial.println("Setting mode to WIFI_STA");
@@ -138,7 +154,6 @@ void SimUServeWiFi::setupAccessPoint(void)
     WiFi.disconnect();
     WiFi.mode(WIFI_AP);
     delay(100);
-    this->getAvailableWifiNetworks();
 
     String apSsid = this->_settingsManager->getDeviceApSsid() == DEFAULT_AP_SSID ? 
         this->_settingsManager->getDeviceApSsid() + String(ESP.getChipId()) :

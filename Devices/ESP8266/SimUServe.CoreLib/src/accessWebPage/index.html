@@ -235,7 +235,7 @@
             /**
              * Get available networks
              **/
-            function refreshNetworks() {
+            function getAvailableNetworks() {
                 get("/api/network/all", function(response) {
                     parseNetworksAndAddToOption(JSON.parse(response));
                 });
@@ -267,6 +267,16 @@
                     document.getElementById("serverAddress").
                         setAttribute("disabled", "disabled");
                 }
+            }
+            function pageInit() {
+                getAvailableNetworks();
+            };
+
+            if (document.readyState === "complete" ||
+                (document.readyState !== "loading" && !document.documentElement.doScroll)) {
+                pageInit();
+            } else {
+                document.addEventListener("DOMContentLoaded", pageInit);
             }
         </script>
     </body>
