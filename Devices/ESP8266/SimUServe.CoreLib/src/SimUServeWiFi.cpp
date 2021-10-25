@@ -93,6 +93,8 @@ void SimUServeWiFi::initDefaults()
 
 bool SimUServeWiFi::checkWiFiIsConnected(void)
 {
+    
+    delay(500);
     if (WiFi.status() == WL_CONNECTED)
     {
         return (true);

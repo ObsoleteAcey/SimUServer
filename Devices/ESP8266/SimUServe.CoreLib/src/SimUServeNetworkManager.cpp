@@ -38,7 +38,7 @@ SimUServeNetworkManager::~SimUServeNetworkManager()
 void SimUServeNetworkManager::initWifiServices(void)
 {
     // here we'll also check for a button press
-    this->_serviceMode = !(this->_wifi->testWifiConnection());
+    this->_serviceMode = !(this->_wifi->checkWiFiIsConnected());
   
     if(this->_serviceMode) 
     {
