@@ -69,15 +69,26 @@ void SimUServeWiFi::writeValueToEeprom(int startOffset, T const &valueToSave)
     EEPROM.put<T>(startOffset, valueToSave);
 }
 
-void SimUServeWiFi::initHostingServices(void)
+void SimUServeWiFi::initAccessPointServices(void)
 {
-    Serial.println("SimUServeWiFi::initHostingServices");
+    Serial.println("SimUServeWiFi::initAccessPointServices");
     if (!LittleFS.begin())
     {
         Serial.println("An Error has occurred while mounting LittleFS");
     }
     this->setupAccessPoint();
+    this->launchWebServer();
     this->startMdns();
+}
+
+void SimUServeWiFi::initConfigServices(void)
+{
+    Serial.println("SimUServeWiFi::initConfigServices");
+    if (!LittleFS.begin())
+    {
+        Serial.println("An Error has occurred while mounting LittleFS");
+    }
+    this->launchWebServer();
 }
 
 void SimUServeWiFi::initDefaults()
@@ -145,7 +156,6 @@ void SimUServeWiFi::startMdns(void)
     {
         Serial.println("Error starting MDNS on address " + this->_settingsManager->getDeviceApIpAddress().toString());
     };
-    this->launchWebServer();
     Serial.println("Adding http service to MDNS on port " + String(this->_settingsManager->getDeviceConfigServerPort()));
     MDNS.addService("http", "tcp", this->_settingsManager->getDeviceConfigServerPort());
 }

@@ -22,7 +22,7 @@ void setup() {
 
    _networkManager = SimUServeNetworkManager::getNetworkManager();
   
-   _networkManager->initWifiServices();
+   _networkManager->initServiceMode();
 }
 
 void loop() {

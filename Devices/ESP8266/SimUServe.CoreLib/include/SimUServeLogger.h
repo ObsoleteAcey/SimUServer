@@ -10,7 +10,7 @@
 #ifndef SimUServeLogger_h
 #define SimUServeLogger_h
 
-#include <String>
+#include <Arduino>
 
 /**
  * @brief Class for handling serial logging and file logging
@@ -22,7 +22,7 @@ class SimUServeLogger {
     private:
 
     public:
-        static void serialLogDebug(String) const;
+        static void serialLogDebug(String);
 
 
 }

@@ -156,10 +156,16 @@ class SimUServeWiFi {
     void checkForRequests(void);
 
     /**
+     * @brief Call this during setup, after params have been set, to start MDNS and the SoftAP.
+     * NOTE: can be handled automatically by calling initWifiServices()
+    */
+    void initAccessPointServices(void);
+
+    /**
      * @brief Call this during setup, after params have been set, to start MDNS and the WebServer.
      * NOTE: can be handled automatically by calling initWifiServices()
     */
-    void initHostingServices(void);
+    void initConfigServices(void);
 
     /**
      * @brief Check if WiFi is connected.  Can be called at any time and simply looks at the WiFi status.

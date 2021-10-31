@@ -23,13 +23,16 @@ class SimUServeNetworkManager {
         SimUServeNetworkManager();
         bool _isConnected;
         bool _serviceMode;
+        bool _webServiceEnabled;
 
     public:
         ~SimUServeNetworkManager();
 
         static SimUServeNetworkManager* getNetworkManager(void);
 
-        void initWifiServices(void);
+        void initServiceMode(void);
+
+        void initConfigServices(void);
 
         void checkForRequests(void);
 

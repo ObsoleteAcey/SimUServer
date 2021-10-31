@@ -35,21 +35,26 @@ SimUServeNetworkManager::~SimUServeNetworkManager()
     delete _networkClient;
 }
 
-void SimUServeNetworkManager::initWifiServices(void)
+void SimUServeNetworkManager::initServiceMode(void)
 {
     // here we'll also check for a button press
     this->_serviceMode = !(this->_wifi->checkWiFiIsConnected());
-  
+
     if(this->_serviceMode) 
     {
         Serial.println("Service mode is activated");
-        this->_wifi->initHostingServices();
+        this->_wifi->initAccessPointServices();
     }
+}
+
+void SimUServeNetworkManager::initConfigServices(void)
+{
+    this->_wifi->initConfigServices();
 }
 
 void SimUServeNetworkManager::checkForRequests(void)
 {
-    if(this->_serviceMode)
+    if(this->_serviceMode || this->_webServiceEnabled)
     {
         this->_wifi->checkForRequests();
         // check if we still need service mode
