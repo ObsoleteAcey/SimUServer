@@ -114,7 +114,7 @@ bool SimUServeWiFi::checkWiFiIsConnected(void)
     return (false);
 }
 
-bool SimUServeWiFi::testWifiConnection()
+bool SimUServeWiFi::testWifiConnection(const String& ssid, const String& passphrase)
 {
     Serial.println("SimUServeWiFi::testWifiConnection");
 
@@ -130,6 +130,7 @@ bool SimUServeWiFi::testWifiConnection()
     WiFi.softAPdisconnect();
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, passphrase);
     delay(100);
     while (waitRetryCounter < 20)
     {
@@ -296,8 +297,7 @@ void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
 
     Serial.println("Setting SSID to " + ssid + " and password to " + password);
 
-    WiFi.begin(ssid, password);
-    if (this->testWifiConnection())
+    if (this->testWifiConnection(ssid, password))
     {
         // save settings here and respond with all good
         this->_settingsManager->setConnectedNetworkSsid(ssid);

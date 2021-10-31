@@ -12,7 +12,7 @@
 
 #include <ESP8266WiFi.h>
 #include <stdint.h>
-#include <String>
+#include <WString.h>
 
 #define DEFAULT_CONFIG_SERVER_PORT 80
 #define DEFAULT_AP_IP "10.0.1.1"

@@ -181,7 +181,7 @@ class SimUServeWiFi {
      * can be called after credentials are saved to attempt a connection to a WiFi station.
      * DOES NOT change WiFi mode.  Typically used when in config (SoftAP)
     */
-    bool testWifiConnection(void);
+    bool testWifiConnection(const String&, const String&);
     
     /**
      * @brief Get the Wifi Status as a string

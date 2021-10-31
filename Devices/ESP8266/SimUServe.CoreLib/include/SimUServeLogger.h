@@ -10,7 +10,7 @@
 #ifndef SimUServeLogger_h
 #define SimUServeLogger_h
 
-#include <Arduino>
+#include <WString.h>
 
 /**
  * @brief Class for handling serial logging and file logging
@@ -25,6 +25,6 @@ class SimUServeLogger {
         static void serialLogDebug(String);
 
 
-}
+};
 
 #endif
