@@ -5,8 +5,8 @@
 			"path": "SimUServe.CoreLib"
 		},
 		{
-			"name": "SumUServe.F1LED",
-			"path": "SumUServe.F1LED"
+			"name": "SimUServe.F1LED",
+			"path": "SimUServe.F1LED"
 		}
 	],
 	"settings": {

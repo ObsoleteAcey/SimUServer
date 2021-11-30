@@ -96,7 +96,7 @@ void SimUServeWiFi::initDefaults()
     Serial.println("SimUServeWiFi::initDefaults");
     if (this->_settingsManager == nullptr)
     {
-        this->_settingsManager = SimUServeNetworkSettingsManager::getSettingsManager();
+        this->_settingsManager = SimUServeSettingsManager::getSettingsManager();
     }
 
     this->_numberOfNetworks = 0;
@@ -114,7 +114,7 @@ bool SimUServeWiFi::checkWiFiIsConnected(void)
     return (false);
 }
 
-bool SimUServeWiFi::testWifiConnection(const String& ssid, const String& passphrase)
+bool SimUServeWiFi::connectToWiFi()
 {
     Serial.println("SimUServeWiFi::testWifiConnection");
 
@@ -123,6 +123,7 @@ bool SimUServeWiFi::testWifiConnection(const String& ssid, const String& passphr
         return (true);
     }
 
+
     int waitRetryCounter = 0;
 
     Serial.println("Setting mode to WIFI_STA");
@@ -130,7 +131,18 @@ bool SimUServeWiFi::testWifiConnection(const String& ssid, const String& passphr
     WiFi.softAPdisconnect();
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, passphrase);
+
+    if(this->_settingsManager->getAdvancedSettingsMode())
+    {
+        WiFi.config(this->_settingsManager->getConnectedNetworkDeviceIpAddress(),
+            this->_settingsManager->getConnectedNetworkGatewayIpAddress(),
+            this->_settingsManager->getConnectedNetworkNetmask(),
+            // for now use the gateway as primary DNS
+            this->_settingsManager->getConnectedNetworkGatewayIpAddress());
+    }
+
+    WiFi.begin(this->_settingsManager->getConnectedNetworkSsid(),
+        this->_settingsManager->getConnectedNetworkSecurityKey());
     delay(100);
     while (waitRetryCounter < 20)
     {
@@ -297,26 +309,27 @@ void SimUServeWiFi::handleSaveNetwork(AsyncWebServerRequest *request)
 
     Serial.println("Setting SSID to " + ssid + " and password to " + password);
 
-    if (this->testWifiConnection(ssid, password))
+    // save settings here and respond with all good
+    this->_settingsManager->setConnectedNetworkSsid(ssid);
+    this->_settingsManager->setConnectedNetworkSecurityKey(password);
+    this->_settingsManager->setAdvancedSettingsMode(advancedSettings == "true");
+    if (advancedSettings == "true")
     {
-        // save settings here and respond with all good
-        this->_settingsManager->setConnectedNetworkSsid(ssid);
-        this->_settingsManager->setConnectedNetworkSecurityKey(password);
-        if (advancedSettings == "true")
-        {
-            this->_settingsManager->setConnectedNetworkDeviceIpAddress(deviceIp);
-            this->_settingsManager->setConnectedNetworkGatewayIpAddress(gateway);
-            this->_settingsManager->setConnectedNetworkNetmask(netmask);
-        }
-        else
-        {
-            this->_settingsManager->setConnectedNetworkDeviceIpAddress(WiFi.localIP().toString());
-            this->_settingsManager->setConnectedNetworkGatewayIpAddress(WiFi.gatewayIP().toString());
-            this->_settingsManager->setConnectedNetworkNetmask(WiFi.subnetMask().toString());
-        }
+        this->_settingsManager->setConnectedNetworkDeviceIpAddress(deviceIp);
+        this->_settingsManager->setConnectedNetworkGatewayIpAddress(gateway);
+        this->_settingsManager->setConnectedNetworkNetmask(netmask);
+    }
+    else
+    {
+        this->_settingsManager->setConnectedNetworkDeviceIpAddress(WiFi.localIP().toString());
+        this->_settingsManager->setConnectedNetworkGatewayIpAddress(WiFi.gatewayIP().toString());
+        this->_settingsManager->setConnectedNetworkNetmask(WiFi.subnetMask().toString());
+    }
 
-        this->_settingsManager->saveSettings();
+    this->_settingsManager->saveSettings();
 
+    if (this->connectToWiFi())
+    {
         request->send(200, "Connection successful and settings saved");
         return;
     }

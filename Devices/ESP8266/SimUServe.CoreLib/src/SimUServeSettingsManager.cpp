@@ -7,38 +7,38 @@
 * contact Stefan at stefan.john.park@gmail.com.
 */
 
-#include "SimUServeNetworkSettingsManager.h"
+#include "SimUServeSettingsManager.h"
 #include <LittleFS.h>
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 
 #pragma region Constructors / Destructors
 
-SimUServeNetworkSettingsManager *SimUServeNetworkSettingsManager::_settingsManager = nullptr;
+SimUServeSettingsManager *SimUServeSettingsManager::_settingsManager = nullptr;
 
-SimUServeNetworkSettingsManager *SimUServeNetworkSettingsManager::getSettingsManager(void)
+SimUServeSettingsManager *SimUServeSettingsManager::getSettingsManager(void)
 {
     if (_settingsManager == nullptr)
     {
-        _settingsManager = new SimUServeNetworkSettingsManager();
+        _settingsManager = new SimUServeSettingsManager();
     }
 
     return _settingsManager;
 }
 
-SimUServeNetworkSettingsManager::SimUServeNetworkSettingsManager()
+SimUServeSettingsManager::SimUServeSettingsManager()
 {
     _networkSettings = NetworkSettings();
     this->loadSettings();
 }
 
-SimUServeNetworkSettingsManager::~SimUServeNetworkSettingsManager()
+SimUServeSettingsManager::~SimUServeSettingsManager()
 {
 }
 
-void SimUServeNetworkSettingsManager::loadSettings()
+void SimUServeSettingsManager::loadSettings()
 {
-    Serial.println("SimUServeNetworkSettingsManager::loadSettings");
+    Serial.println("SimUServeSettingsManager::loadSettings");
     if(!LittleFS.begin())
     {
         Serial.println("Could not mount LittleFS");
@@ -81,7 +81,7 @@ void SimUServeNetworkSettingsManager::loadSettings()
 
 #pragma region Related to remote(PC) SimUServe server
 
-void SimUServeNetworkSettingsManager::setServerUdpPort(uint16_t const port)
+void SimUServeSettingsManager::setServerUdpPort(uint16_t const port)
 {
     if (this->_networkSettings.ServerUdpPort != port)
     {
@@ -90,12 +90,12 @@ void SimUServeNetworkSettingsManager::setServerUdpPort(uint16_t const port)
     }
 }
 
-uint16_t SimUServeNetworkSettingsManager::getServerUdpPort(void) const
+uint16_t SimUServeSettingsManager::getServerUdpPort(void) const
 {
     return this->_networkSettings.ServerUdpPort;
 }
 
-void SimUServeNetworkSettingsManager::setServerIpAddress(String const &ipAddress)
+void SimUServeSettingsManager::setServerIpAddress(String const &ipAddress)
 {
     if (this->_networkSettings.ServerIpAddress != ipAddress)
     {
@@ -109,7 +109,7 @@ void SimUServeNetworkSettingsManager::setServerIpAddress(String const &ipAddress
     }
 }
 
-IPAddress const &SimUServeNetworkSettingsManager::getServerIpAddress(void) const
+IPAddress const &SimUServeSettingsManager::getServerIpAddress(void) const
 {
     return this->_svrIpAddress;
 }
@@ -118,7 +118,7 @@ IPAddress const &SimUServeNetworkSettingsManager::getServerIpAddress(void) const
 
 #pragma region Related to Device Access Point(Local) server, for setup purposes
 
-void SimUServeNetworkSettingsManager::setDeviceUdpPort(uint16_t const port)
+void SimUServeSettingsManager::setDeviceUdpPort(uint16_t const port)
 {
     if (this->_networkSettings.DeviceUdpPort != port)
     {
@@ -127,12 +127,12 @@ void SimUServeNetworkSettingsManager::setDeviceUdpPort(uint16_t const port)
     }
 }
 
-uint16_t SimUServeNetworkSettingsManager::getDeviceUdpPort(void) const
+uint16_t SimUServeSettingsManager::getDeviceUdpPort(void) const
 {
     return this->_networkSettings.DeviceUdpPort;
 }
 
-void SimUServeNetworkSettingsManager::setDeviceConfigServerPort(uint16_t const port)
+void SimUServeSettingsManager::setDeviceConfigServerPort(uint16_t const port)
 {
     if (this->_networkSettings.DeviceConfigServerPort != port)
     {
@@ -141,12 +141,12 @@ void SimUServeNetworkSettingsManager::setDeviceConfigServerPort(uint16_t const p
     }
 }
 
-uint16_t SimUServeNetworkSettingsManager::getDeviceConfigServerPort(void) const
+uint16_t SimUServeSettingsManager::getDeviceConfigServerPort(void) const
 {
     return this->_networkSettings.DeviceConfigServerPort;
 }
 
-void SimUServeNetworkSettingsManager::setDeviceApSsid(String const &deviceApSsid)
+void SimUServeSettingsManager::setDeviceApSsid(String const &deviceApSsid)
 {
     if (this->_networkSettings.DeviceApSsid != deviceApSsid)
     {
@@ -155,12 +155,12 @@ void SimUServeNetworkSettingsManager::setDeviceApSsid(String const &deviceApSsid
     }
 }
 
-String const &SimUServeNetworkSettingsManager::getDeviceApSsid(void) const
+String const &SimUServeSettingsManager::getDeviceApSsid(void) const
 {
     return this->_networkSettings.DeviceApSsid;
 }
 
-void SimUServeNetworkSettingsManager::setDeviceApNetworkSecurityKey(String const &apSecurityKey)
+void SimUServeSettingsManager::setDeviceApNetworkSecurityKey(String const &apSecurityKey)
 {
     if (this->_networkSettings.DeviceApNetworkSecurityKey != apSecurityKey)
     {
@@ -169,12 +169,12 @@ void SimUServeNetworkSettingsManager::setDeviceApNetworkSecurityKey(String const
     }
 }
 
-String const &SimUServeNetworkSettingsManager::getDeviceApNetworkSecurityKey(void) const
+String const &SimUServeSettingsManager::getDeviceApNetworkSecurityKey(void) const
 {
     return this->_networkSettings.DeviceApNetworkSecurityKey;
 }
 
-void SimUServeNetworkSettingsManager::setDeviceApHostName(String const &deviceHostName)
+void SimUServeSettingsManager::setDeviceApHostName(String const &deviceHostName)
 {
     if (this->_networkSettings.DeviceApHostName != deviceHostName)
     {
@@ -183,12 +183,12 @@ void SimUServeNetworkSettingsManager::setDeviceApHostName(String const &deviceHo
     }
 }
 
-String const &SimUServeNetworkSettingsManager::getDeviceApHostName(void) const
+String const &SimUServeSettingsManager::getDeviceApHostName(void) const
 {
     return this->_networkSettings.DeviceApHostName;
 }
 
-void SimUServeNetworkSettingsManager::setDeviceApIpAddress(String const &deviceApIp)
+void SimUServeSettingsManager::setDeviceApIpAddress(String const &deviceApIp)
 {
     if (this->_networkSettings.DeviceApIpAddress != deviceApIp)
     {
@@ -202,12 +202,12 @@ void SimUServeNetworkSettingsManager::setDeviceApIpAddress(String const &deviceA
     }
 }
 
-IPAddress const &SimUServeNetworkSettingsManager::getDeviceApIpAddress(void) const
+IPAddress const &SimUServeSettingsManager::getDeviceApIpAddress(void) const
 {
     return this->_apIpAddress;
 }
 
-void SimUServeNetworkSettingsManager::setDeviceApGatewayIpAddress(String const &deviceApGatewayIp)
+void SimUServeSettingsManager::setDeviceApGatewayIpAddress(String const &deviceApGatewayIp)
 {
     if (this->_networkSettings.DeviceApGatewayIpAddress != deviceApGatewayIp)
     {
@@ -221,12 +221,12 @@ void SimUServeNetworkSettingsManager::setDeviceApGatewayIpAddress(String const &
     }
 }
 
-IPAddress const &SimUServeNetworkSettingsManager::getDeviceApGatewayIpAddress(void) const
+IPAddress const &SimUServeSettingsManager::getDeviceApGatewayIpAddress(void) const
 {
     return this->_apGatewayIpAddress;
 }
 
-void SimUServeNetworkSettingsManager::setDeviceApNetmask(String const &apNetmaskIp)
+void SimUServeSettingsManager::setDeviceApNetmask(String const &apNetmaskIp)
 {
     if (this->_networkSettings.DeviceApNetmask != apNetmaskIp)
     {
@@ -240,7 +240,7 @@ void SimUServeNetworkSettingsManager::setDeviceApNetmask(String const &apNetmask
     }
 }
 
-IPAddress const &SimUServeNetworkSettingsManager::getDeviceApNetmask(void) const
+IPAddress const &SimUServeSettingsManager::getDeviceApNetmask(void) const
 {
     return this->_apNetmask;
 }
@@ -249,7 +249,7 @@ IPAddress const &SimUServeNetworkSettingsManager::getDeviceApNetmask(void) const
 
 #pragma region Related to connecting to main WiFi access point
 
-void SimUServeNetworkSettingsManager::setConnectedNetworkDeviceIpAddress(String const &deviceIp)
+void SimUServeSettingsManager::setConnectedNetworkDeviceIpAddress(String const &deviceIp)
 {
     if (this->_networkSettings.ConnectedNetworkDeviceIp != deviceIp)
     {
@@ -263,12 +263,12 @@ void SimUServeNetworkSettingsManager::setConnectedNetworkDeviceIpAddress(String 
     }
 }
 
-IPAddress const &SimUServeNetworkSettingsManager::getConnectedNetworkDeviceIpAddress(void) const
+IPAddress const &SimUServeSettingsManager::getConnectedNetworkDeviceIpAddress(void) const
 {
     return this->_cnDeviceIp;
 }
 
-void SimUServeNetworkSettingsManager::setConnectedNetworkGatewayIpAddress(String const &gatewayIp)
+void SimUServeSettingsManager::setConnectedNetworkGatewayIpAddress(String const &gatewayIp)
 {
     if (this->_networkSettings.ConnectedNetworkGatewayIpAddress != gatewayIp)
     {
@@ -282,12 +282,12 @@ void SimUServeNetworkSettingsManager::setConnectedNetworkGatewayIpAddress(String
     }
 };
 
-IPAddress const &SimUServeNetworkSettingsManager::getConnectedNetworkGatewayIpAddress(void) const
+IPAddress const &SimUServeSettingsManager::getConnectedNetworkGatewayIpAddress(void) const
 {
     return this->_cnGatewayIpAddress;
 };
 
-void SimUServeNetworkSettingsManager::setConnectedNetworkNetmask(String const &netmask)
+void SimUServeSettingsManager::setConnectedNetworkNetmask(String const &netmask)
 {
     if (this->_networkSettings.ConnectedNetworkNetmask != netmask)
     {
@@ -301,12 +301,12 @@ void SimUServeNetworkSettingsManager::setConnectedNetworkNetmask(String const &n
     }
 };
 
-IPAddress const &SimUServeNetworkSettingsManager::getConnectedNetworkNetmask(void) const
+IPAddress const &SimUServeSettingsManager::getConnectedNetworkNetmask(void) const
 {
     return this->_cnNetmask;
 }
 
-void SimUServeNetworkSettingsManager::setConnectedNetworkSsid(String const &connectedSsid)
+void SimUServeSettingsManager::setConnectedNetworkSsid(String const &connectedSsid)
 {
     if (this->_networkSettings.ConnectedNetworkSsid != connectedSsid)
     {
@@ -315,12 +315,12 @@ void SimUServeNetworkSettingsManager::setConnectedNetworkSsid(String const &conn
     }
 }
 
-String const &SimUServeNetworkSettingsManager::getConnectedNetworkSsid(void) const
+String const &SimUServeSettingsManager::getConnectedNetworkSsid(void) const
 {
     return this->_networkSettings.ConnectedNetworkSsid;
 }
 
-void SimUServeNetworkSettingsManager::setConnectedNetworkSecurityKey(String const &securityKey)
+void SimUServeSettingsManager::setConnectedNetworkSecurityKey(String const &securityKey)
 {
     if (this->_networkSettings.ConnectedNetworkSecurityKey != securityKey)
     {
@@ -329,19 +329,29 @@ void SimUServeNetworkSettingsManager::setConnectedNetworkSecurityKey(String cons
     }
 }
 
-String const &SimUServeNetworkSettingsManager::getConnectedNetworkSecurityKey(void) const
+String const &SimUServeSettingsManager::getConnectedNetworkSecurityKey(void) const
 {
     return this->_networkSettings.ConnectedNetworkSecurityKey;
 }
 
+void SimUServeSettingsManager::setAdvancedSettingsMode(bool advancedMode)
+{
+    this->_networkSettings.AdvancedSettingsMode = advancedMode;
+}
+
+bool SimUServeSettingsManager::getAdvancedSettingsMode(void)
+{
+    return this->_networkSettings.AdvancedSettingsMode;
+}
+
 #pragma endregion
 
-void SimUServeNetworkSettingsManager::setClean(void)
+void SimUServeSettingsManager::setClean(void)
 {
     this->_isDirty = false;
 }
 
-void SimUServeNetworkSettingsManager::update(NetworkSettings const fromSettings, bool autoPersist)
+void SimUServeSettingsManager::update(NetworkSettings const fromSettings, bool autoPersist)
 {
     // TODO - some kind fo detection for default vs loaded vs dirty
     // set up server settings
@@ -362,7 +372,7 @@ void SimUServeNetworkSettingsManager::update(NetworkSettings const fromSettings,
     }
 }
 
-void SimUServeNetworkSettingsManager::saveSettings(void)
+void SimUServeSettingsManager::saveSettings(void)
 {
     if(!this->_isDirty)
     {

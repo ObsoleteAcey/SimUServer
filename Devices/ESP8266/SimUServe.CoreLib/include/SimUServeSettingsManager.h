@@ -7,8 +7,8 @@
 * contact Stefan at stefan.john.park@gmail.com.
 */
 
-#ifndef SimUServeNetworkSettings_h
-#define SimUServeNetworkSettings_h
+#ifndef SimUServeSettingsManager_h
+#define SimUServeSettingsManager_h
 
 #include <ESP8266WiFi.h>
 #include <stdint.h>
@@ -43,6 +43,7 @@ struct NetworkSettings {
     uint16_t DeviceUdpPort;
     uint16_t DeviceConfigServerPort;
     
+    bool AdvancedSettingsMode;
     String ConnectedNetworkSsid;
     String ConnectedNetworkSecurityKey;
     String ConnectedNetworkGatewayIpAddress;
@@ -58,7 +59,7 @@ struct NetworkSettings {
     String DeviceApNetmask;
 };
 
-class SimUServeNetworkSettingsManager {
+class SimUServeSettingsManager {
   private:
     bool _isDirty = false;
     IPAddress _apIpAddress;
@@ -69,16 +70,16 @@ class SimUServeNetworkSettingsManager {
     IPAddress _cnNetmask;
     IPAddress _svrIpAddress;
     NetworkSettings _networkSettings;
-    static SimUServeNetworkSettingsManager* _settingsManager;
-    SimUServeNetworkSettingsManager();
+    static SimUServeSettingsManager* _settingsManager;
+    SimUServeSettingsManager();
 
     void loadSettings();
 
     
   public:
-    ~SimUServeNetworkSettingsManager();
+    ~SimUServeSettingsManager();
 
-    static SimUServeNetworkSettingsManager* getSettingsManager(void);
+    static SimUServeSettingsManager* getSettingsManager(void);
 
     #pragma region Related to remote (PC) SimUServe server
 
@@ -192,6 +193,10 @@ class SimUServeNetworkSettingsManager {
     void setConnectedNetworkSecurityKey(String const&);
 
     String const& getConnectedNetworkSecurityKey(void) const;
+
+    void setAdvancedSettingsMode(bool);
+
+    bool getAdvancedSettingsMode(void);
 
     #pragma endregion
     

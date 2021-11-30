@@ -10,7 +10,7 @@
 #ifndef SIMUSERVEWIFI_H
 #define SIMUSERVEWIFI_H
 
-#include "SimUServeNetworkSettingsManager.h"
+#include "SimUServeSettingsManager.h"
 #include "SimUServeCommon.h"
 #include <stdint.h>
 #include <ESP8266WiFi.h>
@@ -97,7 +97,7 @@ class SimUServeWiFi {
   protected:
     // contains the settings for both the server and the WiFiSettings
     // we want to connect to
-    SimUServeNetworkSettingsManager* _settingsManager;
+    SimUServeSettingsManager* _settingsManager;
     AsyncWebServer* _server;
     WiFiNetwork* _availableNetworks;
     int _numberOfNetworks;
@@ -180,8 +180,11 @@ class SimUServeWiFi {
      * @brief Tests the WiFi connection to see if Wifi is working.  If not, returns false.
      * can be called after credentials are saved to attempt a connection to a WiFi station.
      * DOES NOT change WiFi mode.  Typically used when in config (SoftAP)
+     * 
+     * @return true if WiFi connection is successful
+     * @return false if WiFi connection is unsuccessful
     */
-    bool testWifiConnection(const String&, const String&);
+    bool connectToWiFi();
     
     /**
      * @brief Get the Wifi Status as a string

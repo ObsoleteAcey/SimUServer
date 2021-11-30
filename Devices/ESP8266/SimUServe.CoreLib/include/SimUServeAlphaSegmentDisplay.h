@@ -44,11 +44,17 @@ class SimUServeAlphaSegmentDisplay {
         
         /**
          * @brief  Default constructor
-         * @note   Sets the default I2C ports as D2 (SDA),D1 (SCL), 4 displays
+         * @note   Sets the default I2C ports as D2 (SDA),D1 (SCL), 4 displays, device addres of 0x70
          * @retval 
          */
         SimUServeAlphaSegmentDisplay();
 
+        /**
+         * @brief  Constructs using the supplied SDA and SCL port values
+         * @note   Sets the default I2C ports as D2 (SDA),D1 (SCL), 4 displays
+         * @param address - the I2C address
+         * @retval 
+         */
         SimUServeAlphaSegmentDisplay(uint8_t);
 
         /**
@@ -109,13 +115,6 @@ class SimUServeAlphaSegmentDisplay {
          * @retval None
          */
         void blinkDisplay(uint8_t);
-
-        /**
-         * @brief  Writes the current display buffer to the display unit
-         * @note   
-         * @retval None
-         */
-        void updateDisplay(void);
 
         /**
          * @brief  Clears the display buffer and writes it to the display

@@ -43,6 +43,9 @@
         .error {
             border-color: red;
         }
+        .network-settings-container {
+            width: 50%;
+        }
         </style>
         <title>SimUServe {{deviceName}} setup page</title>
     </head>
@@ -55,20 +58,33 @@
         <div id="networkSetup" class="tabcontent selected">
             <h1>Welcome to the SimUServe network setup</h1>
             <form action="javascript:void(0);">
-                <div class="ssid-container">
-                    <label for="ssid">SSID:</label>
-                    <select id="ssid" name="ssid" onchange="ssidSelected(event)" >
-                        <option value="PleaseSelect">Please select an SSID</option>
-                    </select>
-                </div>
-                <div class="password-container">
-                    <label for="password">Password:</label>
-                    <input id="password" type="password">
-                    <input type="checkbox" onclick="togglePasswordVisibility()">Show Password
-                </div>
-                <div class="button-container">
-                    <button class="save" onclick="saveNetworkSettings()">Save</button>
-                    <button class="refesh-networks" onclick="refreshNetworks()">Refresh Networks</button>
+                <div class="network-settings-container">
+                    <div class="ssid-container">
+                        <label for="ssid">SSID:</label>
+                        <select id="ssid" name="ssid" onchange="ssidSelected(event)" >
+                            <option value="PleaseSelect">Please select an SSID</option>
+                        </select>
+                    </div>
+                    <div class="password-container">
+                        <label for="password">Password:</label>
+                        <input id="password" type="password">
+                        <input type="checkbox" onclick="togglePasswordVisibility()">Show Password
+                    </div>
+                    <div class="advanced-settings">
+                        <input id="toggleAdvancedNetworkSettings" type="checkbox" onclick="toggleAdvancedSettings()"><strong>Advanced settings</strong>
+                        <br/>
+                        <em>Note: we recommend setting a static IP address for this device.  This will make it easier to connect to diagnose any issues</em>
+                        <div id="advanced-settings-controls" class="advanced-settings-controls">
+                            <div class="ip-address-setting">
+                                <label for="ip-address">IP Address:</label>
+                                <input id="ipAddress" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <button class="save" onclick="saveNetworkSettings()">Save</button>
+                        <button class="refesh-networks" onclick="refreshNetworks()">Refresh Networks</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -96,6 +112,11 @@
             <h1>SimUServe Device Info</h1>
         </div>
         <script>
+            var advancedSettingsCheckbox,
+                ipAddressTextbox,
+                ssidCombo,
+                passwordTextbox,
+                manualServerCheckBox;
             function sendRequest(url, method, body, successCallback, failureCallback) {
                 var xhr = new XMLHttpRequest();
                 xhr.open(method, url);
@@ -157,12 +178,19 @@
                         optionElements[i].selected);
                 }
             }
+            function validateIPaddress(ipAddress) {
+                if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipAddress))
+                {
+                    return (true)
+                }
+                alert("You have entered an invalid IP address!")
+                return (false)
+            }
             function togglePasswordVisibility() {
-                var passwordText = document.getElementById("password");
-                if (passwordText.type === "password") {
-                    passwordText.type = "text";
+                if (passwordTextbox.type === "password") {
+                    passwordTextbox.type = "text";
                 } else {
-                    passwordText.type = "password";
+                    passwordTextbox.type = "password";
                 }
             }
             function openTab(evt, tabToOpen) {
@@ -190,15 +218,20 @@
             }
             function saveNetworkSettings() {
                 var params;
-                var ssidCombo = document.getElementById("ssid");
-                var passwordText = document.getElementById("password");
+                
                 if(ssidCombo.value === "PleaseSelect") {
                     addClass(ssidCombo, " error");
                     return;
                 }
 
-                if(passwordText.value === "") {
-                    addClass(passwordText, " error");
+                if(passwordTextbox.value === "") {
+                    addClass(passwordTextbox, " error");
+                    return;
+                }
+
+                if(ipAddressTextbox.value !== "" && !validateIPaddress(ipAddressTextbox.value))
+                {
+                    addClass(ipAddressTextbox, " error");
                     return;
                 }
 
@@ -254,9 +287,17 @@
             function getDeviceInfo() {
                 
             }
+            /**
+             * Get available networks
+             **/
+             function getSavedSettings() {
+                get("/api/settings", function(response) {
+                    
+                });
+            }
             function toggleManualEntry() {
-                var checkBox = document.getElementById("manualServer");
-                if(checkBox.checked) {
+                
+                if(manualServerCheckBox.checked) {
                     document.getElementById("serverAddress").
                         removeAttribute("disabled");
                     document.getElementById("findServer").
@@ -269,7 +310,17 @@
                 }
             }
             function pageInit() {
+                // init control vars
+                ssidCombo = document.getElementById("ssid");
+                passwordTextbox = document.getElementById("password");
+                ipAddressTextbox = document.getElementById("ipAddress");
+                advancedSettingsCheckbox = document.getElementById("toggleAdvancedNetworkSettings");
+                manualServerCheckBox = document.getElementById("manualServer");
+
                 getAvailableNetworks();
+                // get saved settings
+
+                
             };
 
             if (document.readyState === "complete" ||

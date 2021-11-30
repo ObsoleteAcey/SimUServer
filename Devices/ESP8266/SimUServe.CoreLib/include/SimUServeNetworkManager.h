@@ -36,7 +36,14 @@ class SimUServeNetworkManager {
 
         void checkForRequests(void);
 
-
+        /**
+         * @brief Attempts to connect to WiFi using the settings saved
+         * in settings manager
+         * 
+         * @return true if connection to WiFi is successful
+         * @return false if connection to WiFi is unsuccessful
+         */
+        bool connectToWiFi(void);
 };
 
 #endif

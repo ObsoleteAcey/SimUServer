@@ -61,3 +61,8 @@ void SimUServeNetworkManager::checkForRequests(void)
         //this->_wifi.
     }
 }
+
+bool SimUServeNetworkManager::connectToWiFi(void)
+{
+    return this->_wifi->connectToWiFi();
+}
