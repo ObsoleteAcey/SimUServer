@@ -4,6 +4,7 @@
 #include "SimUServeSettingsManager.h"
 #include "SimUServeAlphaSegmentDisplay.h"
 #include "SimUServeNetworkManager.h"
+#include "SimUServeLedHud.h"
 
 SimUServeNetworkManager *_networkManager;
 SimUServeSettingsManager *_settingsManager;
@@ -12,6 +13,7 @@ bool serviceMode = false;
 
 SimUServeAlphaSegmentDisplay alphaDisplayLeft = SimUServeAlphaSegmentDisplay(0x70);
 SimUServeAlphaSegmentDisplay alphaDisplayRight = SimUServeAlphaSegmentDisplay(0x71);
+SimUServeLedHud ledHud = SimUServeLedHud();
 
 void udpMessageReceivedCallback(AsyncUDPPacket& packet)
 {
@@ -44,10 +46,13 @@ void setup() {
 
   alphaDisplayLeft.writeWord(0, "Test");
   alphaDisplayRight.writeWord(0, "Aiden");
+
+  ledHud.initLeds();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
    _networkManager->checkForRequests();
+
 }
 

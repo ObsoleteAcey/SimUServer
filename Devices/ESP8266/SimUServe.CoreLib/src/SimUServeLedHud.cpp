@@ -63,23 +63,29 @@ void SimUServeLedHud::updateLedBrightness(uint8_t brightness)
   FastLED.setBrightness(brightness);
 }
 
-template <ESPIChipsets CHIPSET, uint8_t DATA_PIN, EOrder RGB_ORDER>
 SimUServeLedHud *SimUServeLedHud::initLeds(void)
 {
-  FastLED.addLeds<CHIPSET, DATA_PIN, RGB_ORDER>(this->_leds, this->totalNumberOfLeds()).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_DEFAULT_TYPE, LED_DEFAULT_DATA_PIN, LED_DEFAULT_COLOUR_ORDER>(this->_leds, this->totalNumberOfLeds()).setCorrection(TypicalLEDStrip);
 
   FastLED.setBrightness(LED_DEFAULT_BRIGHTNESS);
   return this;
 }
 
 template <ESPIChipsets CHIPSET, uint8_t DATA_PIN, EOrder RGB_ORDER>
-SimUServeLedHud *SimUServeLedHud::initLeds(LEDColorCorrection colourCorrection, uint8_t brightness)
+SimUServeLedHud *SimUServeLedHud::initLeds<ESPIChipsets, uint8_t, EOrder>(LEDColorCorrection colourCorrection, uint8_t brightness)
 {
   FastLED.addLeds<CHIPSET, DATA_PIN, RGB_ORDER>(this->_leds, this->totalNumberOfLeds()).setCorrection(colourCorrection);
 
   FastLED.setBrightness(brightness);
 
   return this;
+}
+
+void SimUServeLedHud::updateRedlineState(double rpmState1, double rpmState2)
+{
+  this->_rpmShiftLight1 = rpmState1 >= 1 ? rpmState1 : 1;
+  this->_rpmShiftLight2 = rpmState2 >= 1 ? rpmState2 : 1;
+  this->displayRpmLine();
 }
 
 #pragma endregion

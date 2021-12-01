@@ -17,7 +17,7 @@
 // default settings
 #define NUM_LEDS 22
 #define NUM_LEDS_REV 16
-#define LED_TYPE WS2812B
+#define LED_DEFAULT_TYPE WS2812B
 #define LED_DEFAULT_DATA_PIN ESP_D5
 #define LED_DEFAULT_COLOUR_ORDER GRB
 #define LED_DEFAULT_COLOUR_CORRECTION TypicalLEDStrip
@@ -103,17 +103,17 @@ class SimUServeLedHud {
      */
     void updateLedBrightness(uint8_t);
 
+
     /**
      * @brief Sets up the LEDs based on the current config
-     * This should be the last thing called.  Uses LED_DEFAULT_COLOUR_CORRECTION and 
-     * LED_DEFAULT_BRIGHTNESS.
-     * 
-     * @tparam SPIChipsets The chipset being used.  Use LED_DEFAULT_TYPE for default
-     * @tparam uint8_t The port pin to use for data.  Use LED_DEFAULT_DATA_PIN for default
-     * @tparam EOrder The order of the colours in the LED strip.  Use LED_DEFAULT_COLOUR_ORDER for default
+     * This should be the last thing called.  Uses LED_DEFAULT_TYPE for LED Type,
+     * LED_DEFAULT_DATA_PIN for the data pin,
+     * LED_DEFAULT_COLOUR_ORDER for the colour order,
+     * LED_DEFAULT_COLOUR_CORRECTION for the colour correction, 
+     * and LED_DEFAULT_BRIGHTNESS for the brightness.
      * @return SimUServeLedHud* 
      */
-    template<ESPIChipsets,  uint8_t, EOrder> SimUServeLedHud* initLeds(void);
+    SimUServeLedHud* initLeds(void);
 
     /**
      * @brief Sets up the LEDs based on the current config
@@ -127,6 +127,12 @@ class SimUServeLedHud {
      * 
      */
     template<ESPIChipsets,  uint8_t, EOrder> SimUServeLedHud* initLeds(LEDColorCorrection, uint8_t);
+
+    /**
+     * @brief Updates the redline state based on the input params from SimHub
+     * 
+     */
+    void updateRedlineState(double, double);
     
   protected:
     void displayRpmLine(void);
