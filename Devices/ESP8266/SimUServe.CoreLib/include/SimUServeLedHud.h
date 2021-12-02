@@ -36,6 +36,13 @@
 //                       |--    rpm1   --|--    rpm2   --|
 // this means 0.125 per LED
 
+enum FlagColourState {
+  NO_FLAG = 1,
+  YELLOW_FLAG = 2,
+  BLUE_FLAG = 3,
+  PIT_LIMIT = 4
+};
+
 
 /**
  * @brief Class for driving an LED hud.  Can be used with just a rev LED strip, or rev and
@@ -43,13 +50,11 @@
  * 
  */
 class SimUServeLedHud {
-  protected:
-
-  
   private:
     double _rpmShiftLight1;
     double _rpmShiftLight2;
-    double _redLineReached;
+    bool _redLineReached;
+    FlagColourState _flagColourState;
     bool _flagState;
     bool _redlineState;
     bool _pitLimitState;
@@ -129,17 +134,17 @@ class SimUServeLedHud {
     template<ESPIChipsets,  uint8_t, EOrder> SimUServeLedHud* initLeds(LEDColorCorrection, uint8_t);
 
     /**
-     * @brief Updates the redline state based on the input params from SimHub
-     * 
+     * @brief 
+     * @param rpmShiftLight1 description
+     * @param rpmShiftLight2 
+     * @param redLineReached true of the redline has been reached
      */
-    void updateRedlineState(double, double);
+    void updateRpmLedState(double, double, bool);
     
-  protected:
+  private:
     void displayRpmLine(void);
     void flashFlag(CRGB);
     void displayRedline();
-
-  private:
     CRGB indexToColour(uint8_t);
     uint8_t rpmShiftToIndexLimit(double, double);
     void clearLeds(uint8_t, uint8_t);

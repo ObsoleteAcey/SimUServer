@@ -81,11 +81,11 @@ SimUServeLedHud *SimUServeLedHud::initLeds<ESPIChipsets, uint8_t, EOrder>(LEDCol
   return this;
 }
 
-void SimUServeLedHud::updateRedlineState(double rpmState1, double rpmState2)
+void SimUServeLedHud::updateRpmLedState(double rpmState1, double rpmState2, bool redLineReached)
 {
   this->_rpmShiftLight1 = rpmState1 >= 1 ? rpmState1 : 1;
   this->_rpmShiftLight2 = rpmState2 >= 1 ? rpmState2 : 1;
-  this->displayRpmLine();
+  this->_redLineReached = redLineReached;
 }
 
 #pragma endregion
@@ -136,7 +136,8 @@ void SimUServeLedHud::flashFlag(CRGB colour)
 
 void SimUServeLedHud::displayRedline(void)
 {
-  if (this->_currentMillis - this->_previousRedlineMillis < this->_redlineCycleTime)
+  if (this->_currentMillis - this->_previousRedlineMillis < this->_redlineCycleTime ||
+      !this->_redLineReached)
   {
     return;
   }
