@@ -140,12 +140,19 @@ class SimUServeLedHud {
      * @param redLineReached true of the redline has been reached
      */
     void updateRpmLedState(double, double, bool);
-    
+
+    /**
+     * @brief Set the Flag Colour State attribute
+     * 
+     */
+    void setFlagColourState(FlagColourState);
+   
   private:
     void displayRpmLine(void);
     void flashFlag(CRGB);
     void displayRedline();
     CRGB indexToColour(uint8_t);
+    CRGB flagStateToColour(FlagColourState);
     uint8_t rpmShiftToIndexLimit(double, double);
     void clearLeds(uint8_t, uint8_t);
     void initDefaults(uint8_t);

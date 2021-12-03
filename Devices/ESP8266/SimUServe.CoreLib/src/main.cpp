@@ -6,8 +6,8 @@
 #include "SimUServeNetworkManager.h"
 #include "SimUServeLedHud.h"
 
-SimUServeNetworkManager *_networkManager;
-SimUServeSettingsManager *_settingsManager;
+SimUServeNetworkManager *networkManager;
+SimUServeSettingsManager *settingsManager;
 
 bool serviceMode = false;
 
@@ -28,18 +28,18 @@ void setup() {
   Serial.println("");
   Serial.println("Startup");
 
-  _settingsManager = SimUServeSettingsManager::getSettingsManager();
-  _settingsManager->setAdvancedSettingsMode(true);
-  _settingsManager->setConnectedNetworkSsid("DeepSpaceNine");
-  _settingsManager->setConnectedNetworkSecurityKey("g4l4xy!8o5");
-  _settingsManager->setConnectedNetworkDeviceIpAddress("192.168.1.50");
-  _settingsManager->setConnectedNetworkGatewayIpAddress("192.168.1.1");
-  _settingsManager->setConnectedNetworkNetmask("255.255.255.0");
+  settingsManager = SimUServeSettingsManager::getSettingsManager();
+  settingsManager->setAdvancedSettingsMode(true);
+  settingsManager->setConnectedNetworkSsid("DeepSpaceNine");
+  settingsManager->setConnectedNetworkSecurityKey("g4l4xy!8o5");
+  settingsManager->setConnectedNetworkDeviceIpAddress("192.168.1.50");
+  settingsManager->setConnectedNetworkGatewayIpAddress("192.168.1.1");
+  settingsManager->setConnectedNetworkNetmask("255.255.255.0");
 
 
-  _networkManager = SimUServeNetworkManager::getNetworkManager();
-  _networkManager->initConfigServices();
-  _networkManager->connectToWiFi();
+  networkManager = SimUServeNetworkManager::getNetworkManager();
+  networkManager->initConfigServices();
+  networkManager->connectToWiFi();
 
   alphaDisplayLeft.setUpDisplay();
   alphaDisplayRight.setUpDisplay();
@@ -48,11 +48,13 @@ void setup() {
   alphaDisplayRight.writeWord(0, "Aiden");
 
   ledHud.initLeds();
+  ledHud.updateRpmLedState(0.125, 0, 0);
+  ledHud.setFlagColourState(NO_FLAG);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-   _networkManager->checkForRequests();
-
+   //networkManager->checkForRequests();
+   ledHud.updateLedState();
 }
 
