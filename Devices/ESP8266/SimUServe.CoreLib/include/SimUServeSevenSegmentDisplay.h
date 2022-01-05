@@ -44,7 +44,7 @@
 #define DISPLAY_BLINK_HALFHZ_COMMAND 0x03
 
 /**
- * @brief  Used for communication with a seven segment display via serial chip - either I2C or some clicked serial data in
+ * @brief  Used for communication with a seven segment display via serial chip - either I2C or some clocked serial data in
  * @note   If using the likes of a TM1637, there will be no slave address to talk to.  It's a pure serial interface and requires
  *          a dedicated data and clock pin.
  * @retval None
@@ -110,21 +110,21 @@ class SimUServeSevenSegmentDisplay {
          *  - DEFAULT - DISPLAY_BLINK_TWOHZ_COMMAND
          * @retval None
          */
-        void blinkDisplay(uint8_t);
+        //void blinkDisplay(uint8_t);
 
         /**
          * @brief  Writes the current display buffer to the display unit
          * @note   
          * @retval None
          */
-        void updateDisplay(void);
+        //void updateDisplay(void);
 
         /**
          * @brief  Clears the display buffer and writes it to the display
          * @note   
          * @retval None
          */
-        void clearDisplay(void);
+        //void clearDisplay(void);
 
         /**
          * @brief  Sets the brightness of the display
@@ -132,7 +132,7 @@ class SimUServeSevenSegmentDisplay {
          * @param brightness - number between 0 and 15, 0 being dimest and 15 being brightest
          * @retval None
          */
-        void setBrightness(uint8_t);
+        //void setBrightness(uint8_t);
     
     private:
         void init(uint8_t, uint8_t, uint8_t, uint16_t);
@@ -142,8 +142,8 @@ class SimUServeSevenSegmentDisplay {
         void clockLow(void);
         void dataHigh(void);
         void dataLow(void);
-        void sendHighBit(void);
-        void sendLowBit(void);
+        /*void sendHighBit(void);
+        void sendLowBit(void);*/
         bool listenForAck(void);
         void beginTransmission(void);
         void endTransmission(void);

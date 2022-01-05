@@ -46,12 +46,16 @@ static const uint8_t displayLookUp[] PROGMEM = {
 
 SimUServeSevenSegmentDisplay::SimUServeSevenSegmentDisplay()
 {
-    init(ESP_D3, ESP_D4, 1, MAX_CLOCK_FREQUENCY_KHZ);
+    init(ESP_D6, ESP_D7, 1, MAX_CLOCK_FREQUENCY_KHZ);
 }
-
 SimUServeSevenSegmentDisplay::SimUServeSevenSegmentDisplay(uint8_t sda, uint8_t scl, uint8_t numberOfDisplays)
 {
     init(sda, scl, numberOfDisplays, MAX_CLOCK_FREQUENCY_KHZ);
+}
+
+SimUServeSevenSegmentDisplay::~SimUServeSevenSegmentDisplay()
+{
+    delete _displaybuffer;
 }
 
 void SimUServeSevenSegmentDisplay::init(uint8_t sda = ESP_D3, uint8_t scl = ESP_D4, uint8_t numberOfDisplays = 1, uint16_t clockFrequencyKHz = MAX_CLOCK_FREQUENCY_KHZ)
@@ -95,11 +99,25 @@ void SimUServeSevenSegmentDisplay::writeToDisplay(void)
     writeCommandToDisplay(DISPLAY_ON_COMMAND);
 }
 
+void SimUServeSevenSegmentDisplay::writeNumber(uint8_t numberToWrite, bool writeDecimalPoint)
+{
+    if(numberToWrite > 15)
+    {
+        return;
+    }
+
+    writeCommandToDisplay(DATA_COMMAND_WRITE_TO_REGISTER);
+    writeCommandToDisplay(DISPLAY_BASE_ADDRESS);
+    writeWordToDisplay(displayLookUp[numberToWrite]);
+    writeCommandToDisplay(DISPLAY_ON_COMMAND);
+}
+
 bool SimUServeSevenSegmentDisplay::writeCommandToDisplay(uint8_t commandToWrite)
 {
     // commands are written differently to a word.
     // from page 4 of dat sheet, a command needs a start bit written
     // during a long clock pulse.
+    Serial.println("SimUServeSevenSegmentDisplay::writeCommandToDisplay - command " + String(commandToWrite));
     clockHigh();
     dataHigh();
     waitCycle();
@@ -112,6 +130,7 @@ bool SimUServeSevenSegmentDisplay::writeWordToDisplay(uint8_t wordToWrite)
 {
     // from datasheet, each bit is clocked in on rising edge
     // so write goes - set clock low, write bit, set clock high
+    Serial.println("SimUServeSevenSegmentDisplay::writeWordToDisplay");
     for (uint8_t bitCount = 0; bitCount < 8; bitCount++)
     {
         // set clock low
@@ -119,6 +138,7 @@ bool SimUServeSevenSegmentDisplay::writeWordToDisplay(uint8_t wordToWrite)
 
         // write current bit out
         // check with a bitmask for a high or low data signal to send
+        Serial.println("SimUServeSevenSegmentDisplay::writeWordToDisplay - word " + String(wordToWrite));
         wordToWrite & 0x01 ? dataHigh() : dataLow();
 
         // clock the bit in
@@ -132,16 +152,17 @@ bool SimUServeSevenSegmentDisplay::writeWordToDisplay(uint8_t wordToWrite)
 
 bool SimUServeSevenSegmentDisplay::listenForAck()
 {
+    Serial.println("SimUServeSevenSegmentDisplay::listenForAck");
     clockLow();
     pinMode(_sda, INPUT);
     waitCycle(); // wait an additional on low clock cycle
     clockHigh();
-
+    Serial.println("SimUServeSevenSegmentDisplay::listenForAck - Reading data line");
     uint8_t ack = digitalRead(_sda);
 
     pinMode(_sda, OUTPUT);
     clockLow();
-
+    Serial.println("SimUServeSevenSegmentDisplay::listenForAck - read " + String(ack));
     return ack;
 }
 
@@ -152,29 +173,41 @@ void SimUServeSevenSegmentDisplay::beginTransmission(void)
     dataLow();
 }
 
+void SimUServeSevenSegmentDisplay::endTransmission(void)
+{
+    // clock high, data high
+    clockHigh();
+    dataHigh();
+}
+
 void SimUServeSevenSegmentDisplay::clockHigh(void)
 {
+    Serial.println("SimUServeSevenSegmentDisplay::clockHigh");
     digitalWrite(_scl, HIGH);
     waitCycle();
 }
 
 void SimUServeSevenSegmentDisplay::clockLow(void)
 {
+    Serial.println("SimUServeSevenSegmentDisplay::clockLow");
     digitalWrite(_scl, LOW);
     waitCycle();
 }
 
 void SimUServeSevenSegmentDisplay::dataHigh(void)
 {
+    Serial.println("SimUServeSevenSegmentDisplay::dataHigh");
     digitalWrite(_sda, HIGH);
 }
 
 void SimUServeSevenSegmentDisplay::dataLow(void)
 {
+    Serial.println("SimUServeSevenSegmentDisplay::dataLow");
     digitalWrite(_sda, LOW);
 }
 
 void SimUServeSevenSegmentDisplay::waitCycle(void)
 {
+    Serial.println("SimUServeSevenSegmentDisplay::waitCycle");
     delayMicroseconds(_clockDutyTime / 2);
 }

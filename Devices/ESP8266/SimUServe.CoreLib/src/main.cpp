@@ -5,6 +5,7 @@
 #include "SimUServeAlphaSegmentDisplay.h"
 #include "SimUServeNetworkManager.h"
 #include "SimUServeLedHud.h"
+#include "SimUServeSevenSegmentDisplay.h"
 
 SimUServeNetworkManager *networkManager;
 SimUServeSettingsManager *settingsManager;
@@ -14,6 +15,7 @@ bool serviceMode = false;
 SimUServeAlphaSegmentDisplay alphaDisplayLeft = SimUServeAlphaSegmentDisplay(0x70);
 SimUServeAlphaSegmentDisplay alphaDisplayRight = SimUServeAlphaSegmentDisplay(0x71);
 SimUServeLedHud ledHud = SimUServeLedHud();
+SimUServeSevenSegmentDisplay sevenSegDisplay = SimUServeSevenSegmentDisplay();
 
 void udpMessageReceivedCallback(AsyncUDPPacket& packet)
 {
@@ -47,9 +49,10 @@ void setup() {
   alphaDisplayLeft.writeWord(0, "Test");
   alphaDisplayRight.writeWord(0, "Aiden");
 
-  ledHud.initLeds();
+  /*ledHud.initLeds();
   ledHud.updateRpmLedState(0.125, 0, 0);
-  ledHud.setFlagColourState(NO_FLAG);
+  ledHud.setFlagColourState(NO_FLAG);*/
+  sevenSegDisplay.writeNumber(0,false);
 }
 
 void loop() {
